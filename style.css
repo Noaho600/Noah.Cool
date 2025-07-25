@@ -1,14 +1,68 @@
 body {
-  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  font-family: 'Quicksand', sans-serif;
+  background: #f9f9f9;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  padding-top: 80px;
+  color: #222;
+}
+
+.container {
   text-align: center;
-  padding: 40px;
-  background: #f0f0f0;
+  animation: fadeIn 1s ease forwards;
 }
-a {
-  color: blue;
-  text-decoration: none;
+
+h1 {
+  font-size: 3em;
+  margin-bottom: 40px;
+}
+
+.link-list {
+  list-style: none;
+  padding: 0;
+}
+
+.link-list li {
+  margin: 20px 0;
+}
+
+.link-list a {
   font-size: 1.5em;
+  color: #0077ff;
+  text-decoration: none;
+  transition: transform 0.3s, color 0.3s;
 }
-a:hover {
-  color: orange;
+
+.link-list a:hover {
+  transform: scale(1.1);
+  color: #ff5722;
+}
+
+/* ✅ Simple fade-in animation */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* ✅ Slide-up animation */
+.slide-up {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: slideUp 1.2s ease-out forwards;
+}
+
+@keyframes slideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
