@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Coming Soon</title>
   <link rel="stylesheet" href="../style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet">
   <style>
     body {
       background: #f7f9fb;
@@ -15,6 +16,7 @@
     h1 {
       font-size: 2.5em;
       margin-bottom: 30px;
+      animation: fadeIn 0.8s ease-in;
     }
 
     .grid {
@@ -26,54 +28,149 @@
     }
 
     .card {
+      perspective: 1000px;
+      animation: slideUp 0.6s ease forwards;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .card:nth-child(1) { animation-delay: 0.2s; }
+    .card:nth-child(2) { animation-delay: 0.4s; }
+    .card:nth-child(3) { animation-delay: 0.6s; }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 250px;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+
+    .card:hover .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front,
+    .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-front {
       background: white;
       border: 2px dashed #d3dce6;
-      border-radius: 12px;
-      padding: 30px 20px;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.05);
-      transition: transform 0.3s ease;
-      position: relative;
     }
 
-    .card:hover {
-      transform: translateY(-5px);
-    }
-
-    .card h2 {
-      font-size: 1.5em;
-      margin: 10px 0;
-    }
-
-    .card .soon {
-      color: #888;
-      font-size: 1em;
-      margin-top: 10px;
+    .card-back {
+      background: #eaf1ff;
+      transform: rotateY(180deg);
     }
 
     .lock-icon {
-      font-size: 2em;
+      font-size: 2.2em;
       color: #aaa;
+      margin-bottom: 10px;
+    }
+
+    .card h2 {
+      font-size: 1.4em;
+      margin-bottom: 10px;
+    }
+
+    .soon {
+      color: #666;
+      font-size: 0.95em;
+    }
+
+    .notify-btn {
+      margin-top: 12px;
+      background: #4a90e2;
+      color: white;
+      padding: 8px 18px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9em;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .notify-btn:hover {
+      background: #2f75d2;
+    }
+
+    @keyframes slideUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
   <h1>🧪 Coming Soon</h1>
+
   <div class="grid">
+
     <div class="card">
-      <div class="lock-icon">🔒</div>
-      <h2>Blob Bounce</h2>
-      <p class="soon">Launching Soon...</p>
+      <div class="card-inner">
+        <div class="card-front">
+          <div class="lock-icon">🔒</div>
+          <h2>Balance Builder</h2>
+          <p class="soon">Launching Soon...</p>
+        </div>
+        <div class="card-back">
+          <h2>Balance Builder</h2>
+          <p class="soon">Stack weird shapes without tipping the tower, Can you finish the tower?</p>
+          <button class="notify-btn">Notify Me</button>
+        </div>
+      </div>
     </div>
+
     <div class="card">
-      <div class="lock-icon">🔒</div>
-      <h2>Gravity Flip</h2>
-      <p class="soon">Coming in August</p>
+      <div class="card-inner">
+        <div class="card-front">
+          <div class="lock-icon">🔒</div>
+          <h2>Sand Simulator</h2>
+          <p class="soon">Coming in September</p>
+        </div>
+        <div class="card-back">
+          <h2>Sand Simulator</h2>
+          <p class="soon">Click to pour falling sand</p>
+          <button class="notify-btn">Notify Me</button>
+        </div>
+      </div>
     </div>
+
     <div class="card">
-      <div class="lock-icon">🔒</div>
-      <h2>Typing Invaders</h2>
-      <p class="soon">In Development</p>
+      <div class="card-inner">
+        <div class="card-front">
+          <div class="lock-icon">🔒</div>
+          <h2>The Button</h2>
+          <p class="soon">In Development</p>
+        </div>
+        <div class="card-back">
+          <h2>The Button</h2>
+          <p class="soon">HAHAHAHAHAHAHA!</p>
+          <button class="notify-btn">Notify Me</button>
+        </div>
+      </div>
     </div>
+
   </div>
 </body>
 </html>
