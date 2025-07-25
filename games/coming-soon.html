@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Coming Soon</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    body {
+      background: #f7f9fb;
+      font-family: 'Quicksand', sans-serif;
+      padding: 40px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 30px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: white;
+      border: 2px dashed #d3dce6;
+      border-radius: 12px;
+      padding: 30px 20px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h2 {
+      font-size: 1.5em;
+      margin: 10px 0;
+    }
+
+    .card .soon {
+      color: #888;
+      font-size: 1em;
+      margin-top: 10px;
+    }
+
+    .lock-icon {
+      font-size: 2em;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧪 Coming Soon</h1>
+  <div class="grid">
+    <div class="card">
+      <div class="lock-icon">🔒</div>
+      <h2>Blob Bounce</h2>
+      <p class="soon">Launching Soon...</p>
+    </div>
+    <div class="card">
+      <div class="lock-icon">🔒</div>
+      <h2>Gravity Flip</h2>
+      <p class="soon">Coming in August</p>
+    </div>
+    <div class="card">
+      <div class="lock-icon">🔒</div>
+      <h2>Typing Invaders</h2>
+      <p class="soon">In Development</p>
+    </div>
+  </div>
+</body>
+</html>
