@@ -3,86 +3,137 @@
 <head>
   <meta charset="UTF-8" />
   <title>Draw a Planet</title>
-  <link rel="stylesheet" href="../style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet" />
   <style>
+    /* Basic resets */
+    * {
+      box-sizing: border-box;
+    }
     body {
+      margin: 0;
       background: #0b0c1a;
       color: #fff;
       font-family: 'Quicksand', sans-serif;
       text-align: center;
-      margin: 0;
-      padding: 0;
+      min-height: 100vh;
+      padding: 40px 20px 60px;
+      position: relative;
+      user-select: none;
     }
 
     h1 {
-      margin-top: 30px;
+      margin-bottom: 25px;
+      font-weight: 700;
+      font-size: 2.4rem;
     }
 
-    .planet-wrapper {
-      margin: 30px auto;
-      width: 400px;
-      height: 400px;
-      position: relative;
-    }
-
-    canvas {
-      border-radius: 50%;
-      background-color: #1a1b2d;
-      box-shadow: 0 0 20px #00eaff44;
-      cursor: crosshair;
-      transition: box-shadow 0.3s ease;
-    }
-
-    .tools {
-      margin-top: 20px;
-    }
-
-    .tools input[type="color"] {
-      padding: 0;
-      border: none;
-      background: none;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      box-shadow: 0 0 5px rgba(0,0,0,0.2);
-      cursor: pointer;
-    }
-
-    <div class="tools">
-  <label>Brush:</label>
-  <input type="color" id="colorPicker" value="#00ffcc" />
-  <br><br>
-  <button onclick="setStamp('🌲')">🌲</button>
-  <button onclick="setStamp('💧')">💧</button>
-  <button onclick="setStamp('☁️')">☁️</button>
-  <button onclick="setStamp(null)">🖌️ Brush</button>
-  <button onclick="savePlanet()">💾 Save Image</button>
-  <button onclick="generateRandomPlanet()">🪄 Random Planet</button>
-</div>
-
+    /* Back button */
     .back-button {
       position: absolute;
       top: 20px;
       left: 20px;
       text-decoration: none;
-      background-color: #ffffff;
-      border: none;
-      border-radius: 8px;
+      background-color: white;
+      color: #333;
       padding: 8px 14px;
-      font-size: 14px;
-      color: #000;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-      transition: all 0.3s ease;
+      border-radius: 12px;
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .back-button:hover {
+      background-color: #f0f0f0;
+      transform: scale(1.05);
     }
 
-    .back-button:hover {
-      background-color: #ddd;
+    /* Planet container */
+    .planet-wrapper {
+      margin: 0 auto;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 30px #00eaff88;
+      background-color: #1a1b2d;
+      cursor: crosshair;
+      user-select: none;
+      position: relative;
     }
+
+    canvas {
+      display: block;
+      border-radius: 50%;
+      background-color: #1a1b2d;
+    }
+
+    /* Tools container */
+    .tools {
+      margin-top: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      align-items: center;
+      user-select: none;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-right: 8px;
+      color: #aad;
+      user-select: none;
+    }
+
+    input[type="color"] {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+      padding: 0;
+      user-select: none;
+      -webkit-appearance: none;
+    }
+
+    input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+    input[type="color"]::-webkit-color-swatch {
+      border-radius: 50%;
+    }
+
+    button {
+      background: #00eaff;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 18px;
+      color: #00444f;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0, 234, 255, 0.4);
+      transition: background 0.25s ease, transform 0.2s ease;
+      user-select: none;
+    }
+    button:hover {
+      background: #00b9cc;
+      transform: translateY(-3px);
+    }
+    button:active {
+      transform: translateY(1px);
+    }
+
   </style>
 </head>
 <body>
+
   <a href="../index.html" class="back-button">← Back</a>
+
   <h1>🪐 Draw a Planet</h1>
+
   <div class="planet-wrapper">
     <canvas id="planetCanvas" width="400" height="400"></canvas>
   </div>
@@ -90,57 +141,17 @@
   <div class="tools">
     <label for="colorPicker">Brush:</label>
     <input type="color" id="colorPicker" value="#00ffcc" />
+
+    <button type="button" onclick="setStamp('🌲')" title="Tree Stamp">🌲</button>
+    <button type="button" onclick="setStamp('💧')" title="Water Drop Stamp">💧</button>
+    <button type="button" onclick="setStamp('☁️')" title="Cloud Stamp">☁️</button>
+    <button type="button" onclick="setStamp(null)" title="Brush Tool">🖌️</button>
+
+    <button type="button" onclick="savePlanet()" title="Save your planet as PNG">💾 Save Image</button>
+    <button type="button" onclick="generateRandomPlanet()" title="Generate a random planet">🪄 Random Planet</button>
   </div>
 
-  <script>
-    const canvas = document.getElementById('planetCanvas');
-    const ctx = canvas.getContext('2d');
-    const colorPicker = document.getElementById('colorPicker');
-
-    let isDrawing = false;
-    let brushColor = colorPicker.value;
-
-    colorPicker.addEventListener('input', (e) => {
-      brushColor = e.target.value;
-    });
-
-    canvas.addEventListener('mousedown', () => isDrawing = true);
-    canvas.addEventListener('mouseup', () => isDrawing = false);
-    canvas.addEventListener('mouseout', () => isDrawing = false);
-    canvas.addEventListener('mousemove', draw);
-
-    function draw(e) {
-      if (!isDrawing) return;
-
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
-      ctx.fillStyle = brushColor;
-      ctx.beginPath();
-      ctx.arc(x, y, 4, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // Planet spin animation
-    let rotation = 0;
-    function spinPlanet() {
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      ctx.save();
-      ctx.translate(canvas.width / 2, canvas.height / 2);
-      rotation += 0.002;
-      ctx.rotate(rotation);
-      ctx.translate(-canvas.width / 2, -canvas.height / 2);
-      ctx.putImageData(imageData, 0, 0);
-      ctx.restore();
-
-      requestAnimationFrame(spinPlanet);
-    }
-
-    spinPlanet();
-  </script>
   <script src="planet.js"></script>
+  
 </body>
 </html>
