@@ -87,5 +87,13 @@ h1 {
   color: #2a56c6;
 }
 
+.version {
+  margin-top: 60px;
+  color: #888;
+  font-size: 0.9rem;
+  text-align: center;
+  opacity: 0.6;
+}
+
   }
 }
