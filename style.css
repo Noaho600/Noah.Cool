@@ -36,6 +36,39 @@ h1 {
   transition: transform 0.3s, color 0.3s;
 }
 
+.game-box {
+  background: #f5f7fa;           /* Soft light gray background */
+  border: 2px solid #d1d9e6;    /* Light border */
+  border-radius: 12px;           /* Rounded corners */
+  margin: 15px auto;
+  max-width: 360px;
+  padding: 18px 28px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, background-color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.game-box a {
+  font-size: 1.3em;
+  color: #1a1a1a;
+  text-decoration: none;
+  flex-grow: 1;
+  font-weight: 600;
+}
+
+.game-box:hover {
+  border-color: #4a90e2;        /* Blue border on hover */
+  background-color: #e8f0fe;    /* Light blue background on hover */
+  transform: translateY(-3px);
+}
+
+.game-box a:hover {
+  color: #2a56c6;               /* Darker blue text on hover */
+}
+
 .link-list a:hover {
   transform: scale(1.1);
   color: #ff5722;
