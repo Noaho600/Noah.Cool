@@ -1,1 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Draw a Planet</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    body {
+      background: #0b0c1a;
+      color: #fff;
+      font-family: 'Quicksand', sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
 
+    h1 {
+      margin-top: 30px;
+    }
+
+    .planet-wrapper {
+      margin: 30px auto;
+      width: 400px;
+      height: 400px;
+      position: relative;
+    }
+
+    canvas {
+      border-radius: 50%;
+      background-color: #1a1b2d;
+      box-shadow: 0 0 20px #00eaff44;
+      cursor: crosshair;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .tools {
+      margin-top: 20px;
+    }
+
+    .tools input[type="color"] {
+      padding: 0;
+      border: none;
+      background: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      text-decoration: none;
+      background-color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 14px;
+      color: #000;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+      background-color: #ddd;
+    }
+  </style>
+</head>
+<body>
+  <a href="../index.html" class="back-button">← Back</a>
+  <h1>🪐 Draw a Planet</h1>
+  <div class="planet-wrapper">
+    <canvas id="planetCanvas" width="400" height="400"></canvas>
+  </div>
+
+  <div class="tools">
+    <label for="colorPicker">Brush:</label>
+    <input type="color" id="colorPicker" value="#00ffcc" />
+  </div>
+
+  <script>
+    const canvas = document.getElementById('planetCanvas');
+    const ctx = canvas.getContext('2d');
+    const colorPicker = document.getElementById('colorPicker');
+
+    let isDrawing = false;
+    let brushColor = colorPicker.value;
+
+    colorPicker.addEventListener('input', (e) => {
+      brushColor = e.target.value;
+    });
+
+    canvas.addEventListener('mousedown', () => isDrawing = true);
+    canvas.addEventListener('mouseup', () => isDrawing = false);
+    canvas.addEventListener('mouseout', () => isDrawing = false);
+    canvas.addEventListener('mousemove', draw);
+
+    function draw(e) {
+      if (!isDrawing) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      ctx.fillStyle = brushColor;
+      ctx.beginPath();
+      ctx.arc(x, y, 4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Planet spin animation
+    let rotation = 0;
+    function spinPlanet() {
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.save();
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      rotation += 0.002;
+      ctx.rotate(rotation);
+      ctx.translate(-canvas.width / 2, -canvas.height / 2);
+      ctx.putImageData(imageData, 0, 0);
+      ctx.restore();
+
+      requestAnimationFrame(spinPlanet);
+    }
+
+    spinPlanet();
+  </script>
+</body>
+</html>
