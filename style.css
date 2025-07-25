@@ -36,10 +36,11 @@ h1 {
   transition: transform 0.3s, color 0.3s;
 }
 
+/* Animate game box appearance */
 .game-box {
-  background: #f5f7fa;           /* Soft light gray background */
-  border: 2px solid #d1d9e6;    /* Light border */
-  border-radius: 12px;           /* Rounded corners */
+  background: #f5f7fa;
+  border: 2px solid #d1d9e6;
+  border-radius: 12px;
   margin: 15px auto;
   max-width: 360px;
   padding: 18px 28px;
@@ -49,6 +50,23 @@ h1 {
   display: flex;
   align-items: center;
   gap: 14px;
+
+  /* 🎬 Animation setup */
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeSlideIn 0.8s ease-out forwards;
+}
+
+/* 🎞 Slight delay on each box */
+.game-box:nth-child(1) { animation-delay: 0.1s; }
+.game-box:nth-child(2) { animation-delay: 0.25s; }
+.game-box:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes fadeSlideIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .game-box a {
@@ -60,42 +78,14 @@ h1 {
 }
 
 .game-box:hover {
-  border-color: #4a90e2;        /* Blue border on hover */
-  background-color: #e8f0fe;    /* Light blue background on hover */
+  border-color: #4a90e2;
+  background-color: #e8f0fe;
   transform: translateY(-3px);
 }
 
 .game-box a:hover {
-  color: #2a56c6;               /* Darker blue text on hover */
+  color: #2a56c6;
 }
 
-.link-list a:hover {
-  transform: scale(1.1);
-  color: #ff5722;
-}
-
-/* ✅ Simple fade-in animation */
-.fade-in {
-  opacity: 0;
-  animation: fadeIn 1s ease-in-out forwards;
-}
-
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
-}
-
-/* ✅ Slide-up animation */
-.slide-up {
-  opacity: 0;
-  transform: translateY(30px);
-  animation: slideUp 1.2s ease-out forwards;
-}
-
-@keyframes slideUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
