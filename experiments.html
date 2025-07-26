@@ -5,35 +5,141 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Experiments – Noah.Cool</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    :root {
+      --bg: #fff;
+      --text: #000;
+      --tile-bg: #f5f5f5;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #121212;
+        --text: #fff;
+        --tile-bg: #1e1e1e;
+      }
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem 1rem 1rem;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      margin-bottom: 0.2rem;
+    }
+
+    header p {
+      opacity: 0.6;
+      font-size: 1rem;
+    }
+
+    .back-button {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    .tile-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .tile {
+      background: var(--tile-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .tile:hover {
+      transform: scale(1.02);
+    }
+
+    .tile img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+    }
+
+    .tile-label {
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .tile-label strong {
+      font-size: 1.1rem;
+    }
+
+    .tag {
+      background: #eee;
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      color: #555;
+    }
+
+    .beta { background: #ffdb57; }
+    .alpha { background: #ff6b6b; color: white; }
+    .concept { background: #aaa; color: white; }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.9rem;
+      opacity: 0.5;
+    }
+  </style>
 </head>
 <body>
+  <a href="index.html" class="back-button">← Back</a>
+
   <header>
-    <a href="index.html" class="back-button">← Back to Home</a>
     <h1>🧪 Experiments</h1>
-    <p>These are early prototypes and unfinished games. Expect bugs!</p>
+    <p>These are prototype games we're still working on. They're a little messy!</p>
   </header>
 
   <main class="tile-grid">
-    <a href="draw-a-planet.html" class="tile experimental">
-      <img src="images/planet-placeholder.png" alt="Draw a Planet" />
+    <a href="draw-a-planet.html" class="tile">
+      <img src="images/planet-placeholder.png" alt="Draw a Planet">
       <div class="tile-label">
         <strong>Draw a Planet</strong>
         <span class="tag beta">Beta</span>
       </div>
     </a>
 
-    <a href="draw-a-plant.html" class="tile experimental">
-      <img src="images/plant-placeholder.png" alt="Draw a Plant" />
+    <a href="draw-a-plant.html" class="tile">
+      <img src="images/plant-placeholder.png" alt="Draw a Plant">
       <div class="tile-label">
         <strong>Draw a Plant</strong>
         <span class="tag concept">Concept</span>
       </div>
     </a>
-    <!-- Add more experimental games here -->
   </main>
 
   <footer>
-    <p>🚧 These games are under construction – try at your own risk!</p>
+    🚧 These projects are under construction – things might break or change anytime!
   </footer>
 </body>
 </html>
