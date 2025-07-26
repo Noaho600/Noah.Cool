@@ -19,6 +19,7 @@
       border: 2px solid #555;
       border-radius: 12px;
       background: #000;
+      cursor: crosshair;
     }
     .button-group {
       display: flex;
@@ -66,7 +67,7 @@
   <a class="back-button" href="/index.html">← Home</a>
   <h1>🌎 Draw Your Planet</h1>
 
-  <canvas id="planetCanvas"></canvas>
+  <canvas id="planetCanvas" width="400" height="400"></canvas>
 
   <div class="button-group">
     <button id="treeBtn"><span class="emoji">🌲</span> Tree</button>
@@ -84,6 +85,27 @@
     <button id="twitterBtn"><span class="emoji">🐦</span> Share to Twitter</button>
     <button id="facebookBtn"><span class="emoji">📘</span> Share to Facebook</button>
   </div>
+
+  <script>
+    const canvas = document.getElementById('planetCanvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+
+    canvas.addEventListener('mousedown', () => drawing = true);
+    canvas.addEventListener('mouseup', () => drawing = false);
+    canvas.addEventListener('mouseleave', () => drawing = false);
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (!drawing) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      ctx.fillStyle = '#00ffcc';
+      ctx.beginPath();
+      ctx.arc(x, y, 4, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  </script>
 
   <script src="planet.js"></script>
 </body>
