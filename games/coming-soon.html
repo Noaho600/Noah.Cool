@@ -3,93 +3,91 @@
 <head>
   <meta charset="UTF-8" />
   <title>Coming Soon – Noah.Cool</title>
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet" />
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
+
     body {
       margin: 0;
       padding: 40px 20px;
-      background: #0b0c1a;
+      background: linear-gradient(to bottom right, #0b0c1a, #1f2233);
       font-family: 'Quicksand', sans-serif;
-      color: white;
-      min-height: 100vh;
-      text-align: center;
+      color: #ffffff;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
     }
 
     h1 {
       font-size: 2.8rem;
+      text-align: center;
       margin-bottom: 30px;
+      color: #00eaff;
+      text-shadow: 0 0 10px #00eaff66;
     }
 
     .back-button {
-      position: absolute;
-      top: 20px;
-      left: 20px;
+      display: inline-block;
+      margin-bottom: 30px;
+      padding: 8px 16px;
+      font-size: 1rem;
+      font-weight: 600;
       text-decoration: none;
-      background-color: white;
-      color: #333;
-      padding: 8px 14px;
-      border-radius: 12px;
-      font-weight: bold;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      transition: all 0.2s ease;
+      color: #00eaff;
+      border: 2px solid #00eaff;
+      border-radius: 14px;
+      transition: 0.3s ease;
     }
 
     .back-button:hover {
-      background-color: #f0f0f0;
-      transform: scale(1.05);
+      background: #00eaff;
+      color: #0b0c1a;
     }
 
-    .games-grid {
+    .game-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 24px;
-      padding: 20px 0;
-      max-width: 1000px;
-      margin: 0 auto;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
     }
 
-    .game-card {
-      background: #1a1b2d;
-      border-radius: 20px;
+    .game-box {
+      background: #12152c;
       padding: 30px 20px;
-      box-shadow: 0 8px 16px rgba(0, 234, 255, 0.1);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 234, 255, 0.08);
+      text-align: center;
       font-size: 1.2rem;
-      font-weight: bold;
-      color: #aad;
-      position: relative;
+      font-weight: 600;
+      color: #aaccee;
+      transition: transform 0.3s ease, background 0.3s ease;
+      cursor: default;
+      user-select: none;
     }
 
-    .game-card::after {
-      content: "🚧 Coming Soon";
-      position: absolute;
-      bottom: 15px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.9rem;
-      color: #888;
-    }
-
-    .game-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 24px rgba(0, 234, 255, 0.2);
+    .game-box:hover {
+      transform: scale(1.03);
+      background: #151831;
     }
   </style>
 </head>
 <body>
+  <div class="container">
 
-  <a href="../index.html" class="back-button">← Back</a>
+    <a href="index.html" class="back-button">← Back to Home</a>
 
-  <h1>🎮 Coming Soon Games</h1>
+    <h1>🚧 Coming Soon</h1>
 
-  <div class="games-grid">
-    <div class="game-card">Balance Builder</div>
-    <div class="game-card">Sand Simulator</div>
-    <div class="game-card">🚀 Rocket Builder</div>
-    <div class="game-card">🔢 Number Puzzle</div>
-    <div class="game-card">The Button?</div>
-    <div class="game-card">⚙️ Gravity Lab</div>
-    <div class="game-card">Build a Face</div>  </div>
+    <div class="game-grid">
+      <div class="game-box">Balance Builder</div>
+      <div class="game-box">🧠 Word Shuffle</div>
+      <div class="game-box">🌱 Grow a Tree</div>
+      <div class="game-box">Gravity Lab</div>
+      <div class="game-box">🚀 Rocket Builder</div>
+      <div class="game-box">Sand Simulator</div>
+      <div class="game-box">Number Puzzle</div>
+    </div>
 
+  </div>
 </body>
 </html>
