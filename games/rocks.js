@@ -149,3 +149,7 @@ canvas.addEventListener("mouseup", onEnd);
 canvas.addEventListener("touchstart", onStart);
 canvas.addEventListener("touchmove", onMove);
 canvas.addEventListener("touchend", onEnd);
+
+document.getElementById("resetButton").addEventListener("click", () => {
+  rocks = [];
+});
