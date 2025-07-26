@@ -104,3 +104,4 @@ function shareToFacebook() {
   const shareURL = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
   window.open(shareURL, "_blank");
 }
+}
