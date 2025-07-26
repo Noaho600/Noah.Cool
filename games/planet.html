@@ -4,112 +4,225 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Draw a Planet</title>
-  <link rel="icon" href="../favicon.ico" type="image/x-icon">
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Fredoka', sans-serif;
-      background: radial-gradient(circle, #1e3c72, #2a5298);
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle, #1e1e2f, #0a0a13);
       color: white;
-      text-align: center;
-      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    h1 {
+      margin-bottom: 0.5rem;
     }
 
     canvas {
-      background-color: #111;
-      border-radius: 50%;
-      margin: 20px auto;
-      display: block;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      border: 2px solid white;
+      border-radius: 12px;
+      margin-top: 1rem;
     }
 
-    .tools {
-      margin: 20px auto;
+    .toolbar, .share-buttons {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 10px;
+      gap: 0.5rem;
+      margin-top: 1rem;
     }
 
-    button {
-      padding: 10px 18px;
-      background-color: #4fc3f7;
+    button, select, input[type="text"] {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      border-radius: 8px;
       border: none;
-      border-radius: 10px;
-      font-size: 16px;
       cursor: pointer;
-      color: white;
-      transition: 0.3s;
     }
 
-    button:hover {
-      background-color: #039be5;
+    .toolbar {
+      gap: 0.75rem;
     }
 
-    .back-button {
-      display: inline-block;
-      margin-top: 20px;
-      text-decoration: none;
-      color: #4fc3f7;
-      font-weight: bold;
+    .toolbar button:hover {
+      background-color: #444;
+    }
+
+    .icon-btn {
+      font-size: 1.2rem;
+    }
+
+    .footer {
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      opacity: 0.6;
     }
   </style>
 </head>
 <body>
   <h1>🪐 Draw a Planet</h1>
 
-  <canvas id="planetCanvas" width="300" height="300"></canvas>
+  <div class="toolbar">
+    <select id="planetType">
+      <option value="earth">🌍 Earth-like</option>
+      <option value="lava">🔥 Lava</option>
+      <option value="ice">❄️ Ice</option>
+      <option value="gas">☁️ Gas Giant</option>
+    </select>
 
-  <div class="tools">
-    <button onclick="stamp('🌳')">🌳 Trees</button>
-    <button onclick="stamp('💧')">💧 Water</button>
-    <button onclick="stamp('☁️')">☁️ Clouds</button>
-    <button onclick="generatePlanet()">🪄 Random</button>
-    <button onclick="saveImage()">💾 Save</button>
+    <input type="text" id="planetName" placeholder="Name your planet" />
+
+    <button onclick="toggleRings()">🪐 Toggle Rings</button>
+    <button onclick="addStamp('🌳')">🌳</button>
+    <button onclick="addStamp('☁️')">☁️</button>
+    <button onclick="addStamp('💧')">💧</button>
+    <button onclick="undo()">↩️ Undo</button>
+    <button onclick="redo()">↪️ Redo</button>
+    <button onclick="downloadPlanet()">💾 Save</button>
+    <button onclick="goBack()">🔙 Back</button>
   </div>
 
-  <a class="back-button" href="../index.html">← Back to Home</a>
+  <canvas id="planetCanvas" width="400" height="400"></canvas>
+
+  <div class="share-buttons">
+    <button onclick="shareToX()">🔗 Share to X</button>
+    <button onclick="shareToFacebook()">📘 Share to Facebook</button>
+  </div>
+
+  <div class="footer">
+    Draw a Planet v1.0 • Made by Noah.Cool 🚀
+  </div>
 
   <script>
     const canvas = document.getElementById('planetCanvas');
     const ctx = canvas.getContext('2d');
+    let drawing = false, ringsOn = false;
+    let history = [], future = [];
 
-    // Draw base planet
-    function drawPlanetBase() {
+    function drawPlanet() {
+      const type = document.getElementById('planetType').value;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Background planet
+      const grad = ctx.createRadialGradient(200, 200, 80, 200, 200, 180);
+      if (type === 'lava') grad.addColorStop(0, '#ff7300'), grad.addColorStop(1, '#550000');
+      else if (type === 'ice') grad.addColorStop(0, '#ccf2ff'), grad.addColorStop(1, '#005577');
+      else if (type === 'gas') grad.addColorStop(0, '#fffccc'), grad.addColorStop(1, '#ccaa00');
+      else grad.addColorStop(0, '#34a853'), grad.addColorStop(1, '#003300');
+
+      ctx.fillStyle = grad;
       ctx.beginPath();
-      ctx.arc(150, 150, 140, 0, 2 * Math.PI);
-      ctx.fillStyle = '#2e7d32';
+      ctx.arc(200, 200, 100, 0, Math.PI * 2);
       ctx.fill();
+
+      if (ringsOn) {
+        ctx.strokeStyle = 'white';
+        ctx.beginPath();
+        ctx.ellipse(200, 200, 140, 40, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      restoreHistory();
     }
 
-    drawPlanetBase();
+    function toggleRings() {
+      ringsOn = !ringsOn;
+      saveHistory();
+      drawPlanet();
+    }
 
-    function stamp(emoji) {
-      const x = Math.random() * 300;
-      const y = Math.random() * 300;
-      if (Math.sqrt((x - 150) ** 2 + (y - 150) ** 2) <= 140) {
-        ctx.font = '24px serif';
-        ctx.fillText(emoji, x, y);
-      } else {
-        stamp(emoji); // retry if outside the planet
+    function addStamp(emoji) {
+      ctx.font = '32px serif';
+      ctx.fillText(emoji, 180 + Math.random()*40 - 20, 180 + Math.random()*40 - 20);
+      saveHistory();
+    }
+
+    canvas.addEventListener('mousedown', () => { drawing = true; saveHistory(); });
+    canvas.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
+    canvas.addEventListener('mousemove', draw);
+
+    function draw(e) {
+      if (!drawing) return;
+      const rect = canvas.getBoundingClientRect();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#ffffff';
+      ctx.shadowColor = '#ffffff';
+      ctx.shadowBlur = 5;
+      ctx.lineCap = 'round';
+
+      ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+    }
+
+    function saveHistory() {
+      history.push(canvas.toDataURL());
+      future = [];
+    }
+
+    function restoreHistory() {
+      if (history.length === 0) return;
+      const img = new Image();
+      img.src = history[history.length - 1];
+      img.onload = () => ctx.drawImage(img, 0, 0);
+    }
+
+    function undo() {
+      if (history.length > 1) {
+        future.push(history.pop());
+        const img = new Image();
+        img.src = history[history.length - 1];
+        img.onload = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          drawPlanet();
+          ctx.drawImage(img, 0, 0);
+        };
       }
     }
 
-    function generatePlanet() {
-      drawPlanetBase();
-      const stamps = ['🌳', '💧', '☁️'];
-      for (let i = 0; i < 20; i++) {
-        stamp(stamps[Math.floor(Math.random() * stamps.length)]);
+    function redo() {
+      if (future.length > 0) {
+        const imgSrc = future.pop();
+        history.push(imgSrc);
+        const img = new Image();
+        img.src = imgSrc;
+        img.onload = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          drawPlanet();
+          ctx.drawImage(img, 0, 0);
+        };
       }
     }
 
-    function saveImage() {
+    function downloadPlanet() {
+      const name = document.getElementById('planetName').value || 'MyPlanet';
       const link = document.createElement('a');
-      link.download = 'planet.png';
+      link.download = name + '.png';
       link.href = canvas.toDataURL();
       link.click();
     }
+
+    function shareToX() {
+      const name = encodeURIComponent(document.getElementById('planetName').value || 'My Planet');
+      const url = encodeURIComponent(window.location.href);
+      const text = `Check out my planet "${name}"! 🚀`;
+      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+    }
+
+    function shareToFacebook() {
+      const url = encodeURIComponent(window.location.href);
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+    }
+
+    function goBack() {
+      window.location.href = 'index.html'; // Adjust if needed
+    }
+
+    drawPlanet();
+    saveHistory();
   </script>
 </body>
 </html>
