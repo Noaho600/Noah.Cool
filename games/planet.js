@@ -80,4 +80,27 @@ function generateRandomPlanet() {
     ctx.arc(x, y, Math.random() * 3 + 1, 0, Math.PI * 2);
     ctx.fill();
   }
+
+  function getCurrentURL() {
+  return window.location.href.split('?')[0]; // Clean URL
+}
+
+function copyLink() {
+  const url = getCurrentURL();
+  navigator.clipboard.writeText(url).then(() => {
+    alert("Link copied to clipboard!");
+  });
+}
+
+function shareToTwitter() {
+  const text = encodeURIComponent("I just created a planet! 🌎 Check it out:");
+  const url = encodeURIComponent(getCurrentURL());
+  const shareURL = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+  window.open(shareURL, "_blank");
+}
+
+function shareToFacebook() {
+  const url = encodeURIComponent(getCurrentURL());
+  const shareURL = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+  window.open(shareURL, "_blank");
 }
