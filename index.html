@@ -4,100 +4,159 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Noah.Cool Games</title>
-  <link rel="stylesheet" href="/style.css" />
   <style>
-    body {
-      background: #121212;
-      color: white;
-      font-family: sans-serif;
-      margin: 0;
-      padding: 20px;
-      text-align: center;
-      min-height: 100vh;
+    /* Reset & base */
+    * {
+      box-sizing: border-box;
+    }
+    body, html {
+      margin: 0; padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      color: #222;
       display: flex;
       flex-direction: column;
-    }
-    h1 {
-      margin-bottom: 30px;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
     }
     main {
-      flex-grow: 1;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 20px;
-      max-width: 720px; /* 3 cards x ~220px + gaps */
-      margin: 0 auto;
-    }
-    .game-card {
-      background-color: #222;
-      border-radius: 12px;
+      gap: 24px;
+      max-width: 900px;
+      width: 100%;
       padding: 20px;
-      width: 220px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-      cursor: pointer;
-      transition: transform 0.2s ease;
-      text-decoration: none;
-      color: white;
+    }
+    h1 {
+      width: 100%;
+      text-align: center;
+      font-weight: 700;
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      color: #0078d7;
+      user-select: none;
+    }
+
+    /* Game tiles */
+    .game-card {
+      background: white;
+      border-radius: 16px;
+      width: 260px;
+      height: 140px;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.1);
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      text-decoration: none;
+      color: #222;
+      font-size: 1.3rem;
+      font-weight: 600;
+      position: relative;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      user-select: none;
     }
     .game-card:hover {
-      transform: scale(1.05);
+      transform: translateY(-8px) scale(1.05);
+      box-shadow: 0 12px 20px rgba(0,0,0,0.15);
     }
+
+    /* Beta tag */
     .tag-beta {
-      background: #ff4081;
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      background: #e91e63;
       color: white;
-      font-size: 0.6em;
-      padding: 2px 6px;
-      border-radius: 6px;
-      margin-left: 8px;
-      vertical-align: middle;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 12px;
       text-transform: uppercase;
+      user-select: none;
+      pointer-events: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
+
+    /* Random Game Button */
+    #randomGameBtn {
+      background: #0078d7;
+      color: white;
+      width: 100%;
+      max-width: 280px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 20px;
+      padding: 16px 0;
+      margin: 20px auto 40px auto;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(0,120,215,0.4);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+    }
+    #randomGameBtn:hover {
+      background: #005a9e;
+      box-shadow: 0 10px 18px rgba(0,90,158,0.6);
+    }
+
+    /* Version footer */
     footer {
-      margin-top: auto;
-      padding: 10px 0;
-      color: #888;
-      font-size: 0.9em;
+      width: 100%;
+      text-align: center;
+      padding: 12px 0;
+      font-size: 0.9rem;
+      color: #666;
+      user-select: none;
+      border-top: 1px solid #ddd;
+      position: fixed;
+      bottom: 0;
+      background: #f0f4f8;
     }
+
   </style>
 </head>
 <body>
   <main>
     <h1>Noah.Cool Games</h1>
 
-    <a class="game-card" href="rocks.html">
-      <h2>Rocks</h2>
-    </a>
+    <a class="game-card" href="rocks.html">Rocks</a>
 
     <a class="game-card" href="planet.html">
-      <h2>
-        Draw a Planet
-        <span class="tag-beta">Beta</span>
-      </h2>
+      Draw a Planet
+      <span class="tag-beta">Beta</span>
     </a>
 
-    <a class="game-card" href="love-calculator.html">
-      <h2>Love Calculator</h2>
-    </a>
+    <a class="game-card" href="love-calculator.html">Love Calculator</a>
 
-    <a class="game-card" href="coming-soon.html">
-      <h2>Coming Soon</h2>
-    </a>
+    <a class="game-card" href="coming-soon.html">Coming Soon</a>
 
-    <a class="game-card" href="changelog.html">
-      <h2>Changelog</h2>
-    </a>
+    <a class="game-card" href="changelog.html">Changelog</a>
 
-    <a class="game-card" href="feedback.html">
-      <h2>Feedback</h2>
-    </a>
+    <a class="game-card" href="feedback.html">Feedback</a>
+
+    <button id="randomGameBtn" title="Play a random game!">🎲 Play Random Game</button>
   </main>
 
-  <footer>
-    Version 1.0.0
-  </footer>
+  <footer>Version 1.0.0</footer>
+
+  <script>
+    // Random game button logic
+    const games = [
+      'rocks.html',
+      'planet.html',
+      'love-calculator.html',
+      'coming-soon.html',
+      'changelog.html',
+      'feedback.html'
+    ];
+    document.getElementById('randomGameBtn').onclick = () => {
+      const randomGame = games[Math.floor(Math.random() * games.length)];
+      window.location.href = randomGame;
+    };
+  </script>
 </body>
 </html>
