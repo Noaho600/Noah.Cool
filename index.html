@@ -1,153 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script defer data-domain="sunny-cocada-1a7d8b.netlify.app" src="https://plausible.io/js/script.js"></script>  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Noah.Cool</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Noah.Cool Games</title>
+  <link rel="stylesheet" href="/style.css" />
   <style>
     body {
+      background: #121212;
+      color: white;
+      font-family: sans-serif;
       margin: 0;
-      font-family: 'Fredoka', sans-serif;
-      background: linear-gradient(135deg, #e0f7fa, #fff0f5);
-      color: #333;
+      padding: 20px;
+      text-align: center;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
-      text-align: center;
     }
-
-    h1 {
-      font-size: 2.8rem;
-      margin-bottom: 10px;
-    }
-
-    .version {
-      font-size: 0.9rem;
-      color: #888;
-      margin-top: 60px;
-    }
-
-    .game-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      width: 100%;
-      max-width: 1000px;
-      margin-top: 30px;
-    }
-
-    .game-box {
-      background: white;
-      padding: 30px 20px;
-      border-radius: 20px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-      text-decoration: none;
-      color: inherit;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      animation: fadeInUp 0.4s ease;
-    }
-
-    .game-box:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 14px 30px rgba(0,0,0,0.15);
-    }
-
-    .game-icon {
-      font-size: 40px;
-      margin-bottom: 12px;
-    }
-
-    .game-title {
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .random-game-button {
-      background-color: #4fc3f7;
-      color: #fff;
-      font-size: 18px;
-      padding: 12px 24px;
-      border: none;
+    .game-card {
+      background-color: #222;
       border-radius: 12px;
+      padding: 20px;
+      margin: 15px;
+      width: 220px;
+      display: inline-block;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
       cursor: pointer;
-      margin-top: 30px;
-      transition: background-color 0.3s ease;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s ease;
+      text-decoration: none;
+      color: white;
     }
-
-    .random-game-button:hover {
-      background-color: #039be5;
+    .game-card:hover {
+      transform: scale(1.05);
+    }
+    h1 {
+      margin-bottom: 30px;
+    }
+    .tag-beta {
+      background: #ff4081;
+      color: white;
+      font-size: 0.6em;
+      padding: 2px 6px;
+      border-radius: 6px;
+      margin-left: 8px;
+      vertical-align: middle;
+      text-transform: uppercase;
+    }
+    main {
+      flex-grow: 1;
+    }
+    footer {
+      margin-top: auto;
+      padding: 10px 0;
+      color: #888;
+      font-size: 0.9em;
     }
   </style>
 </head>
 <body>
+  <main>
+    <h1>Noah.Cool Games</h1>
 
-  <h1>Noah.Cool</h1>
-
-  <button class="random-game-button" onclick="goToRandomGame()">🎲 Random Game</button>
-
-  <div class="game-grid">
-    <!-- Game Cards -->
-    <a href="games/rocks.html" class="game-box">
-      <div class="game-icon">🪨</div>
-      <div class="game-title">Rocks</div>
+    <a class="game-card" href="rocks.html">
+      <h2>Rocks</h2>
     </a>
 
-    <div class="game-card">
-     <a href="planet.html">
-      <div class="game-content">
-      <h2>Draw a Planet <span class="tag-beta">Beta</span></h2>
-      <!-- optionally add an icon or image here -->
-     </div>
-    </a>
-</div>
-
-    <a href="games/love-calculator.html" class="game-box">
-      <div class="game-icon">💘</div>
-      <div class="game-title">Love Calculator</div>
+    <a class="game-card" href="planet.html">
+      <h2>
+        Draw a Planet
+        <span class="tag-beta">Beta</span>
+      </h2>
     </a>
 
-    <a href="games/coming-soon.html" class="game-box">
-      <div class="game-icon">🕒</div>
-      <div class="game-title">Coming Soon</div>
+    <a class="game-card" href="love-calculator.html">
+      <h2>Love Calculator</h2>
     </a>
 
-    <!-- New Cards -->
-    <a href="changelog.html" class="game-box">
-      <div class="game-icon">📋</div>
-      <div class="game-title">Changelog</div>
+    <a class="game-card" href="coming-soon.html">
+      <h2>Coming Soon</h2>
     </a>
 
-    <a href="feedback.html" class="game-box">
-      <div class="game-icon">🗣️</div>
-      <div class="game-title">Feedback</div>
+    <a class="game-card" href="changelog.html">
+      <h2>Changelog</h2>
     </a>
-  </div>
 
-  <div class="version">Version 0.1.0</div>
+    <a class="game-card" href="feedback.html">
+      <h2>Feedback</h2>
+    </a>
+  </main>
 
-  <script>
-    function goToRandomGame() {
-      const games = [
-        'games/rocks.html',
-        'games/planet.html',
-        'games/love-calculator.html',
-        'games/coming-soon.html'
-      ];
-      const random = games[Math.floor(Math.random() * games.length)];
-      window.location.href = random;
-    }
-  </script>
-
+  <footer>
+    Version 0.1.4
+  </footer>
 </body>
 </html>
-
-
