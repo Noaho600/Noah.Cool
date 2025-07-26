@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Spend Bill Gates' Money</title>
+<style>
+  body {
+    background: #0a0f26;
+    color: #e0e0ff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0; padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+  }
+  h1 {
+    margin-bottom: 10px;
+    color: #72aaff;
+  }
+  #money {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+    font-weight: 700;
+    text-shadow: 0 0 6px #72aaff;
+  }
+  .items-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(240px,1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 800px;
+  }
+  .item-card {
+    background: #1c2250;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 0 12px #2e3b80;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    position: relative;
+    user-select: none;
+  }
+  .item-card:hover:not(.disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px #4a70ff;
+  }
+  .item-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .item-price {
+    font-size: 1rem;
+    margin-bottom: 12px;
+    color: #aabbee;
+  }
+  button.buy-btn {
+    background: #4a70ff;
+    border: none;
+    border-radius: 12px;
+    padding: 10px;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button.buy-btn:hover:not(:disabled) {
+    background: #2c4fcc;
+  }
+  button.buy-btn:disabled {
+    background: #3a3f61;
+    cursor: not-allowed;
+  }
+  .spent-animation {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #72aaff;
+    font-weight: 700;
+    font-size: 1rem;
+    animation: floatUp 1.2s ease forwards;
+    user-select: none;
+    pointer-events: none;
+  }
+  @keyframes floatUp {
+    0% {opacity: 1; transform: translateY(0);}
+    100% {opacity: 0; transform: translateY(-40px);}
+  }
+  footer {
+    margin-top: auto;
+    padding: 12px 0;
+    font-size: 0.9rem;
+    color: #999;
+  }
+</style>
+</head>
+<body>
+
+<h1>Spend Bill Gates' Money 💸</h1>
+<div id="money">$130,000,000,000</div>
+
+<div class="items-container" id="itemsContainer">
+  <!-- Items will be dynamically added here -->
+</div>
+
+<footer>Try to spend it all before time runs out!</footer>
+
+<script>
+  const startingMoney = 130000000000;
+  let money = startingMoney;
+
+  const items = [
+    { name: 'Private Jet', price: 50000000 },
+    { name: 'Luxury Yacht', price: 300000000 },
+    { name: 'Space Trip', price: 1000000000 },
+    { name: 'Island Resort', price: 1500000000 },
+    { name: 'Charity Donation', price: 20000000000 },
+    { name: 'Tech Startup Investment', price: 5000000000 },
+    { name: '100 Tesla Cars', price: 7000000000 },
+    { name: 'Mansion', price: 120000000 },
+    { name: 'Exclusive Art Collection', price: 250000000 },
+    { name: 'Concert Sponsorship', price: 100000000 },
+  ];
+
+  const moneyEl = document.getElementById('money');
+  const container = document.getElementById('itemsContainer');
+
+  function formatMoney(num) {
+    return '$' + num.toLocaleString();
+  }
+
+  function updateMoneyDisplay() {
+    moneyEl.textContent = formatMoney(money);
+  }
+
+  function createItemCard(item, index) {
+    const card = document.createElement('div');
+    card.className = 'item-card';
+
+    const name = document.createElement('div');
+    name.className = 'item-name';
+    name.textContent = item.name;
+
+    const price = document.createElement('div');
+    price.className = 'item-price';
+    price.textContent = formatMoney(item.price);
+
+    const btn = document.createElement('button');
+    btn.className = 'buy-btn';
+    btn.textContent = 'Buy';
+    btn.disabled = item.price > money;
+
+    btn.onclick = () => {
+      if (money >= item.price) {
+        money -= item.price;
+        updateMoneyDisplay();
+        btn.disabled = true; // disable after buy
+        animateSpent(card, `- ${formatMoney(item.price)}`);
+        disableButtonsIfNeeded();
+      }
+    };
+
+    card.appendChild(name);
+    card.appendChild(price);
+    card.appendChild(btn);
+
+    return card;
+  }
+
+  function animateSpent(card, text) {
+    const anim = document.createElement('div');
+    anim.className = 'spent-animation';
+    anim.textContent = text;
+    card.appendChild(anim);
+    setTimeout(() => {
+      card.removeChild(anim);
+    }, 1200);
+  }
+
+  function disableButtonsIfNeeded() {
+    const buttons = container.querySelectorAll('button.buy-btn');
+    buttons.forEach((btn, i) => {
+      if (items[i].price > money) {
+        btn.disabled = true;
+        btn.parentElement.classList.add('disabled');
+      } else {
+        btn.disabled = false;
+        btn.parentElement.classList.remove('disabled');
+      }
+    });
+  }
+
+  // Initialize items
+  items.forEach((item, i) => {
+    const card = createItemCard(item, i);
+    container.appendChild(card);
+  });
+
+  updateMoneyDisplay();
+
+</script>
+
+</body>
+</html>
