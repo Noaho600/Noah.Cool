@@ -5,207 +5,131 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Experiments – Noah.Cool</title>
   <style>
-    :root {
-      --bg: #fff;
-      --text: #000;
-      --tile-bg: #f0f0f0;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #121212;
-        --text: #fff;
-        --tile-bg: #1f1f1f;
-      }
-    }
-
     body {
-      font-family: system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
       margin: 0;
       padding: 0;
-    }
-
-    header {
       text-align: center;
-      padding: 2rem 1rem 1rem;
     }
 
-    header h1 {
-      font-size: 2rem;
-      margin-bottom: 0.3rem;
-    }
-
-    header p {
-      opacity: 0.6;
-      font-size: 1rem;
-    }
-
-    .back-button {
-      position: absolute;
-      top: 1rem;
-      left: 1rem;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 1rem;
+    h1 {
+      margin: 30px 0 10px;
+      font-size: 2.5em;
     }
 
     .tabs {
       display: flex;
       justify-content: center;
-      gap: 1rem;
+      gap: 10px;
+      margin-bottom: 30px;
       flex-wrap: wrap;
-      margin: 1.5rem 0;
     }
 
-    .tabs button {
-      background: none;
-      border: 2px solid var(--text);
-      color: var(--text);
-      padding: 0.5rem 1rem;
+    .tab-button {
+      background: #eee;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
       border-radius: 8px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: background 0.2s;
     }
 
-    .tile {
-  opacity: 1;
-  transform: scale(1);
-  transition: all 0.3s ease;
-  animation: fadeIn 0.4s ease forwards;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.tile.hidden {
-  opacity: 0;
-  pointer-events: none;
-  position: absolute;
-}
-
-    .tabs button.active {
-      background: var(--text);
-      color: var(--bg);
+    .tab-button.active,
+    .tab-button:hover {
+      background: #333;
+      color: #fff;
     }
 
-    
-
-    .tile-grid {
+    .tiles-container {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.2rem;
-      padding: 1rem 2rem 3rem;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 20px;
       max-width: 1000px;
-      margin: 0 auto;
+      margin: auto;
     }
 
     .tile {
-      background: var(--tile-bg);
+      background: #fff;
+      padding: 30px 20px;
       border-radius: 12px;
-      padding: 1.2rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-      text-decoration: none;
-      color: inherit;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: background 0.2s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      animation: fadeIn 0.4s ease forwards;
     }
 
     .tile:hover {
-      background: rgba(0, 0, 0, 0.05);
+      transform: scale(1.03);
     }
 
-    .tile strong {
-      font-size: 1.1rem;
+    .tile.hidden {
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
     }
 
-    .tag {
-      border-radius: 6px;
-      padding: 4px 8px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
-    .beta { background: #ffdd57; color: #000; }
-    .alpha { background: #ff6b6b; color: #fff; }
-    .concept { background: #999; color: #fff; }
-
-    footer {
-      text-align: center;
-      padding: 2rem 1rem;
-      font-size: 0.9rem;
-      opacity: 0.5;
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
 <body>
-  <a href="index.html" class="back-button">← Back</a>
-
-  <header>
-    <h1>🧪 Experiments</h1>
-    <p>Prototypes and unfinished games in progress.</p>
-  </header>
+  <h1>🧪 Experiments</h1>
 
   <div class="tabs">
     <button class="tab-button active" data-filter="all">All</button>
-    <button class="tab-button" data-filter="beta">Beta</button>
-    <button class="tab-button" data-filter="alpha">Alpha</button>
-    <button class="tab-button" data-filter="concept">Concept</button>
+    <button class="tab-button" data-filter="ui">UI Tests</button>
+    <button class="tab-button" data-filter="physics">Physics Tests</button>
+    <button class="tab-button" data-filter="draw">Drawing Tests</button>
   </div>
 
-  <main class="tile-grid">
-    <a href="draw-a-planet.html" class="tile" data-tag="beta">
-      <strong>Draw a Planet</strong>
-      <span class="tag beta">Beta</span>
-    </a>
+  <div class="tiles-container">
+    <div class="tile" data-tag="ui">UI Concept 1</div>
+    <div class="tile" data-tag="physics">Bouncy Balls</div>
+    <div class="tile" data-tag="draw">Draw Prototype</div>
+    <div class="tile" data-tag="ui">Menu Animations</div>
+    <div class="tile" data-tag="physics">Collision Sandbox</div>
+    <div class="tile" data-tag="draw">Planet Editor Test</div>
+  </div>
 
-    <a href="draw-a-plant.html" class="tile" data-tag="concept">
-      <strong>Draw a Plant</strong>
-      <span class="tag concept">Concept</span>
-    </a>
-  </main>
+  <script>
+    const tabs = document.querySelectorAll('.tab-button');
+    const tiles = document.querySelectorAll('.tile');
 
-  <footer>
-    🚧 These projects are experimental and may change at any time.
-  </footer>
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
 
-<script>
-  const tabs = document.querySelectorAll('.tab-button');
-  const tiles = document.querySelectorAll('.tile');
+        const filter = tab.dataset.filter;
 
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
+        tiles.forEach(tile => {
+          const tag = tile.dataset.tag;
 
-      const filter = tab.dataset.filter;
-
-      tiles.forEach(tile => {
-        const tag = tile.dataset.tag;
-
-        // Remove existing animation class
-        tile.classList.remove('hidden');
-
-        if (filter === 'all' || tag === filter) {
           tile.classList.remove('hidden');
-          tile.style.animation = 'fadeIn 0.4s ease forwards';
-        } else {
-          tile.classList.add('hidden');
-        }
+
+          if (filter === 'all' || tag === filter) {
+            tile.classList.remove('hidden');
+            tile.style.animation = 'fadeIn 0.4s ease forwards';
+          } else {
+            tile.classList.add('hidden');
+          }
+        });
       });
     });
-  });
-</script>
+  </script>
 </body>
 </html>
