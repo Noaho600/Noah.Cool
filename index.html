@@ -95,12 +95,12 @@
   <button class="random-game-button" onclick="goToRandomGame()">🎲 Random Game</button>
 
   <div class="game-grid">
+    <!-- Game Cards -->
     <a href="games/rocks.html" class="game-box">
       <div class="game-icon">🪨</div>
       <div class="game-title">Rocks</div>
     </a>
 
-    
     <a href="games/planet.html" class="game-box">
       <div class="game-icon">🪐</div>
       <div class="game-title">Draw a Planet</div>
@@ -115,6 +115,17 @@
       <div class="game-icon">🕒</div>
       <div class="game-title">Coming Soon</div>
     </a>
+
+    <!-- New Cards -->
+    <a href="changelog.html" class="game-box">
+      <div class="game-icon">📋</div>
+      <div class="game-title">Changelog</div>
+    </a>
+
+    <a href="feedback.html" class="game-box">
+      <div class="game-icon">🗣️</div>
+      <div class="game-title">Feedback</div>
+    </a>
   </div>
 
   <div class="version">Version 1.0.0</div>
@@ -122,10 +133,10 @@
   <script>
     function goToRandomGame() {
       const games = [
-        'rocks.html',
-        'planet.html',
-        'love-calculator.html',
-        'coming-soon.html'
+        'games/rocks.html',
+        'games/planet.html',
+        'games/love-calculator.html',
+        'games/coming-soon.html'
       ];
       const random = games[Math.floor(Math.random() * games.length)];
       window.location.href = random;
@@ -134,4 +145,5 @@
 
 </body>
 </html>
+
 
