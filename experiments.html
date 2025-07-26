@@ -4,28 +4,27 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Experiments – Noah.Cool</title>
-  <link rel="stylesheet" href="style.css" />
   <style>
-    body {
-      font-family: system-ui, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: var(--bg);
-      color: var(--text);
-    }
-
     :root {
-      --bg: #ffffff;
-      --text: #000000;
+      --bg: #fff;
+      --text: #000;
       --tile-bg: #f0f0f0;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
         --bg: #121212;
-        --text: #ffffff;
+        --text: #fff;
         --tile-bg: #1f1f1f;
       }
+    }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
     }
 
     header {
@@ -52,11 +51,34 @@
       font-size: 1rem;
     }
 
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin: 1.5rem 0;
+    }
+
+    .tabs button {
+      background: none;
+      border: 2px solid var(--text);
+      color: var(--text);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tabs button.active {
+      background: var(--text);
+      color: var(--bg);
+    }
+
     .tile-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 1.2rem;
-      padding: 2rem;
+      padding: 1rem 2rem 3rem;
       max-width: 1000px;
       margin: 0 auto;
     }
@@ -109,13 +131,20 @@
     <p>Prototypes and unfinished games in progress.</p>
   </header>
 
+  <div class="tabs">
+    <button class="tab-button active" data-filter="all">All</button>
+    <button class="tab-button" data-filter="beta">Beta</button>
+    <button class="tab-button" data-filter="alpha">Alpha</button>
+    <button class="tab-button" data-filter="concept">Concept</button>
+  </div>
+
   <main class="tile-grid">
-    <a href="draw-a-planet.html" class="tile">
+    <a href="draw-a-planet.html" class="tile" data-tag="beta">
       <strong>Draw a Planet</strong>
       <span class="tag beta">Beta</span>
     </a>
 
-    <a href="draw-a-plant.html" class="tile">
+    <a href="draw-a-plant.html" class="tile" data-tag="concept">
       <strong>Draw a Plant</strong>
       <span class="tag concept">Concept</span>
     </a>
@@ -124,5 +153,24 @@
   <footer>
     🚧 These projects are experimental and may change at any time.
   </footer>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab-button');
+    const tiles = document.querySelectorAll('.tile');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        const filter = tab.dataset.filter;
+
+        tiles.forEach(tile => {
+          const tag = tile.dataset.tag;
+          tile.style.display = (filter === 'all' || tag === filter) ? 'flex' : 'none';
+        });
+      });
+    });
+  </script>
 </body>
 </html>
