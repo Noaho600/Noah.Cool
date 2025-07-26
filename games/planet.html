@@ -4,109 +4,112 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Draw a Planet</title>
-  <link rel="stylesheet" href="/style.css" />
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
   <style>
     body {
-      background: #121212;
+      font-family: 'Fredoka', sans-serif;
+      background: radial-gradient(circle, #1e3c72, #2a5298);
       color: white;
-      font-family: sans-serif;
       text-align: center;
-      margin: 0;
-      padding: 0;
+      padding: 20px;
     }
+
     canvas {
-      margin-top: 20px;
-      border: 2px solid #555;
-      border-radius: 12px;
-      background: #000;
-      cursor: crosshair;
+      background-color: #111;
+      border-radius: 50%;
+      margin: 20px auto;
+      display: block;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
     }
-    .button-group {
+
+    .tools {
+      margin: 20px auto;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 10px;
-      margin-top: 20px;
     }
+
     button {
-      background: #333;
-      color: white;
-      padding: 10px 20px;
+      padding: 10px 18px;
+      background-color: #4fc3f7;
       border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      border-radius: 10px;
       font-size: 16px;
-    }
-    button:hover {
-      background: #555;
-    }
-    .back-button {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      background: #222;
-      padding: 8px 16px;
-      border-radius: 8px;
-      text-decoration: none;
+      cursor: pointer;
       color: white;
-      font-weight: bold;
+      transition: 0.3s;
     }
-    .share-buttons {
+
+    button:hover {
+      background-color: #039be5;
+    }
+
+    .back-button {
+      display: inline-block;
       margin-top: 20px;
-    }
-    .emoji {
-      font-size: 18px;
+      text-decoration: none;
+      color: #4fc3f7;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <a class="back-button" href="/index.html">← Home</a>
-  <h1>🌎 Draw Your Planet</h1>
+  <h1>🪐 Draw a Planet</h1>
 
-  <canvas id="planetCanvas" width="400" height="400"></canvas>
+  <canvas id="planetCanvas" width="300" height="300"></canvas>
 
-  <div class="button-group">
-    <button id="treeBtn"><span class="emoji">🌲</span> Tree</button>
-    <button id="cloudBtn"><span class="emoji">☁️</span> Cloud</button>
-    <button id="waterBtn"><span class="emoji">💧</span> Water</button>
-    <button id="randomBtn"><span class="emoji">🪄</span> Random</button>
-    <button id="resetBtn"><span class="emoji">🔄</span> Reset</button>
-    <button id="undoBtn"><span class="emoji">↩️</span> Undo</button>
-    <button id="redoBtn"><span class="emoji">↪️</span> Redo</button>
-    <button id="saveBtn"><span class="emoji">💾</span> Save</button>
+  <div class="tools">
+    <button onclick="stamp('🌳')">🌳 Trees</button>
+    <button onclick="stamp('💧')">💧 Water</button>
+    <button onclick="stamp('☁️')">☁️ Clouds</button>
+    <button onclick="generatePlanet()">🪄 Random</button>
+    <button onclick="saveImage()">💾 Save</button>
   </div>
 
-  <div class="share-buttons">
-    <button id="copyLinkBtn"><span class="emoji">🔗</span> Copy Link</button>
-    <button id="twitterBtn"><span class="emoji">🐦</span> Share to Twitter</button>
-    <button id="facebookBtn"><span class="emoji">📘</span> Share to Facebook</button>
-  </div>
+  <a class="back-button" href="../index.html">← Back to Home</a>
 
   <script>
     const canvas = document.getElementById('planetCanvas');
     const ctx = canvas.getContext('2d');
-    let drawing = false;
 
-    canvas.addEventListener('mousedown', () => drawing = true);
-    canvas.addEventListener('mouseup', () => drawing = false);
-    canvas.addEventListener('mouseleave', () => drawing = false);
-
-    canvas.addEventListener('mousemove', (e) => {
-      if (!drawing) return;
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      ctx.fillStyle = '#00ffcc';
+    // Draw base planet
+    function drawPlanetBase() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.beginPath();
-      ctx.arc(x, y, 4, 0, Math.PI * 2);
+      ctx.arc(150, 150, 140, 0, 2 * Math.PI);
+      ctx.fillStyle = '#2e7d32';
       ctx.fill();
-    });
-  </script>
+    }
 
-  <script src="planet.js"></script>
+    drawPlanetBase();
+
+    function stamp(emoji) {
+      const x = Math.random() * 300;
+      const y = Math.random() * 300;
+      if (Math.sqrt((x - 150) ** 2 + (y - 150) ** 2) <= 140) {
+        ctx.font = '24px serif';
+        ctx.fillText(emoji, x, y);
+      } else {
+        stamp(emoji); // retry if outside the planet
+      }
+    }
+
+    function generatePlanet() {
+      drawPlanetBase();
+      const stamps = ['🌳', '💧', '☁️'];
+      for (let i = 0; i < 20; i++) {
+        stamp(stamps[Math.floor(Math.random() * stamps.length)]);
+      }
+    }
+
+    function saveImage() {
+      const link = document.createElement('a');
+      link.download = 'planet.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+  </script>
 </body>
 </html>
