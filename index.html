@@ -2,164 +2,129 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Noah.Cool</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Noah.Cool – Games and Fun</title>
+  <link rel="icon" href="favicon.ico" />
   <style>
-    /* Reset & base */
-    * {
-      box-sizing: border-box;
-    }
-    body, html {
-      margin: 0; padding: 0;
-      height: 100%;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f0f4f8;
-      color: #222;
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #fdfdfd;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      overflow-x: hidden;
-    }
-    main {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 24px;
-      max-width: 900px;
-      width: 100%;
-      padding: 20px;
-    }
-    h1 {
-      width: 100%;
-      text-align: center;
-      font-weight: 700;
-      font-size: 2.5rem;
-      margin-bottom: 30px;
-      color: #0078d7;
-      user-select: none;
+      padding: 2rem;
     }
 
-    /* Game tiles */
-    .game-card {
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: #777;
+      margin-bottom: 2rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    .tile {
       background: white;
       border-radius: 16px;
-      width: 260px;
-      height: 140px;
-      box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      overflow: hidden;
       display: flex;
-      justify-content: center;
       align-items: center;
-      text-decoration: none;
-      color: #222;
-      font-size: 1.3rem;
-      font-weight: 600;
-      position: relative;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      cursor: pointer;
-      user-select: none;
-    }
-    .game-card:hover {
-      transform: translateY(-8px) scale(1.05);
-      box-shadow: 0 12px 20px rgba(0,0,0,0.15);
-    }
-
-    /* Beta tag */
-    .tag-beta {
-      position: absolute;
-      top: 10px;
-      right: 12px;
-      background: #e91e63;
-      color: white;
-      font-size: 0.65rem;
-      font-weight: 700;
-      padding: 4px 8px;
-      border-radius: 12px;
-      text-transform: uppercase;
-      user-select: none;
-      pointer-events: none;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    }
-
-    /* Random Game Button */
-    #randomGameBtn {
-      background: #0078d7;
-      color: white;
-      width: 100%;
-      max-width: 280px;
-      font-size: 1.2rem;
-      font-weight: 700;
-      border: none;
-      border-radius: 20px;
-      padding: 16px 0;
-      margin: 20px auto 40px auto;
-      cursor: pointer;
-      box-shadow: 0 6px 12px rgba(0,120,215,0.4);
-      transition: background-color 0.3s ease, box-shadow 0.3s ease;
-      user-select: none;
-    }
-    #randomGameBtn:hover {
-      background: #005a9e;
-      box-shadow: 0 10px 18px rgba(0,90,158,0.6);
-    }
-
-    /* Version footer */
-    footer {
-      width: 100%;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      height: 130px;
       text-align: center;
-      padding: 12px 0;
-      font-size: 0.9rem;
-      color: #666;
-      user-select: none;
-      border-top: 1px solid #ddd;
-      position: fixed;
-      bottom: 0;
-      background: #f0f4f8;
+      padding: 1rem;
+      text-decoration: none;
+      color: black;
     }
 
+    .tile:hover {
+      transform: scale(1.03);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+
+    .random-button {
+      margin: 2rem auto 1.5rem;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .random-button:hover {
+      background: #0056b3;
+    }
+
+    footer {
+      margin-top: 3rem;
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+      .tile {
+        font-size: 1rem;
+        height: 110px;
+      }
+    }
   </style>
 </head>
 <body>
-  <main>
-    <h1>Noah.Cool</h1>
 
-    <a class="game-card" href="games/rocks.html">Rocks</a>
+  <h1>Noah.Cool</h1>
+  <div class="subtitle">games and stuff by Noah</div>
 
-    <a class="game-card" href="games/planet.html">
-      Draw a Planet
-      <span class="tag-beta">Beta</span>
-    </a>
+  <button class="random-button" onclick="goToRandomGame()">🎲 Random Game</button>
 
-    <a class="game-card" href="games/love-calculator.html">Love Calculator</a>
+  <div class="grid" id="tile-grid">
+    <a class="tile" href="rocks.html">🪨 Rocks Game</a>
+    <a class="tile" href="planet.html">🪐 Draw a Planet <span style="font-size: 0.75rem; color: crimson; margin-left: 4px;">[Beta]</span></a>
+    <a class="tile" href="spend.html">💸 Spend Bill Gates' Money</a>
+    <a class="tile" href="coming-soon.html">🚧 Coming Soon</a>
+    <a class="tile" href="changelog.html">📜 Changelog</a>
+    <a class="tile" href="feedback.html">💬 Feedback</a>
+  </div>
 
-    <a class="game-card" href="games/spend-bill-gates.html">Spend Bill gates Money</a>
-    
-    <a class="game-card" href="game/coming-soon.html">Coming Soon</a>
-
-    <a class="game-card" href="changelog.html">Changelog</a>
-
-    <a class="game-card" href="feedback.html">Feedback</a>
-
-    <button id="randomGameBtn" title="Play a random game!">🎲 Play Random Game</button>
-  </main>
-
-  <footer>Version 0.1.5</footer>
+  <footer>
+    Noah.Cool – v1.0.0
+  </footer>
 
   <script>
-    // Random game button logic
-    const games = [
+    const links = [
       'rocks.html',
       'planet.html',
-      'love-calculator.html',
-      'spend-bill-gates.html'
-      'coming-soon.html',
-      'changelog.html',
-      'feedback.html'
+      'spend.html',
+      'coming-soon.html'
     ];
-    document.getElementById('randomGameBtn').onclick = () => {
-      const randomGame = games[Math.floor(Math.random() * games.length)];
-      window.location.href = randomGame;
-    };
+
+    function goToRandomGame() {
+      const random = links[Math.floor(Math.random() * links.length)];
+      window.location.href = random;
+    }
   </script>
+
 </body>
 </html>
