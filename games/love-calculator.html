@@ -93,33 +93,43 @@
 
   <div id="result"></div>
 
-  <script>
-    function calculateLove() {
-      const name1 = document.getElementById("name1").value.trim();
-      const name2 = document.getElementById("name2").value.trim();
+<!-- Confetti Script -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-      if (!name1 || !name2) {
-        document.getElementById("result").innerText = "Please enter both names!";
-        return;
-      }
+<script>
+  function calculateLove() {
+    const name1 = document.getElementById("name1").value.trim();
+    const name2 = document.getElementById("name2").value.trim();
+    const resultDiv = document.getElementById("result");
 
-      const lovePercent = Math.floor(Math.random() * 51) + 50; // 50–100%
-      let message = "";
-
-      if (lovePercent >= 90) {
-        message = "💖 Soulmates!";
-      } else if (lovePercent >= 75) {
-        message = "💞 Great Match!";
-      } else if (lovePercent >= 60) {
-        message = "💘 There's a spark!";
-      } else {
-        message = "❤️ Could work with effort!";
-      }
-
-      document.getElementById("result").innerText =
-        `${name1} ❤️ ${name2} = ${lovePercent}%\n${message}`;
+    if (!name1 || !name2) {
+      resultDiv.innerText = "Please enter both names!";
+      return;
     }
-  </script>
+
+    const lovePercent = Math.floor(Math.random() * 51) + 50; // 50–100%
+    let message = "";
+
+    if (lovePercent >= 90) {
+      message = "💖 Soulmates!";
+    } else if (lovePercent >= 75) {
+      message = "💞 Great Match!";
+    } else if (lovePercent >= 60) {
+      message = "💘 There's a spark!";
+    } else {
+      message = "❤️ Could work with effort!";
+    }
+
+    resultDiv.innerText = `${name1} ❤️ ${name2} = ${lovePercent}%\n${message}`;
+
+    // Launch confetti for fun
+    confetti({
+      particleCount: 150,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
+  }
+</script>
 
 </body>
 </html>
