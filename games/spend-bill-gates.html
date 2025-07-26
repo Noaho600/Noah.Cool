@@ -1,209 +1,273 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Spend Bill Gates' Money</title>
-<style>
-  body {
-    background: #0a0f26;
-    color: #e0e0ff;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0; padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-  }
-  h1 {
-    margin-bottom: 10px;
-    color: #72aaff;
-  }
-  #money {
-    font-size: 1.8rem;
-    margin-bottom: 30px;
-    font-weight: 700;
-    text-shadow: 0 0 6px #72aaff;
-  }
-  .items-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill,minmax(240px,1fr));
-    gap: 20px;
-    width: 100%;
-    max-width: 800px;
-  }
-  .item-card {
-    background: #1c2250;
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 0 12px #2e3b80;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-    position: relative;
-    user-select: none;
-  }
-  .item-card:hover:not(.disabled) {
-    transform: scale(1.05);
-    box-shadow: 0 0 20px #4a70ff;
-  }
-  .item-name {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-  }
-  .item-price {
-    font-size: 1rem;
-    margin-bottom: 12px;
-    color: #aabbee;
-  }
-  button.buy-btn {
-    background: #4a70ff;
-    border: none;
-    border-radius: 12px;
-    padding: 10px;
-    font-weight: 700;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  button.buy-btn:hover:not(:disabled) {
-    background: #2c4fcc;
-  }
-  button.buy-btn:disabled {
-    background: #3a3f61;
-    cursor: not-allowed;
-  }
-  .spent-animation {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    color: #72aaff;
-    font-weight: 700;
-    font-size: 1rem;
-    animation: floatUp 1.2s ease forwards;
-    user-select: none;
-    pointer-events: none;
-  }
-  @keyframes floatUp {
-    0% {opacity: 1; transform: translateY(0);}
-    100% {opacity: 0; transform: translateY(-40px);}
-  }
-  footer {
-    margin-top: auto;
-    padding: 12px 0;
-    font-size: 0.9rem;
-    color: #999;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spend Bill Gates' Money</title>
+  <style>
+    body {
+      background: #0a0f26;
+      color: #e0e0ff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: #72aaff;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      transition: background 0.3s ease;
+      z-index: 1000;
+    }
+
+    .back-button:hover {
+      background: #4f90ff;
+    }
+
+    h1 {
+      text-align: center;
+      color: #72aaff;
+      margin-top: 60px;
+    }
+
+    #money {
+      text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      font-weight: 700;
+      text-shadow: 0 0 6px #72aaff;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 40px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .item-card {
+      background: #1c2250;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 0 12px #2e3b80;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 220px;
+      transition: transform 0.2s;
+    }
+
+    .item-card:hover {
+      transform: scale(1.05);
+    }
+
+    .item-name {
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .item-price {
+      margin-bottom: 12px;
+      color: #bbb;
+    }
+
+    .buy-button {
+      background: #4fc3f7;
+      border: none;
+      color: #000;
+      font-weight: bold;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .buy-button:hover {
+      background: #29b6f6;
+    }
+
+    .receipt {
+      background: #12183a;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 0 12px #2e3b80;
+      width: 100%;
+      max-width: 500px;
+      margin: 40px auto 0;
+    }
+
+    .receipt h2 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: #72aaff;
+    }
+
+    .receipt ul {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 10px;
+    }
+
+    .receipt li {
+      padding: 6px 0;
+      border-bottom: 1px solid #2e3b80;
+    }
+
+    .receipt-summary {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .reset-button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background: #ff4d4d;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .reset-button:hover {
+      background: #ff1a1a;
+    }
+
+    @media (min-width: 900px) {
+      .container {
+        flex-direction: row;
+        align-items: flex-start;
+      }
+
+      .receipt {
+        position: sticky;
+        top: 100px;
+        margin: 0;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<h1>Spend Bill Gates' Money 💸</h1>
-<div id="money">$130,000,000,000</div>
+  <a href="index.html" class="back-button">← Back to Home</a>
 
-<div class="items-container" id="itemsContainer">
-  <!-- Items will be dynamically added here -->
-</div>
+  <h1>Spend Bill Gates' Money</h1>
+  <div id="money">$130,000,000,000</div>
 
-<footer>Try to spend it all before time runs out!</footer>
+  <div class="container">
+    <div id="items" style="flex: 2; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;"></div>
 
-<script>
-  const startingMoney = 130000000000;
-  let money = startingMoney;
+    <div class="receipt">
+      <h2>🧾 Receipt</h2>
+      <ul id="receipt-list"></ul>
+      <div class="receipt-summary" id="receipt-summary"></div>
+      <button class="reset-button" onclick="resetGame()">🔁 Reset</button>
+    </div>
+  </div>
 
-  const items = [
-    { name: 'Private Jet', price: 50000000 },
-    { name: 'Luxury Yacht', price: 300000000 },
-    { name: 'Space Trip', price: 1000000000 },
-    { name: 'Island Resort', price: 1500000000 },
-    { name: 'Charity Donation', price: 20000000000 },
-    { name: 'Tech Startup Investment', price: 5000000000 },
-    { name: '100 Tesla Cars', price: 7000000000 },
-    { name: 'Mansion', price: 120000000 },
-    { name: 'Exclusive Art Collection', price: 250000000 },
-    { name: 'Concert Sponsorship', price: 100000000 },
-  ];
+  <audio id="buy-sound" src="cha-ching.mp3" preload="auto"></audio>
 
-  const moneyEl = document.getElementById('money');
-  const container = document.getElementById('itemsContainer');
+  <script>
+    const items = [
+      { name: "Big Mac", price: 5 },
+      { name: "iPhone 15", price: 999 },
+      { name: "Gaming PC", price: 2500 },
+      { name: "Tesla Model S", price: 79999 },
+      { name: "Private Jet", price: 40000000 },
+      { name: "Superyacht", price: 300000000 },
+      { name: "NBA Team", price: 2200000000 },
+      { name: "Island", price: 10000000 },
+      { name: "Meme NFT", price: 420000 },
+      { name: "Supreme Brick", price: 250 },
+      { name: "Twitter Checkmark", price: 8 },
+      { name: "McDonald's Ice Cream Machine (Broken)", price: 18000 }
+    ];
 
-  function formatMoney(num) {
-    return '$' + num.toLocaleString();
-  }
+    let initialMoney = 130_000_000_000;
+    let money = initialMoney;
+    let receipt = {};
 
-  function updateMoneyDisplay() {
-    moneyEl.textContent = formatMoney(money);
-  }
+    const moneyDisplay = document.getElementById("money");
+    const itemsContainer = document.getElementById("items");
+    const receiptList = document.getElementById("receipt-list");
+    const receiptSummary = document.getElementById("receipt-summary");
+    const buySound = document.getElementById("buy-sound");
 
-  function createItemCard(item, index) {
-    const card = document.createElement('div');
-    card.className = 'item-card';
+    function formatMoney(amount) {
+      return "$" + amount.toLocaleString();
+    }
 
-    const name = document.createElement('div');
-    name.className = 'item-name';
-    name.textContent = item.name;
+    function updateUI() {
+      moneyDisplay.textContent = formatMoney(money);
 
-    const price = document.createElement('div');
-    price.className = 'item-price';
-    price.textContent = formatMoney(item.price);
+      // update receipt
+      receiptList.innerHTML = "";
+      let totalSpent = 0;
+      for (const item in receipt) {
+        const count = receipt[item].count;
+        const total = receipt[item].total;
+        totalSpent += total;
+        const li = document.createElement("li");
+        li.textContent = `${item} × ${count} = ${formatMoney(total)}`;
+        receiptList.appendChild(li);
+      }
 
-    const btn = document.createElement('button');
-    btn.className = 'buy-btn';
-    btn.textContent = 'Buy';
-    btn.disabled = item.price > money;
+      receiptSummary.innerHTML = `
+        Total Spent: ${formatMoney(totalSpent)}<br>
+        Remaining: ${formatMoney(money)}
+      `;
+    }
 
-    btn.onclick = () => {
+    function buyItem(item) {
       if (money >= item.price) {
         money -= item.price;
-        updateMoneyDisplay();
-        btn.disabled = true; // disable after buy
-        animateSpent(card, `- ${formatMoney(item.price)}`);
-        disableButtonsIfNeeded();
-      }
-    };
-
-    card.appendChild(name);
-    card.appendChild(price);
-    card.appendChild(btn);
-
-    return card;
-  }
-
-  function animateSpent(card, text) {
-    const anim = document.createElement('div');
-    anim.className = 'spent-animation';
-    anim.textContent = text;
-    card.appendChild(anim);
-    setTimeout(() => {
-      card.removeChild(anim);
-    }, 1200);
-  }
-
-  function disableButtonsIfNeeded() {
-    const buttons = container.querySelectorAll('button.buy-btn');
-    buttons.forEach((btn, i) => {
-      if (items[i].price > money) {
-        btn.disabled = true;
-        btn.parentElement.classList.add('disabled');
+        if (!receipt[item.name]) {
+          receipt[item.name] = { count: 1, total: item.price };
+        } else {
+          receipt[item.name].count += 1;
+          receipt[item.name].total += item.price;
+        }
+        buySound.currentTime = 0;
+        buySound.play();
+        updateUI();
       } else {
-        btn.disabled = false;
-        btn.parentElement.classList.remove('disabled');
+        alert("You can't afford that!");
       }
+    }
+
+    function resetGame() {
+      money = initialMoney;
+      receipt = {};
+      updateUI();
+    }
+
+    items.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "item-card";
+      card.innerHTML = `
+        <div class="item-name">${item.name}</div>
+        <div class="item-price">${formatMoney(item.price)}</div>
+        <button class="buy-button">Buy</button>
+      `;
+      card.querySelector("button").onclick = () => buyItem(item);
+      itemsContainer.appendChild(card);
     });
-  }
 
-  // Initialize items
-  items.forEach((item, i) => {
-    const card = createItemCard(item, i);
-    container.appendChild(card);
-  });
-
-  updateMoneyDisplay();
-
-</script>
-
+    updateUI();
+  </script>
 </body>
 </html>
