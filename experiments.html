@@ -15,16 +15,16 @@
     }
 
     :root {
-      --bg: #fff;
-      --text: #000;
-      --tile-bg: #f5f5f5;
+      --bg: #ffffff;
+      --text: #000000;
+      --tile-bg: #f0f0f0;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
         --bg: #121212;
-        --text: #fff;
-        --tile-bg: #1e1e1e;
+        --text: #ffffff;
+        --tile-bg: #1f1f1f;
       }
     }
 
@@ -35,7 +35,7 @@
 
     header h1 {
       font-size: 2rem;
-      margin-bottom: 0.2rem;
+      margin-bottom: 0.3rem;
     }
 
     header p {
@@ -54,55 +54,44 @@
 
     .tile-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.2rem;
       padding: 2rem;
-      max-width: 1200px;
+      max-width: 1000px;
       margin: 0 auto;
     }
 
     .tile {
       background: var(--tile-bg);
       border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s;
+      padding: 1.2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
       text-decoration: none;
       color: inherit;
-    }
-
-    .tile:hover {
-      transform: scale(1.02);
-    }
-
-    .tile img {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-    }
-
-    .tile-label {
-      padding: 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      transition: background 0.2s ease;
     }
 
-    .tile-label strong {
+    .tile:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    .tile strong {
       font-size: 1.1rem;
     }
 
     .tag {
-      background: #eee;
       border-radius: 6px;
-      padding: 2px 8px;
+      padding: 4px 8px;
       font-size: 0.75rem;
-      color: #555;
+      font-weight: 600;
     }
 
-    .beta { background: #ffdb57; }
-    .alpha { background: #ff6b6b; color: white; }
-    .concept { background: #aaa; color: white; }
+    .beta { background: #ffdd57; color: #000; }
+    .alpha { background: #ff6b6b; color: #fff; }
+    .concept { background: #999; color: #fff; }
 
     footer {
       text-align: center;
@@ -117,29 +106,23 @@
 
   <header>
     <h1>🧪 Experiments</h1>
-    <p>These are prototype games we're still working on. They're a little messy!</p>
+    <p>Prototypes and unfinished games in progress.</p>
   </header>
 
   <main class="tile-grid">
     <a href="draw-a-planet.html" class="tile">
-      <img src="images/planet-placeholder.png" alt="Draw a Planet">
-      <div class="tile-label">
-        <strong>Draw a Planet</strong>
-        <span class="tag beta">Beta</span>
-      </div>
+      <strong>Draw a Planet</strong>
+      <span class="tag beta">Beta</span>
     </a>
 
     <a href="draw-a-plant.html" class="tile">
-      <img src="images/plant-placeholder.png" alt="Draw a Plant">
-      <div class="tile-label">
-        <strong>Draw a Plant</strong>
-        <span class="tag concept">Concept</span>
-      </div>
+      <strong>Draw a Plant</strong>
+      <span class="tag concept">Concept</span>
     </a>
   </main>
 
   <footer>
-    🚧 These projects are under construction – things might break or change anytime!
+    🚧 These projects are experimental and may change at any time.
   </footer>
 </body>
 </html>
