@@ -1,88 +1,80 @@
+// planet.js - Draw a Planet with stamps, saving, and sharing
+
 const canvas = document.getElementById("planetCanvas");
 const ctx = canvas.getContext("2d");
-let isDrawing = false;
-let brushColor = "#00ffcc";
-let currentStamp = null;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight * 0.8;
 
-// Start rotating canvas
-let angle = 0;
-function rotateCanvas() {
-  requestAnimationFrame(rotateCanvas);
-  angle += 0.002;
+let stamps = [];
+let currentStamp = "🌲";
 
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.save();
-  ctx.translate(canvas.width / 2, canvas.height / 2);
-  ctx.rotate(angle);
-  ctx.translate(-canvas.width / 2, -canvas.height / 2);
-  ctx.putImageData(imageData, 0, 0);
-  ctx.restore();
-}
-rotateCanvas();
+const stampOptions = ["🌲", "☁️", "💧"];
 
-canvas.addEventListener("mousedown", () => isDrawing = true);
-canvas.addEventListener("mouseup", () => isDrawing = false);
-canvas.addEventListener("mousemove", draw);
+// Setup stamp buttons
+document.getElementById("treeBtn").addEventListener("click", () => currentStamp = "🌲");
+document.getElementById("cloudBtn").addEventListener("click", () => currentStamp = "☁️");
+document.getElementById("waterBtn").addEventListener("click", () => currentStamp = "💧");
+document.getElementById("randomBtn").addEventListener("click", generateRandomPlanet);
 
-function draw(e) {
-  if (!isDrawing) return;
+document.getElementById("resetBtn").addEventListener("click", () => {
+  stamps = [];
+  draw();
+});
 
+canvas.addEventListener("click", (e) => {
   const rect = canvas.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
+  stamps.push({
+    x: e.clientX - rect.left,
+    y: e.clientY - rect.top,
+    stamp: currentStamp
+  });
+  draw();
+});
 
-  const dx = x - canvas.width / 2;
-  const dy = y - canvas.height / 2;
-  const dist = Math.sqrt(dx * dx + dy * dy);
-  if (dist > canvas.width / 2) return;
+function draw() {
+  ctx.fillStyle = "#222";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  if (currentStamp) {
-    ctx.font = "20px Arial";
-    ctx.fillText(currentStamp, x - 10, y + 10);
-  } else {
-    ctx.fillStyle = brushColor;
-    ctx.beginPath();
-    ctx.arc(x, y, 4, 0, Math.PI * 2);
-    ctx.fill();
+  // Draw planet circle
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+  const radius = 200;
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+  ctx.fillStyle = "#3a7bd5";
+  ctx.fill();
+
+  // Draw stamps
+  for (let s of stamps) {
+    ctx.font = "30px sans-serif";
+    ctx.fillText(s.stamp, s.x, s.y);
   }
 }
 
-function setStamp(stamp) {
-  currentStamp = stamp;
-}
-
-function changeColor(event) {
-  brushColor = event.target.value;
-}
-
-document.getElementById("colorPicker").addEventListener("change", changeColor);
-
-function savePlanet() {
-  const link = document.createElement('a');
-  link.download = 'my_planet.png';
-  link.href = canvas.toDataURL('image/png');
-  link.click();
-}
+draw();
 
 function generateRandomPlanet() {
-  for (let i = 0; i < 500; i++) {
+  stamps = [];
+  for (let i = 0; i < 20; i++) {
     const x = Math.random() * canvas.width;
     const y = Math.random() * canvas.height;
-
-    const dx = x - canvas.width / 2;
-    const dy = y - canvas.height / 2;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    if (dist > canvas.width / 2) continue;
-
-    ctx.fillStyle = `hsl(${Math.random() * 360}, 70%, 60%)`;
-    ctx.beginPath();
-    ctx.arc(x, y, Math.random() * 3 + 1, 0, Math.PI * 2);
-    ctx.fill();
+    const stamp = stampOptions[Math.floor(Math.random() * stampOptions.length)];
+    stamps.push({ x, y, stamp });
   }
+  draw();
+}
 
-  function getCurrentURL() {
-  return window.location.href.split('?')[0]; // Clean URL
+// Save canvas as image
+document.getElementById("saveBtn").addEventListener("click", () => {
+  const link = document.createElement("a");
+  link.download = "my_planet.png";
+  link.href = canvas.toDataURL();
+  link.click();
+});
+
+// Share functions
+function getCurrentURL() {
+  return window.location.href.split('?')[0];
 }
 
 function copyLink() {
@@ -104,4 +96,7 @@ function shareToFacebook() {
   const shareURL = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
   window.open(shareURL, "_blank");
 }
-}
+
+document.getElementById("copyLinkBtn").addEventListener("click", copyLink);
+document.getElementById("twitterBtn").addEventListener("click", shareToTwitter);
+document.getElementById("facebookBtn").addEventListener("click", shareToFacebook);
