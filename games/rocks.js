@@ -1,57 +1,76 @@
-// Module aliases
-const { Engine, Render, Runner, World, Bodies, Mouse, MouseConstraint } = Matter;
+// rocks.js
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 
-// Create engine and world
-const engine = Engine.create();
-const { world } = engine;
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
 
-// Create renderer
-const render = Render.create({
-  element: document.body,
-  engine: engine,
-  options: {
-    width: window.innerWidth,
-    height: window.innerHeight,
-    background: '#f0f0f0',
-    wireframes: false,
+let rocks = [];
+
+function createRock(x, y) {
+  return {
+    x,
+    y,
+    radius: 20 + Math.random() * 20,
+    color: `hsl(${Math.random() * 360}, 50%, 60%)`,
+    dx: (Math.random() - 0.5) * 4,
+    dy: (Math.random() - 0.5) * 4,
+  };
+}
+
+for (let i = 0; i < 30; i++) {
+  rocks.push(createRock(Math.random() * canvas.width, Math.random() * canvas.height));
+}
+
+function update() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let rock of rocks) {
+    rock.x += rock.dx;
+    rock.y += rock.dy;
+
+    // Bounce off walls
+    if (rock.x - rock.radius < 0 || rock.x + rock.radius > canvas.width) rock.dx *= -1;
+    if (rock.y - rock.radius < 0 || rock.y + rock.radius > canvas.height) rock.dy *= -1;
+
+    ctx.beginPath();
+    ctx.arc(rock.x, rock.y, rock.radius, 0, Math.PI * 2);
+    ctx.fillStyle = rock.color;
+    ctx.fill();
   }
-});
+  requestAnimationFrame(update);
+}
 
-Render.run(render);
-Runner.run(Runner.create(), engine);
+update();
 
-// Ground
-const ground = Bodies.rectangle(window.innerWidth / 2, window.innerHeight - 10, window.innerWidth, 20, {
-  isStatic: true,
-  render: { fillStyle: '#888' }
-});
-World.add(world, ground);
+// Touch support for dragging rocks
+let draggingRock = null;
+canvas.addEventListener("touchstart", (e) => {
+  const touch = e.touches[0];
+  const x = touch.clientX;
+  const y = touch.clientY;
 
-// Drop rocks on click
-window.addEventListener('click', () => {
-  const rock = Bodies.circle(Math.random() * window.innerWidth, 0, 30, {
-    restitution: 0.6,
-    friction: 0.8,
-    render: {
-      fillStyle: '#444'
+  for (let rock of rocks) {
+    const dx = x - rock.x;
+    const dy = y - rock.y;
+    if (Math.sqrt(dx * dx + dy * dy) < rock.radius) {
+      draggingRock = rock;
+      break;
     }
-  });
-  World.add(world, rock);
-});
-
-// Mouse drag (optional)
-const mouse = Mouse.create(render.canvas);
-const mouseConstraint = MouseConstraint.create(engine, {
-  mouse: mouse,
-  constraint: {
-    stiffness: 0.2,
-    render: { visible: false }
   }
 });
-World.add(world, mouseConstraint);
 
-// Keep canvas full-screen on resize
-window.addEventListener('resize', () => {
-  render.canvas.width = window.innerWidth;
-  render.canvas.height = window.innerHeight;
+canvas.addEventListener("touchmove", (e) => {
+  if (draggingRock) {
+    const touch = e.touches[0];
+    draggingRock.x = touch.clientX;
+    draggingRock.y = touch.clientY;
+  }
+});
+
+canvas.addEventListener("touchend", () => {
+  draggingRock = null;
 });
