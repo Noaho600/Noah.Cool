@@ -2,76 +2,105 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Changelog – Noah.Cool</title>
-  <link rel="stylesheet" href="style.css" />
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
+
     body {
-      background: #0e0f1a;
+      background: linear-gradient(135deg, #0b0c1a 0%, #1a1b2d 100%);
       color: #ddd;
-      font-family: sans-serif;
+      font-family: 'Quicksand', sans-serif;
       padding: 40px 20px;
-      max-width: 600px;
+      max-width: 700px;
       margin: auto;
+      min-height: 100vh;
     }
+
     h1 {
       color: #00eaff;
       text-align: center;
+      margin-bottom: 40px;
+      font-weight: 700;
+      font-size: 2.8rem;
+      text-shadow: 0 0 12px #00eaff88;
+    }
+
+    .version-section {
+      background: #12152c;
+      border-radius: 20px;
+      padding: 25px 30px;
       margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0, 234, 255, 0.2);
+      user-select: none;
     }
-    .version {
-      margin-bottom: 20px;
-      border-left: 4px solid #00eaff;
-      padding-left: 15px;
+
+    .version-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #00eaff;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #00eaff44;
+      padding-bottom: 6px;
+      letter-spacing: 0.03em;
     }
-    .version h2 {
-      margin: 0;
-      color: #fff;
-    }
-    .version ul {
-      margin: 10px 0 0 0;
+
+    ul {
+      list-style-type: disc;
       padding-left: 20px;
+      font-size: 1.1rem;
+      color: #aaccee;
+      line-height: 1.5;
+      margin: 0;
     }
-    a {
-      color: #00eaff;
-    }
-    .back-btn {
-      margin-top: 30px;
+
+    a.back-btn {
       display: inline-block;
+      margin-top: 40px;
       color: #00eaff;
-      border: 1px solid #00eaff;
-      padding: 6px 12px;
-      border-radius: 10px;
       text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+      padding: 8px 16px;
+      border: 1.5px solid #00eaff;
+      border-radius: 14px;
+      transition: background-color 0.25s ease, color 0.25s ease;
+      user-select: none;
+    }
+
+    a.back-btn:hover {
+      background-color: #00eaff;
+      color: #0b0c1a;
     }
   </style>
 </head>
 <body>
+
   <h1>📝 Changelog</h1>
 
-  <div class="version">
-    <h2>v1.2.0</h2>
+  <section class="version-section">
+    <div class="version-title">v1.2.0</div>
     <ul>
       <li>Added Draw a Planet game</li>
-      <li>Stamps and GIF export</li>
+      <li>Introduced stamps and GIF export</li>
     </ul>
-  </div>
+  </section>
 
-  <div class="version">
-    <h2>v1.1.0</h2>
+  <section class="version-section">
+    <div class="version-title">v1.1.0</div>
     <ul>
-      <li>Coming Soon page design improved</li>
+      <li>Improved Coming Soon page design</li>
       <li>Added back button to games</li>
     </ul>
-  </div>
+  </section>
 
-  <div class="version">
-    <h2>v1.0.0</h2>
+  <section class="version-section">
+    <div class="version-title">v1.0.0</div>
     <ul>
-      <li>Site launched with Rocks Game</li>
+      <li>Site launched with Rocks game</li>
     </ul>
-  </div>
+  </section>
 
-  <a class="back-btn" href="index.html">← Back to Home</a>
+  <a href="index.html" class="back-btn">← Back to Home</a>
+
 </body>
 </html>
