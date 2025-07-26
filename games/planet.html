@@ -2,162 +2,82 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Draw a Planet</title>
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
   <style>
-    /* Basic resets */
-    * {
-      box-sizing: border-box;
-    }
     body {
-      margin: 0;
-      background: #0b0c1a;
-      color: #fff;
-      font-family: 'Quicksand', sans-serif;
+      background: #121212;
+      color: white;
+      font-family: sans-serif;
       text-align: center;
-      min-height: 100vh;
-      padding: 40px 20px 60px;
-      position: relative;
-      user-select: none;
+      margin: 0;
+      padding: 0;
     }
-
-    h1 {
-      margin-bottom: 25px;
-      font-weight: 700;
-      font-size: 2.4rem;
-    }
-
-    /* Back button */
-    .back-button {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      text-decoration: none;
-      background-color: white;
-      color: #333;
-      padding: 8px 14px;
-      border-radius: 12px;
-      font-weight: bold;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      transition: all 0.2s ease;
-      user-select: none;
-    }
-    .back-button:hover {
-      background-color: #f0f0f0;
-      transform: scale(1.05);
-    }
-
-    /* Planet container */
-    .planet-wrapper {
-      margin: 0 auto;
-      width: 400px;
-      height: 400px;
-      border-radius: 50%;
-      overflow: hidden;
-      box-shadow: 0 0 30px #00eaff88;
-      background-color: #1a1b2d;
-      cursor: crosshair;
-      user-select: none;
-      position: relative;
-    }
-
     canvas {
-      display: block;
-      border-radius: 50%;
-      background-color: #1a1b2d;
+      margin-top: 20px;
+      border: 2px solid #555;
+      border-radius: 12px;
+      background: #000;
     }
-
-    /* Tools container */
-    .tools {
-      margin-top: 30px;
+    .button-group {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 12px;
-      align-items: center;
-      user-select: none;
+      gap: 10px;
+      margin-top: 20px;
     }
-
-    label {
-      font-weight: 600;
-      font-size: 1.1rem;
-      margin-right: 8px;
-      color: #aad;
-      user-select: none;
-    }
-
-    input[type="color"] {
-      width: 40px;
-      height: 40px;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      box-shadow: 0 0 5px rgba(0,0,0,0.3);
-      padding: 0;
-      user-select: none;
-      -webkit-appearance: none;
-    }
-
-    input[type="color"]::-webkit-color-swatch-wrapper {
-      padding: 0;
-    }
-    input[type="color"]::-webkit-color-swatch {
-      border-radius: 50%;
-    }
-
     button {
-      background: #00eaff;
+      background: #333;
+      color: white;
+      padding: 10px 20px;
       border: none;
-      border-radius: 12px;
-      padding: 10px 18px;
-      color: #00444f;
-      font-weight: 700;
-      font-size: 1rem;
+      border-radius: 8px;
       cursor: pointer;
-      box-shadow: 0 5px 15px rgba(0, 234, 255, 0.4);
-      transition: background 0.25s ease, transform 0.2s ease;
-      user-select: none;
+      transition: 0.3s;
     }
     button:hover {
-      background: #00b9cc;
-      transform: translateY(-3px);
+      background: #555;
     }
-    button:active {
-      transform: translateY(1px);
+    .back-button {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: #222;
+      padding: 8px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
     }
-
+    .share-buttons {
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
+  <a class="back-button" href="/index.html">← Home</a>
+  <h1>🌎 Draw Your Planet</h1>
 
-  <a href="../index.html" class="back-button">← Back</a>
+  <canvas id="planetCanvas"></canvas>
 
-  <h1>🪐 Draw a Planet</h1>
-
-  <div class="planet-wrapper">
-    <canvas id="planetCanvas" width="400" height="400"></canvas>
+  <div class="button-group">
+    <button id="treeBtn">🌲 Tree</button>
+    <button id="cloudBtn">☁️ Cloud</button>
+    <button id="waterBtn">💧 Water</button>
+    <button id="randomBtn">🪄 Random</button>
+    <button id="resetBtn">🔄 Reset</button>
+    <button id="undoBtn">↩️ Undo</button>
+    <button id="redoBtn">↪️ Redo</button>
+    <button id="saveBtn">💾 Save</button>
   </div>
 
-  <div class="tools">
-    <label for="colorPicker">Brush:</label>
-    <input type="color" id="colorPicker" value="#00ffcc" />
-
-    <button type="button" onclick="setStamp('🌲')" title="Tree Stamp">🌲</button>
-    <button type="button" onclick="setStamp('💧')" title="Water Drop Stamp">💧</button>
-    <button type="button" onclick="setStamp('☁️')" title="Cloud Stamp">☁️</button>
-    <button type="button" onclick="setStamp(null)" title="Brush Tool">🖌️</button>
-
-    <button type="button" onclick="savePlanet()" title="Save your planet as PNG">💾 Save Image</button>
-    <button type="button" onclick="generateRandomPlanet()" title="Generate a random planet">🪄 Random Planet</button>
+  <div class="share-buttons">
+    <button id="copyLinkBtn">🔗 Copy Link</button>
+    <button id="twitterBtn">🐦 Share to Twitter</button>
+    <button id="facebookBtn">📘 Share to Facebook</button>
   </div>
-
-  <div id="share-buttons" style="margin-top: 20px; text-align: center;">
-  <button onclick="copyLink()">🔗 Copy Share Link</button>
-  <button onclick="shareToTwitter()">🐦 Share to X</button>
-  <button onclick="shareToFacebook()">📘 Share to Facebook</button>
-</div>
 
   <script src="planet.js"></script>
-  
 </body>
 </html>
