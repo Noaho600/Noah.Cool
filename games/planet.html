@@ -70,6 +70,9 @@
       <option value="lava">🔥 Lava</option>
       <option value="ice">❄️ Ice</option>
       <option value="gas">☁️ Gas Giant</option>
+      <button onclick="addStampMode('tree')">🌳 Add Tree</button>
+      <button onclick="addStampMode('water')">💧 Add Water</button>
+      <button onclick="addStampMode('cloud')">☁️ Add Cloud</button>
     </select>
 
     <input type="text" id="planetName" placeholder="Name your planet" />
@@ -95,134 +98,157 @@
     Draw a Planet v1.0 • Made by Noah.Cool 🚀
   </div>
 
-  <script>
-    const canvas = document.getElementById('planetCanvas');
-    const ctx = canvas.getContext('2d');
-    let drawing = false, ringsOn = false;
-    let history = [], future = [];
+<script>
+  const canvas = document.getElementById('planetCanvas');
+  const ctx = canvas.getContext('2d');
+  let drawing = false, ringsOn = false;
+  let history = [], future = [];
+  let stampMode = null;
 
-    function drawPlanet() {
-      const type = document.getElementById('planetType').value;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+  function drawPlanet() {
+    const type = document.getElementById('planetType').value;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Background planet
-      const grad = ctx.createRadialGradient(200, 200, 80, 200, 200, 180);
-      if (type === 'lava') grad.addColorStop(0, '#ff7300'), grad.addColorStop(1, '#550000');
-      else if (type === 'ice') grad.addColorStop(0, '#ccf2ff'), grad.addColorStop(1, '#005577');
-      else if (type === 'gas') grad.addColorStop(0, '#fffccc'), grad.addColorStop(1, '#ccaa00');
-      else grad.addColorStop(0, '#34a853'), grad.addColorStop(1, '#003300');
+    // Planet body
+    const grad = ctx.createRadialGradient(200, 200, 80, 200, 200, 180);
+    if (type === 'lava') grad.addColorStop(0, '#ff7300'), grad.addColorStop(1, '#550000');
+    else if (type === 'ice') grad.addColorStop(0, '#ccf2ff'), grad.addColorStop(1, '#005577');
+    else if (type === 'gas') grad.addColorStop(0, '#fffccc'), grad.addColorStop(1, '#ccaa00');
+    else grad.addColorStop(0, '#34a853'), grad.addColorStop(1, '#003300');
 
-      ctx.fillStyle = grad;
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(200, 200, 100, 0, Math.PI * 2);
+    ctx.fill();
+
+    if (ringsOn) {
+      ctx.strokeStyle = 'white';
       ctx.beginPath();
-      ctx.arc(200, 200, 100, 0, Math.PI * 2);
-      ctx.fill();
-
-      if (ringsOn) {
-        ctx.strokeStyle = 'white';
-        ctx.beginPath();
-        ctx.ellipse(200, 200, 140, 40, 0, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-
-      restoreHistory();
-    }
-
-    function toggleRings() {
-      ringsOn = !ringsOn;
-      saveHistory();
-      drawPlanet();
-    }
-
-    function addStamp(emoji) {
-      ctx.font = '32px serif';
-      ctx.fillText(emoji, 180 + Math.random()*40 - 20, 180 + Math.random()*40 - 20);
-      saveHistory();
-    }
-
-    canvas.addEventListener('mousedown', () => { drawing = true; saveHistory(); });
-    canvas.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
-    canvas.addEventListener('mousemove', draw);
-
-    function draw(e) {
-      if (!drawing) return;
-      const rect = canvas.getBoundingClientRect();
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = '#ffffff';
-      ctx.shadowColor = '#ffffff';
-      ctx.shadowBlur = 5;
-      ctx.lineCap = 'round';
-
-      ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+      ctx.ellipse(200, 200, 140, 40, 0, 0, Math.PI * 2);
       ctx.stroke();
+    }
+
+    restoreHistory();
+  }
+
+  function toggleRings() {
+    ringsOn = !ringsOn;
+    saveHistory();
+    drawPlanet();
+  }
+
+  function addStampMode(type) {
+    stampMode = type;
+  }
+
+  canvas.addEventListener('mousedown', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    if (stampMode) {
+      const emoji = stampMode === 'tree' ? '🌳' :
+                    stampMode === 'water' ? '💧' : '☁️';
+      ctx.font = '32px serif';
+      ctx.fillText(emoji, x - 16, y + 10);
+      saveHistory();
+      stampMode = null; // turn off stamp mode after one use
+    } else {
+      drawing = true;
+      saveHistory();
       ctx.beginPath();
-      ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+      ctx.moveTo(x, y);
     }
+  });
 
-    function saveHistory() {
-      history.push(canvas.toDataURL());
-      future = [];
-    }
+  canvas.addEventListener('mouseup', () => {
+    drawing = false;
+    ctx.beginPath();
+  });
 
-    function restoreHistory() {
-      if (history.length === 0) return;
+  canvas.addEventListener('mousemove', (e) => {
+    if (!drawing) return;
+    const rect = canvas.getBoundingClientRect();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#ffffff';
+    ctx.shadowColor = '#ffffff';
+    ctx.shadowBlur = 5;
+    ctx.lineCap = 'round';
+
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+  });
+
+  function saveHistory() {
+    history.push(canvas.toDataURL());
+    future = [];
+  }
+
+  function restoreHistory() {
+    if (history.length === 0) return;
+    const img = new Image();
+    img.src = history[history.length - 1];
+    img.onload = () => ctx.drawImage(img, 0, 0);
+  }
+
+  function undo() {
+    if (history.length > 1) {
+      future.push(history.pop());
       const img = new Image();
       img.src = history[history.length - 1];
-      img.onload = () => ctx.drawImage(img, 0, 0);
+      img.onload = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawPlanet();
+        ctx.drawImage(img, 0, 0);
+      };
     }
+  }
 
-    function undo() {
-      if (history.length > 1) {
-        future.push(history.pop());
-        const img = new Image();
-        img.src = history[history.length - 1];
-        img.onload = () => {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          drawPlanet();
-          ctx.drawImage(img, 0, 0);
-        };
-      }
+  function redo() {
+    if (future.length > 0) {
+      const imgSrc = future.pop();
+      history.push(imgSrc);
+      const img = new Image();
+      img.src = imgSrc;
+      img.onload = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawPlanet();
+        ctx.drawImage(img, 0, 0);
+      };
     }
+  }
 
-    function redo() {
-      if (future.length > 0) {
-        const imgSrc = future.pop();
-        history.push(imgSrc);
-        const img = new Image();
-        img.src = imgSrc;
-        img.onload = () => {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          drawPlanet();
-          ctx.drawImage(img, 0, 0);
-        };
-      }
-    }
+  function downloadPlanet() {
+    const name = document.getElementById('planetName').value || 'MyPlanet';
+    const link = document.createElement('a');
+    link.download = name + '.png';
+    link.href = canvas.toDataURL();
+    link.click();
+  }
 
-    function downloadPlanet() {
-      const name = document.getElementById('planetName').value || 'MyPlanet';
-      const link = document.createElement('a');
-      link.download = name + '.png';
-      link.href = canvas.toDataURL();
-      link.click();
-    }
+  function shareToX() {
+    const name = encodeURIComponent(document.getElementById('planetName').value || 'My Planet');
+    const url = encodeURIComponent(window.location.href);
+    const text = `Check out my planet "${name}"! 🚀`;
+    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+  }
 
-    function shareToX() {
-      const name = encodeURIComponent(document.getElementById('planetName').value || 'My Planet');
-      const url = encodeURIComponent(window.location.href);
-      const text = `Check out my planet "${name}"! 🚀`;
-      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
-    }
+  function shareToFacebook() {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+  }
 
-    function shareToFacebook() {
-      const url = encodeURIComponent(window.location.href);
-      window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
-    }
+  function goBack() {
+    window.location.href = 'index.html';
+  }
 
-    function goBack() {
-      window.location.href = 'index.html'; // Adjust if needed
-    }
-
-    drawPlanet();
-    saveHistory();
-  </script>
+  drawPlanet();
+  saveHistory();
+</script>
 </body>
 </html>
