@@ -17,24 +17,34 @@
       display: flex;
       flex-direction: column;
     }
+    h1 {
+      margin-bottom: 30px;
+    }
+    main {
+      flex-grow: 1;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      max-width: 720px; /* 3 cards x ~220px + gaps */
+      margin: 0 auto;
+    }
     .game-card {
       background-color: #222;
       border-radius: 12px;
       padding: 20px;
-      margin: 15px;
       width: 220px;
-      display: inline-block;
       box-shadow: 0 4px 8px rgba(0,0,0,0.3);
       cursor: pointer;
       transition: transform 0.2s ease;
       text-decoration: none;
       color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .game-card:hover {
       transform: scale(1.05);
-    }
-    h1 {
-      margin-bottom: 30px;
     }
     .tag-beta {
       background: #ff4081;
@@ -45,9 +55,6 @@
       margin-left: 8px;
       vertical-align: middle;
       text-transform: uppercase;
-    }
-    main {
-      flex-grow: 1;
     }
     footer {
       margin-top: auto;
@@ -90,7 +97,7 @@
   </main>
 
   <footer>
-    Version 0.1.4
+    Version 1.0.0
   </footer>
 </body>
 </html>
