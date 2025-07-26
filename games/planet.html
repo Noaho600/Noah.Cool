@@ -35,6 +35,10 @@
       border-radius: 8px;
       cursor: pointer;
       transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
     }
     button:hover {
       background: #555;
@@ -53,6 +57,9 @@
     .share-buttons {
       margin-top: 20px;
     }
+    .emoji {
+      font-size: 18px;
+    }
   </style>
 </head>
 <body>
@@ -62,20 +69,20 @@
   <canvas id="planetCanvas"></canvas>
 
   <div class="button-group">
-    <button id="treeBtn">🌲 Tree</button>
-    <button id="cloudBtn">☁️ Cloud</button>
-    <button id="waterBtn">💧 Water</button>
-    <button id="randomBtn">🪄 Random</button>
-    <button id="resetBtn">🔄 Reset</button>
-    <button id="undoBtn">↩️ Undo</button>
-    <button id="redoBtn">↪️ Redo</button>
-    <button id="saveBtn">💾 Save</button>
+    <button id="treeBtn"><span class="emoji">🌲</span> Tree</button>
+    <button id="cloudBtn"><span class="emoji">☁️</span> Cloud</button>
+    <button id="waterBtn"><span class="emoji">💧</span> Water</button>
+    <button id="randomBtn"><span class="emoji">🪄</span> Random</button>
+    <button id="resetBtn"><span class="emoji">🔄</span> Reset</button>
+    <button id="undoBtn"><span class="emoji">↩️</span> Undo</button>
+    <button id="redoBtn"><span class="emoji">↪️</span> Redo</button>
+    <button id="saveBtn"><span class="emoji">💾</span> Save</button>
   </div>
 
   <div class="share-buttons">
-    <button id="copyLinkBtn">🔗 Copy Link</button>
-    <button id="twitterBtn">🐦 Share to Twitter</button>
-    <button id="facebookBtn">📘 Share to Facebook</button>
+    <button id="copyLinkBtn"><span class="emoji">🔗</span> Copy Link</button>
+    <button id="twitterBtn"><span class="emoji">🐦</span> Share to Twitter</button>
+    <button id="facebookBtn"><span class="emoji">📘</span> Share to Facebook</button>
   </div>
 
   <script src="planet.js"></script>
