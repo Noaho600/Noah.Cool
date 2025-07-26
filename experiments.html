@@ -69,10 +69,36 @@
       transition: all 0.2s ease;
     }
 
+    .tile {
+  opacity: 1;
+  transform: scale(1);
+  transition: all 0.3s ease;
+  animation: fadeIn 0.4s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tile.hidden {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
     .tabs button.active {
       background: var(--text);
       color: var(--bg);
     }
+
+    
 
     .tile-grid {
       display: grid;
@@ -154,23 +180,32 @@
     🚧 These projects are experimental and may change at any time.
   </footer>
 
-  <script>
-    const tabs = document.querySelectorAll('.tab-button');
-    const tiles = document.querySelectorAll('.tile');
+<script>
+  const tabs = document.querySelectorAll('.tab-button');
+  const tiles = document.querySelectorAll('.tile');
 
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
 
-        const filter = tab.dataset.filter;
+      const filter = tab.dataset.filter;
 
-        tiles.forEach(tile => {
-          const tag = tile.dataset.tag;
-          tile.style.display = (filter === 'all' || tag === filter) ? 'flex' : 'none';
-        });
+      tiles.forEach(tile => {
+        const tag = tile.dataset.tag;
+
+        // Remove existing animation class
+        tile.classList.remove('hidden');
+
+        if (filter === 'all' || tag === filter) {
+          tile.classList.remove('hidden');
+          tile.style.animation = 'fadeIn 0.4s ease forwards';
+        } else {
+          tile.classList.add('hidden');
+        }
       });
     });
-  </script>
+  });
+</script>
 </body>
 </html>
