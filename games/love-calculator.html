@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Love Calculator 💘</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Fredoka', sans-serif;
+      background: linear-gradient(135deg, #ffe0f0, #e0f7ff);
+      color: #444;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .input-group {
+      margin: 15px 0;
+    }
+
+    input {
+      padding: 10px;
+      width: 220px;
+      font-size: 1.1rem;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #ff3c96;
+    }
+
+    #result {
+      margin-top: 30px;
+      font-size: 1.6rem;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      text-decoration: none;
+      background: #eee;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #444;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="back-button">← Back to Home</a>
+
+  <h1>💕 Love Calculator</h1>
+  <p>Enter two names and see how strong the love is!</p>
+
+  <div class="input-group">
+    <input type="text" id="name1" placeholder="Your name">
+  </div>
+  <div class="input-group">
+    <input type="text" id="name2" placeholder="Crush's name">
+  </div>
+
+  <button onclick="calculateLove()">💘 Calculate</button>
+
+  <div id="result"></div>
+
+  <script>
+    function calculateLove() {
+      const name1 = document.getElementById("name1").value.trim();
+      const name2 = document.getElementById("name2").value.trim();
+
+      if (!name1 || !name2) {
+        document.getElementById("result").innerText = "Please enter both names!";
+        return;
+      }
+
+      const lovePercent = Math.floor(Math.random() * 51) + 50; // 50–100%
+      let message = "";
+
+      if (lovePercent >= 90) {
+        message = "💖 Soulmates!";
+      } else if (lovePercent >= 75) {
+        message = "💞 Great Match!";
+      } else if (lovePercent >= 60) {
+        message = "💘 There's a spark!";
+      } else {
+        message = "❤️ Could work with effort!";
+      }
+
+      document.getElementById("result").innerText =
+        `${name1} ❤️ ${name2} = ${lovePercent}%\n${message}`;
+    }
+  </script>
+
+</body>
+</html>
