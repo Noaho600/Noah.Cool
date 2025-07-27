@@ -39,28 +39,35 @@
       border-radius: 5px;
       cursor: pointer;
     }
-    #receipt {
-      margin-top: 30px;
-      border-top: 1px solid #555;
-      padding-top: 20px;
-      text-align: left;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .back-button, .reset-button {
-      margin-top: 20px;
-      padding: 8px 18px;
-      background: #ff4f4f;
-      border: none;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .reset-button {
-      background: #888;
-      margin-left: 10px;
-    }
+#receipt {
+  margin-top: 30px;
+  border-top: 2px solid #444;
+  padding-top: 20px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  background: #111;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+#receipt table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#receipt th, #receipt td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #333;
+}
+
+#total-spent {
+  margin-top: 15px;
+  font-weight: bold;
+  color: #00ff90;
+  text-align: right;
+}
   </style>
 </head>
 <body>
@@ -97,41 +104,76 @@
     <button onclick="buyItem('Big Mac', 3)">Buy</button>
   </div>
   
-  <div id="receipt">
-    <h2>🧾 Receipt</h2>
-    <ul id="receipt-list"></ul>
-  </div>
+<div id="receipt">
+  <h2>🧾 Receipt</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Qty</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody id="receipt-body"></tbody>
+  </table>
+  <p id="total-spent">Total Spent: $0</p>
+</div>
 
   <button class="back-button" onclick="window.location.href='index.html'">Back to Home</button>
   <button class="reset-button" onclick="resetGame()">Reset</button>
 
   <script>
     let totalMoney = 250000000000;
-    const moneyEl = document.getElementById('money');
-    const receiptList = document.getElementById('receipt-list');
+const moneyEl = document.getElementById('money');
+const receiptBody = document.getElementById('receipt-body');
+const totalSpentEl = document.getElementById('total-spent');
+const receipt = {};
 
-    function formatMoney(num) {
-      return '$' + num.toLocaleString();
+function formatMoney(num) {
+  return '$' + num.toLocaleString();
+}
+
+function buyItem(name, cost) {
+  if (totalMoney >= cost) {
+    totalMoney -= cost;
+    moneyEl.textContent = formatMoney(totalMoney);
+
+    if (!receipt[name]) {
+      receipt[name] = { qty: 1, total: cost };
+    } else {
+      receipt[name].qty++;
+      receipt[name].total += cost;
     }
 
-    function buyItem(name, cost) {
-      if (totalMoney >= cost) {
-        totalMoney -= cost;
-        moneyEl.textContent = formatMoney(totalMoney);
-        const item = document.createElement('li');
-        item.textContent = `${name} - ${formatMoney(cost)}`;
-        receiptList.appendChild(item);
-        new Audio('https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3').play();
-      } else {
-        alert("You're out of money, Elon!");
-      }
-    }
+    updateReceipt();
+    new Audio('https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3').play();
+  } else {
+    alert("You're out of money, Elon!");
+  }
+}
 
-    function resetGame() {
-      totalMoney = 250000000000;
-      moneyEl.textContent = formatMoney(totalMoney);
-      receiptList.innerHTML = '';
-    }
+function updateReceipt() {
+  receiptBody.innerHTML = '';
+  let totalSpent = 0;
+  for (const [item, data] of Object.entries(receipt)) {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${item}</td>
+      <td>${data.qty}</td>
+      <td>${formatMoney(data.total)}</td>
+    `;
+    receiptBody.appendChild(row);
+    totalSpent += data.total;
+  }
+  totalSpentEl.textContent = 'Total Spent: ' + formatMoney(totalSpent);
+}
+
+function resetGame() {
+  totalMoney = 250000000000;
+  moneyEl.textContent = formatMoney(totalMoney);
+  Object.keys(receipt).forEach(key => delete receipt[key]);
+  updateReceipt();
+}
   </script>
 </body>
 </html>
