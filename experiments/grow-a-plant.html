@@ -2,133 +2,149 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Grow a Plant</title>
+  <title>Grow a Plant Clicker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      background: linear-gradient(to top, #c0fdfb, #fef9d7);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
+    * {
+      box-sizing: border-box;
     }
-
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 40px 20px;
+      background: #f9f9f9;
+    }
     h1 {
       margin-bottom: 10px;
     }
-
-    #plantContainer {
-      width: 200px;
-      height: 300px;
-      background: #eee;
-      border: 2px solid #aaa;
+    #plant {
+      width: 100px;
+      height: 100px;
+      margin: 20px auto;
       position: relative;
-      overflow: hidden;
-      border-radius: 10px;
-      margin-bottom: 20px;
     }
-
-    .leaf {
+    .leaf, .fruit {
       width: 20px;
       height: 20px;
-      background: green;
-      border-radius: 50%;
       position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
+      border-radius: 50%;
     }
-
-    #controls {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    .leaf {
+      background-color: green;
     }
-
+    .fruit {
+      background-color: orange;
+    }
     button {
-      padding: 10px;
+      margin: 10px;
+      padding: 10px 20px;
       font-size: 1em;
       cursor: pointer;
+      border: 1px solid #aaa;
+      border-radius: 6px;
+      background: white;
+      transition: 0.2s;
     }
-
-    #dayCycle {
+    button:hover {
+      background: #e0f7e0;
+    }
+    #upgrades {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
       margin-top: 20px;
-      font-weight: bold;
     }
-
-    #back {
-      margin-top: 30px;
-      font-size: 14px;
-      color: #0077cc;
+    .upgrade {
+      border: 1px solid #ccc;
+      padding: 12px;
+      border-radius: 8px;
+      background: white;
       cursor: pointer;
+      min-width: 100px;
+    }
+    .upgrade:hover {
+      background: #f0f0ff;
     }
   </style>
 </head>
 <body>
 
-  <h1>🌱 Grow a Plant</h1>
-  <div id="plantContainer"></div>
-
-  <div id="controls">
-    <button onclick="waterPlant()">💧 Water</button>
-    <button onclick="addSunlight()">☀️ Sunlight</button>
-    <button onclick="addFertilizer()">🌿 Fertilizer</button>
-    <button onclick="resetPlant()">🔁 Reset</button>
+  <h1>🌿 Grow a Plant</h1>
+  <div id="plant"></div>
+  <div>
+    <button onclick="grow()">Click to Grow</button>
   </div>
+  <h2 id="points">0 growth</h2>
 
-  <div id="dayCycle">☀️ Daytime</div>
-  <div id="back" onclick="goBack()">← Go back home</div>
+  <div id="upgrades"></div>
 
   <script>
-    const plantContainer = document.getElementById('plantContainer');
-    const dayCycle = document.getElementById('dayCycle');
     let growth = 0;
-    let cycle = 'day';
-    let leaves = [];
+    let multiplier = 1;
+    const plant = document.getElementById("plant");
+    const pointsDisplay = document.getElementById("points");
+    const upgradesDiv = document.getElementById("upgrades");
 
-    function growLeaf() {
-      if (growth >= 15) return;
-      const leaf = document.createElement('div');
-      leaf.className = 'leaf';
-      leaf.style.bottom = (growth * 15 + 10) + 'px';
-      leaf.style.background = cycle === 'day' ? 'green' : '#444';
-      plantContainer.appendChild(leaf);
-      leaves.push(leaf);
-      growth++;
+    const upgrades = [
+      {
+        name: "Fertilizer 🌿",
+        cost: 25,
+        effect: () => multiplier += 1,
+        unlocked: false
+      },
+      {
+        name: "Sunlight ☀️",
+        cost: 50,
+        effect: () => multiplier += 2,
+        unlocked: false
+      }
+    ];
+
+    function grow() {
+      growth += multiplier;
+      update();
+      addVisual();
     }
 
-    function waterPlant() {
-      growLeaf();
+    function update() {
+      pointsDisplay.textContent = `${growth} growth`;
+      upgrades.forEach((up, i) => {
+        if (!up.unlocked && growth >= up.cost) {
+          const btn = document.createElement("div");
+          btn.className = "upgrade";
+          btn.textContent = `${up.name} - ${up.cost}`;
+          btn.onclick = () => {
+            if (growth >= up.cost) {
+              growth -= up.cost;
+              up.effect();
+              up.unlocked = true;
+              btn.remove();
+              update();
+            }
+          };
+          upgradesDiv.appendChild(btn);
+          up.unlocked = true; // show only once
+        }
+      });
     }
 
-    function addSunlight() {
-      growLeaf();
+    function addVisual() {
+      const el = document.createElement("div");
+      if (growth % 20 === 0) {
+        el.className = "fruit";
+        el.style.left = `${Math.random() * 80}px`;
+        el.style.bottom = `${Math.random() * 80}px`;
+      } else {
+        el.className = "leaf";
+        el.style.left = `${Math.random() * 90}px`;
+        el.style.bottom = `${Math.random() * 90}px`;
+      }
+      plant.appendChild(el);
     }
 
-    function addFertilizer() {
-      growLeaf();
-    }
-
-    function resetPlant() {
-      leaves.forEach(leaf => leaf.remove());
-      leaves = [];
-      growth = 0;
-    }
-
-    function toggleDayNight() {
-      cycle = cycle === 'day' ? 'night' : 'day';
-      document.body.style.background = cycle === 'night'
-        ? 'linear-gradient(to top, #0f2027, #203a43, #2c5364)'
-        : 'linear-gradient(to top, #c0fdfb, #fef9d7)';
-      dayCycle.textContent = cycle === 'day' ? '☀️ Daytime' : '🌙 Nighttime';
-    }
-
-    function goBack() {
-      window.location.href = "/"; // Adjust if needed
-    }
-
-    setInterval(toggleDayNight, 5000);
+    update();
   </script>
 
 </body>
