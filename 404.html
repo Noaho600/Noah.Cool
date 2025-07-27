@@ -1,35 +1,39 @@
-<!-- 404.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>404 - Page Not Found</title>
+  <title>404 - Not Found</title>
   <style>
-    body {
+    html, body {
       margin: 0;
       padding: 0;
-      font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background: #0a0a0a;
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0a0a0a;
       color: white;
       text-align: center;
     }
 
     h1 {
-      font-size: 6rem;
+      margin-top: 20px;
+      font-size: 5rem;
     }
 
-    .egg {
-      font-size: 2rem;
-      margin-bottom: 1rem;
+    p {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    #gameCanvas {
+      display: block;
+      margin: auto;
+      border: 2px solid white;
+      background: #111;
     }
 
     .back-button {
+      margin-top: 20px;
       background: #ff5a5f;
       color: white;
       border: none;
@@ -41,22 +45,78 @@
     }
 
     .back-button:hover {
-      background: #ff3b3f;
-    }
-
-    .floating-planet {
-      animation: float 4s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
+      background: #e94b4f;
     }
   </style>
 </head>
 <body>
+
   <h1>404</h1>
-  <div class="egg floating-planet">There is no cool part of the website here.</div>
-  <button class="back-button" onclick="location.href='index.html'">Go Back Home</button>
+  <p>This page got lost... but you can play a bit!</p>
+
+  <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+  <br />
+  <button class="back-button" onclick="window.location.href='index.html'">Go Back Home</button>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const gravity = 0.3;
+    const friction = 0.9;
+
+    let balls = [];
+
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      balls.push({
+        x: x,
+        y: y,
+        radius: 15,
+        vx: (Math.random() - 0.5) * 6,
+        vy: -Math.random() * 8,
+        color: `hsl(${Math.random() * 360}, 70%, 60%)`
+      });
+    });
+
+    function drawBall(ball) {
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+      ctx.fillStyle = ball.color;
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    function update() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let ball of balls) {
+        ball.vy += gravity;
+        ball.x += ball.vx;
+        ball.y += ball.vy;
+
+        // Bounce off walls
+        if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+          ball.vx = -ball.vx * friction;
+        }
+
+        // Bounce off floor
+        if (ball.y + ball.radius > canvas.height) {
+          ball.y = canvas.height - ball.radius;
+          ball.vy = -ball.vy * friction;
+        }
+
+        drawBall(ball);
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    update();
+  </script>
+
 </body>
 </html>
