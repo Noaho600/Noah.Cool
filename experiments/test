@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TwoLemon.fun</title>
+    <link rel="icon" type="image/png" href="images/Lemon.png">
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+    <h1 id="headerTitle">TwoLemon.fun</h1>
+    <div id="iconContainer">
+    <div id="clickerGameIcon" class="gameIcon" onclick="window.location.href='lemonClicker.html'"><b>Lemon clicker</b></div>
+    <div id="collectorGameIcon" class="gameIcon" onclick="window.location.href='lemonEater.html'"><b>Lemon eater</b></div>
+    <div id="shooterGameIcon" class="gameIcon" onclick="window.location.href='lemonShooter.html'"><b>Lemon shooter</b></div>
+    <div id="flappyGameIcon" class="gameIcon" onclick="window.location.href='flappyLemon.html'"><b>Flappy lemon</b></div>
+    <div id="bouncerGameIcon" class="gameIcon" onclick="window.location.href='lemonBouncer.html'"><b>Lemon bouncer</b></div>
+    <div id="defenderGameIcon" class="gameIcon" onclick="window.location.href='lemonDefender.html'"><b>Lemon defender(W.I.P)</b></div>
+    </div>
+</body>
+</html>
