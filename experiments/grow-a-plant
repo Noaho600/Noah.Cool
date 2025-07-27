@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grow a Plant</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      text-align: center;
+      background: linear-gradient(to top, #cbe8b5, #87ceeb);
+      transition: background 1s;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    #plant {
+      width: 30px;
+      height: 60px;
+      background-color: green;
+      margin: 40px auto;
+      transition: height 0.3s ease, background-color 0.3s;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #dayNightBtn {
+      background-color: #333;
+    }
+
+    .back-button {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      padding: 6px 12px;
+      font-size: 14px;
+      background-color: #555;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <button class="back-button" onclick="goBack()">← Back</button>
+  <div class="container">
+    <h1>Grow a Plant 🌱</h1>
+    <div id="plant"></div>
+    <div>
+      <button onclick="waterPlant()">💧 Water</button>
+      <button onclick="addSunlight()">☀️ Sunlight</button>
+      <button onclick="addFertilizer()">🌿 Fertilizer</button>
+      <button id="dayNightBtn" onclick="toggleDayNight()">🌙 Toggle Day/Night</button>
+    </div>
+  </div>
+
+  <script>
+    let plant = document.getElementById("plant");
+    let currentHeight = 60;
+    let isDay = true;
+    let growthBoost = 1;
+
+    function waterPlant() {
+      currentHeight += 10 * growthBoost;
+      plant.style.height = currentHeight + "px";
+    }
+
+    function addSunlight() {
+      growthBoost += 0.5;
+      alert("Your plant absorbs sunlight and grows faster!");
+    }
+
+    function addFertilizer() {
+      growthBoost += 1;
+      alert("Fertilizer applied! Growth boost increased.");
+    }
+
+    function toggleDayNight() {
+      isDay = !isDay;
+      document.body.style.background = isDay
+        ? "linear-gradient(to top, #cbe8b5, #87ceeb)"
+        : "linear-gradient(to top, #2c3e50, #34495e)";
+      document.getElementById("dayNightBtn").textContent = isDay ? "🌙 Toggle Day/Night" : "☀️ Toggle Day/Night";
+    }
+
+    function goBack() {
+      window.location.href = "/index.html";
+    }
+  </script>
+</body>
+</html>
