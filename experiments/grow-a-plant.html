@@ -23,18 +23,24 @@
       height: 100px;
       margin: 20px auto;
       position: relative;
+      transition: transform 0.3s ease;
     }
     .leaf, .fruit {
       width: 20px;
       height: 20px;
       position: absolute;
       border-radius: 50%;
+      animation: growIn 0.3s ease forwards;
     }
     .leaf {
       background-color: green;
     }
     .fruit {
       background-color: orange;
+    }
+    @keyframes growIn {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
     button {
       margin: 10px;
@@ -49,14 +55,14 @@
     button:hover {
       background: #e0f7e0;
     }
-    #upgrades {
+    #upgrades, #shop {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
       gap: 12px;
       margin-top: 20px;
     }
-    .upgrade {
+    .upgrade, .shop-item {
       border: 1px solid #ccc;
       padding: 12px;
       border-radius: 8px;
@@ -64,7 +70,7 @@
       cursor: pointer;
       min-width: 100px;
     }
-    .upgrade:hover {
+    .upgrade:hover, .shop-item:hover {
       background: #f0f0ff;
     }
   </style>
@@ -75,10 +81,15 @@
   <div id="plant"></div>
   <div>
     <button onclick="grow()">Click to Grow</button>
+    <button onclick="resetGame()">Reset</button>
   </div>
   <h2 id="points">0 growth</h2>
 
+  <h3>Upgrades</h3>
   <div id="upgrades"></div>
+
+  <h3>Shop</h3>
+  <div id="shop"></div>
 
   <script>
     let growth = 0;
@@ -86,6 +97,7 @@
     const plant = document.getElementById("plant");
     const pointsDisplay = document.getElementById("points");
     const upgradesDiv = document.getElementById("upgrades");
+    const shopDiv = document.getElementById("shop");
 
     const upgrades = [
       {
@@ -102,6 +114,27 @@
       }
     ];
 
+    const shopItems = [
+      {
+        name: "Clay Pot 💚",
+        cost: 30,
+        effect: () => plant.style.transform = "scale(1.1)",
+        bought: false
+      },
+      {
+        name: "Stone Pot 📅",
+        cost: 60,
+        effect: () => plant.style.transform = "scale(1.2)",
+        bought: false
+      },
+      {
+        name: "Golden Pot 💰",
+        cost: 100,
+        effect: () => plant.style.transform = "scale(1.3)",
+        bought: false
+      }
+    ];
+
     function grow() {
       growth += multiplier;
       update();
@@ -110,6 +143,7 @@
 
     function update() {
       pointsDisplay.textContent = `${growth} growth`;
+
       upgrades.forEach((up, i) => {
         if (!up.unlocked && growth >= up.cost) {
           const btn = document.createElement("div");
@@ -125,7 +159,26 @@
             }
           };
           upgradesDiv.appendChild(btn);
-          up.unlocked = true; // show only once
+          up.unlocked = true;
+        }
+      });
+
+      shopItems.forEach((item, i) => {
+        if (!item.bought && growth >= item.cost) {
+          const btn = document.createElement("div");
+          btn.className = "shop-item";
+          btn.textContent = `${item.name} - ${item.cost}`;
+          btn.onclick = () => {
+            if (growth >= item.cost) {
+              growth -= item.cost;
+              item.effect();
+              item.bought = true;
+              btn.remove();
+              update();
+            }
+          };
+          shopDiv.appendChild(btn);
+          item.bought = true;
         }
       });
     }
@@ -144,8 +197,19 @@
       plant.appendChild(el);
     }
 
+    function resetGame() {
+      growth = 0;
+      multiplier = 1;
+      plant.innerHTML = "";
+      upgradesDiv.innerHTML = "";
+      shopDiv.innerHTML = "";
+      upgrades.forEach(u => u.unlocked = false);
+      shopItems.forEach(i => i.bought = false);
+      plant.style.transform = "scale(1)";
+      update();
+    }
+
     update();
   </script>
-
 </body>
 </html>
