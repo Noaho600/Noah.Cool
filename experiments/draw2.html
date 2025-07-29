@@ -4,189 +4,176 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Draw a Planet</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #111;
-      --card: #1d1d1d;
-      --text: #fff;
-      --accent: #0aefff;
-    }
     body {
-      margin: 0;
-      font-family: 'Nunito', sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      font-family: sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem;
+      justify-content: center;
+      padding: 20px;
+      background: #f2f2f2;
     }
-    h1 {
-      margin-bottom: 1rem;
-      font-size: 2rem;
-      text-align: center;
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
     }
-    #canvas {
-      background: radial-gradient(circle at center, #222, #111);
-      border: 4px solid var(--accent);
-      border-radius: 50%;
+    .toolbar img {
+      width: 50px;
+      height: 50px;
+      padding: 8px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      background: white;
+      cursor: pointer;
+    }
+    .canvas-container {
+      position: relative;
       width: 300px;
       height: 300px;
-      cursor: crosshair;
+      border-radius: 30px;
+      overflow: hidden;
+      background: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
-    .controls {
-      margin-top: 1rem;
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .buttons {
+      margin-top: 15px;
       display: flex;
+      gap: 10px;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 10px;
     }
-    button, select, input {
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      border: none;
-      border-radius: 8px;
-      background: var(--accent);
-      color: black;
+    .buttons button, .buttons input[type="color"] {
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid #aaa;
+      background: white;
       cursor: pointer;
-      transition: 0.2s;
     }
-    button:hover {
-      background: #00cfd1;
-    }
-    #nameInput {
-      padding: 0.4rem;
-      border-radius: 6px;
-      border: none;
-    }
-    .footer {
-      margin-top: 2rem;
-      opacity: 0.6;
-      font-size: 0.9rem;
+    .planet-style {
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <h1>Draw a Planet</h1>
-  <canvas id="canvas" width="300" height="300"></canvas>
+  <div class="toolbar">
+    <img src="icons/dvd.png" title="Stamp: DVD" onclick="addStamp('dvd')" />
+    <img src="icons/folder.png" title="Stamp: Folder" onclick="addStamp('folder')" />
+    <img src="icons/tray.png" title="Stamp: Tray" onclick="addStamp('tray')" />
+    <img src="icons/character.png" title="Stamp: Character" onclick="addStamp('character')" />
+    <img src="icons/megaphone.png" title="Stamp: Megaphone" onclick="addStamp('megaphone')" />
+  </div>
 
-  <div class="controls">
-    <select id="planetStyle">
+  <div class="canvas-container">
+    <canvas id="planetCanvas"></canvas>
+  </div>
+
+  <div class="buttons">
+    <button onclick="toggleRings()">Toggle Rings</button>
+    <button onclick="resetCanvas()">Reset</button>
+    <button onclick="goBack()">Back</button>
+    <input type="color" id="colorPicker" title="Pick a color" />
+    <select onchange="changePlanetStyle(this.value)">
       <option value="earth">Earth-like</option>
       <option value="fire">Fire-like</option>
       <option value="ice">Ice-like</option>
-      <option value="gas">Gas Giant</option>
     </select>
-
-    <select id="stampTool">
-      <option value="">Stamp Tool</option>
-      <option value="cloud">☁️ Cloud</option>
-      <option value="tree">🌳 Tree</option>
-      <option value="crater">🕳️ Crater</option>
-      <option value="volcano">🌋 Volcano</option>
-      <option value="city">🏙️ City</option>
-      <option value="alien">👽 Alien</option>
-    </select>
-
-    <button onclick="drawRing()">Add Ring</button>
-    <button onclick="undo()">Undo</button>
-    <button onclick="redo()">Redo</button>
-    <button onclick="resetPlanet()">Reset</button>
-    <button onclick="download()">Download</button>
-    <input type="text" id="nameInput" placeholder="Name your planet">
-    <button onclick="goBack()">🔙 Back</button>
   </div>
 
   <script>
-    const canvas = document.getElementById('canvas');
+    const canvas = document.getElementById('planetCanvas');
     const ctx = canvas.getContext('2d');
-    const stampTool = document.getElementById('stampTool');
-    const planetStyle = document.getElementById('planetStyle');
+    canvas.width = canvas.height = 300;
+    let drawing = false;
+    let planetStyle = 'earth';
+    let showRings = false;
 
-    let history = [];
-    let redoStack = [];
+    const stamps = {
+      dvd: new Image(),
+      folder: new Image(),
+      tray: new Image(),
+      character: new Image(),
+      megaphone: new Image()
+    };
 
-    canvas.addEventListener('click', (e) => {
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      drawStamp(x, y);
-      saveState();
-    });
+    stamps.dvd.src = 'icons/dvd.png';
+    stamps.folder.src = 'icons/folder.png';
+    stamps.tray.src = 'icons/tray.png';
+    stamps.character.src = 'icons/character.png';
+    stamps.megaphone.src = 'icons/megaphone.png';
 
-    function drawBasePlanet() {
+    function drawPlanet() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = getPlanetColor(planetStyle);
       ctx.beginPath();
-      ctx.arc(150, 150, 140, 0, Math.PI * 2);
-      ctx.fillStyle = getPlanetColor();
+      ctx.arc(150, 150, 80, 0, Math.PI * 2);
       ctx.fill();
-    }
-
-    function getPlanetColor() {
-      switch (planetStyle.value) {
-        case 'earth': return '#4CAF50';
-        case 'fire': return '#FF4500';
-        case 'ice': return '#87CEEB';
-        case 'gas': return '#D2B48C';
-        default: return '#999';
+      if (showRings) {
+        ctx.strokeStyle = 'gray';
+        ctx.beginPath();
+        ctx.ellipse(150, 150, 100, 30, 0, 0, Math.PI * 2);
+        ctx.stroke();
       }
     }
 
-    function drawStamp(x, y) {
-      const emoji = stampTool.value;
-      if (!emoji) return;
-      ctx.font = '24px serif';
-      ctx.fillText(emoji, x - 12, y + 12);
-    }
-
-    function drawRing() {
-      ctx.strokeStyle = '#aaa';
-      ctx.beginPath();
-      ctx.ellipse(150, 150, 180, 50, Math.PI / 4, 0, 2 * Math.PI);
-      ctx.stroke();
-    }
-
-    function saveState() {
-      history.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
-      redoStack = [];
-    }
-
-    function undo() {
-      if (history.length > 0) {
-        redoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
-        const prev = history.pop();
-        ctx.putImageData(prev, 0, 0);
+    function getPlanetColor(style) {
+      switch (style) {
+        case 'earth': return '#6ad';
+        case 'fire': return '#f63';
+        case 'ice': return '#acf';
+        default: return '#ccc';
       }
     }
 
-    function redo() {
-      if (redoStack.length > 0) {
-        history.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
-        const next = redoStack.pop();
-        ctx.putImageData(next, 0, 0);
-      }
+    function changePlanetStyle(style) {
+      planetStyle = style;
+      drawPlanet();
     }
 
-    function resetPlanet() {
-      history = [];
-      redoStack = [];
-      drawBasePlanet();
+    function toggleRings() {
+      showRings = !showRings;
+      drawPlanet();
     }
 
-    function download() {
-      const link = document.createElement('a');
-      link.download = (document.getElementById('nameInput').value || 'planet') + '.png';
-      link.href = canvas.toDataURL();
-      link.click();
+    function resetCanvas() {
+      drawPlanet();
     }
 
     function goBack() {
-      window.location.href = '/experiments.html';
+      window.history.back();
     }
 
-    planetStyle.addEventListener('change', drawBasePlanet);
-    drawBasePlanet();
+    function addStamp(type) {
+      const img = stamps[type];
+      img.onload = () => ctx.drawImage(img, 120, 120, 40, 40);
+      ctx.drawImage(img, 120, 120, 40, 40);
+    }
+
+    canvas.addEventListener('mousedown', e => {
+      drawing = true;
+      draw(e);
+    });
+    canvas.addEventListener('mouseup', () => drawing = false);
+    canvas.addEventListener('mousemove', draw);
+
+    function draw(e) {
+      if (!drawing) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      ctx.fillStyle = document.getElementById('colorPicker').value;
+      ctx.beginPath();
+      ctx.arc(x, y, 4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    drawPlanet();
   </script>
 </body>
 </html>
