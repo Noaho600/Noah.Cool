@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Draw a Planet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111;
+      --card: #1d1d1d;
+      --text: #fff;
+      --accent: #0aefff;
+    }
+    body {
+      margin: 0;
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+    h1 {
+      margin-bottom: 1rem;
+      font-size: 2rem;
+      text-align: center;
+    }
+    #canvas {
+      background: radial-gradient(circle at center, #222, #111);
+      border: 4px solid var(--accent);
+      border-radius: 50%;
+      width: 300px;
+      height: 300px;
+      cursor: crosshair;
+    }
+    .controls {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+    button, select, input {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background: var(--accent);
+      color: black;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button:hover {
+      background: #00cfd1;
+    }
+    #nameInput {
+      padding: 0.4rem;
+      border-radius: 6px;
+      border: none;
+    }
+    .footer {
+      margin-top: 2rem;
+      opacity: 0.6;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Draw a Planet</h1>
+  <canvas id="canvas" width="300" height="300"></canvas>
+
+  <div class="controls">
+    <select id="planetStyle">
+      <option value="earth">Earth-like</option>
+      <option value="fire">Fire-like</option>
+      <option value="ice">Ice-like</option>
+      <option value="gas">Gas Giant</option>
+    </select>
+
+    <select id="stampTool">
+      <option value="">Stamp Tool</option>
+      <option value="cloud">☁️ Cloud</option>
+      <option value="tree">🌳 Tree</option>
+      <option value="crater">🕳️ Crater</option>
+      <option value="volcano">🌋 Volcano</option>
+      <option value="city">🏙️ City</option>
+      <option value="alien">👽 Alien</option>
+    </select>
+
+    <button onclick="drawRing()">Add Ring</button>
+    <button onclick="undo()">Undo</button>
+    <button onclick="redo()">Redo</button>
+    <button onclick="resetPlanet()">Reset</button>
+    <button onclick="download()">Download</button>
+    <input type="text" id="nameInput" placeholder="Name your planet">
+    <button onclick="goBack()">🔙 Back</button>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const stampTool = document.getElementById('stampTool');
+    const planetStyle = document.getElementById('planetStyle');
+
+    let history = [];
+    let redoStack = [];
+
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      drawStamp(x, y);
+      saveState();
+    });
+
+    function drawBasePlanet() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.beginPath();
+      ctx.arc(150, 150, 140, 0, Math.PI * 2);
+      ctx.fillStyle = getPlanetColor();
+      ctx.fill();
+    }
+
+    function getPlanetColor() {
+      switch (planetStyle.value) {
+        case 'earth': return '#4CAF50';
+        case 'fire': return '#FF4500';
+        case 'ice': return '#87CEEB';
+        case 'gas': return '#D2B48C';
+        default: return '#999';
+      }
+    }
+
+    function drawStamp(x, y) {
+      const emoji = stampTool.value;
+      if (!emoji) return;
+      ctx.font = '24px serif';
+      ctx.fillText(emoji, x - 12, y + 12);
+    }
+
+    function drawRing() {
+      ctx.strokeStyle = '#aaa';
+      ctx.beginPath();
+      ctx.ellipse(150, 150, 180, 50, Math.PI / 4, 0, 2 * Math.PI);
+      ctx.stroke();
+    }
+
+    function saveState() {
+      history.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+      redoStack = [];
+    }
+
+    function undo() {
+      if (history.length > 0) {
+        redoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+        const prev = history.pop();
+        ctx.putImageData(prev, 0, 0);
+      }
+    }
+
+    function redo() {
+      if (redoStack.length > 0) {
+        history.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+        const next = redoStack.pop();
+        ctx.putImageData(next, 0, 0);
+      }
+    }
+
+    function resetPlanet() {
+      history = [];
+      redoStack = [];
+      drawBasePlanet();
+    }
+
+    function download() {
+      const link = document.createElement('a');
+      link.download = (document.getElementById('nameInput').value || 'planet') + '.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+
+    function goBack() {
+      window.location.href = '/experiments.html';
+    }
+
+    planetStyle.addEventListener('change', drawBasePlanet);
+    drawBasePlanet();
+  </script>
+</body>
+</html>
