@@ -1,0 +1,787 @@
+<!doctype html>
+<html data-n-head-ssr lang="en" data-n-head="%7B%22lang%22:%7B%22ssr%22:%22en%22%7D%7D">
+    <head>
+        <meta data-n-head="ssr" charset="utf-8">
+        <meta data-n-head="ssr" name="viewport" content="width=device-width,initial-scale=1">
+        <meta data-n-head="ssr" name="google-site-verification" content="Vyp6Lq2HJODQviN98DbqlmqefoUuDj_cwlmS7jAgaao">
+        <meta data-n-head="ssr" name="title" content="Neal.fun">
+        <meta data-n-head="ssr" name="description" content="Games, visualizations, interactives and other weird stuff.">
+        <meta data-n-head="ssr" name="theme-color" content="#FFFFFF">
+        <title>Noah.fun</title>
+        <link data-n-head="ssr" rel="canonical" href="https://neal.fun">
+        <link data-n-head="ssr" rel="icon" type="image/png" href="/favicons/home.png">
+        <script data-n-head="ssr" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4556406968269041" async crossorigin="anonymous"></script>
+        <script data-n-head="ssr" src="https://plausible.io/js/script.js" defer data-domain="neal.fun"></script>
+        <link rel="preload" href="/_nuxt/ec7a90f.js" as="script">
+        <link rel="preload" href="/_nuxt/4576e40.js" as="script">
+        <link rel="preload" href="/_nuxt/2a542a9.js" as="script">
+        <link rel="preload" href="/_nuxt/cd7cdb7.js" as="script">
+        <link rel="preload" href="/_nuxt/7b61381.js" as="script">
+        <link rel="preload" href="/_nuxt/c9108d6.js" as="script">
+        <style data-vue-ssr-id="49569972:0 6e9698fd:0 90e6f6c6:0 7889f3ac:0 2ba8302b:0">
+            .nuxt-progress {
+                background-color: #000;
+                height: 2px;
+                left: 0;
+                opacity: 1;
+                position: fixed;
+                right: 0;
+                top: 0;
+                transition: width .1s,opacity .4s;
+                width: 0;
+                z-index: 999999
+            }
+
+            .nuxt-progress.nuxt-progress-notransition {
+                transition: none
+            }
+
+            .nuxt-progress-failed {
+                background-color: red
+            }
+
+            @font-face {
+                font-family: Roboto;
+                src: url(/_nuxt/fonts/Roboto-Medium.3ac5d40.woff2)
+            }
+
+            @font-face {
+                font-family: Roboto;
+                font-weight: 700;
+                src: url(/_nuxt/fonts/Roboto-Bold.a65527f.woff2)
+            }
+
+            @font-face {
+                font-family: RobotoLight;
+                src: url(/_nuxt/fonts/Roboto-Light.76fcea7.woff2)
+            }
+
+            html {
+                font-size: 16px;
+                -ms-text-size-adjust: 100%;
+                -webkit-text-size-adjust: 100%;
+                -moz-osx-font-smoothing: grayscale;
+                -webkit-font-smoothing: antialiased;
+                background: #fff;
+                box-sizing: border-box;
+                color: #000;
+                font-family: Roboto,sans-serif,system-ui,-apple-system,Segoe UI,Ubuntu,Cantarell,Noto Sans
+            }
+
+            *,:after,:before {
+                box-sizing: border-box;
+                margin: 0
+            }
+
+            .simple-page {
+                background: #f1f2f6
+            }
+
+            @media (max-width: 768px),(pointer:coarse) {
+                html {
+                    height:100%;
+                    overflow-y: scroll;
+                    -webkit-overflow-scrolling: touch
+                }
+
+                body {
+                    height: 100%;
+                    overflow-y: scroll;
+                    -webkit-overflow-scrolling: touch
+                }
+            }
+
+            .container[data-v-cac35620] {
+                color: #000;
+                font-family: RobotoLight,sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans;
+                min-height: 100vh;
+                padding-top: 52px
+            }
+
+            .container[data-v-cac35620],.posts[data-v-cac35620] {
+                margin-left: auto;
+                margin-right: auto
+            }
+
+            .posts[data-v-cac35620] {
+                display: grid;
+                font-size: 0;
+                grid-template-columns: repeat(3,1fr);
+                grid-template-rows: auto;
+                grid-gap: 22px 22px;
+                justify-content: center;
+                max-width: 1430px;
+                padding: 0 25px;
+                width: 100%
+            }
+
+            .made-by[data-v-cac35620] {
+                background: #fff;
+                font-size: 21px;
+                margin-bottom: 40px;
+                margin-top: 25px;
+                padding: 25px 20px 20px;
+                text-align: center
+            }
+
+            .site-tagline[data-v-cac35620] {
+                font-size: 20px;
+                margin-bottom: 46px;
+                margin-top: 10px;
+                text-align: center
+            }
+
+            .socials[data-v-cac35620] {
+                display: flex;
+                justify-content: center;
+                grid-gap: 12px;
+                margin-top: 14px
+            }
+
+            .social-btn[data-v-cac35620] {
+                align-items: center;
+                border: 1px solid #b5b5b5;
+                border-radius: 12px;
+                color: #000;
+                cursor: pointer;
+                display: flex;
+                font-family: RobotoLight;
+                font-size: 20px;
+                padding: 10px 18px 8px 12px;
+                -webkit-text-decoration: none;
+                text-decoration: none;
+                transition: transform 75ms ease-in-out
+            }
+
+            .social-btn[data-v-cac35620]:hover {
+                box-shadow: 3px 3px 5px 0 rgba(0,0,0,.05);
+                transform: scale(1.03)
+            }
+
+            .social-btn-icon[data-v-cac35620] {
+                height: 25px;
+                margin-right: 10px
+            }
+
+            .social-btn-twitter[data-v-cac35620] {
+                padding: 1px 0
+            }
+
+            .follow-block[data-v-cac35620] {
+                background-color: #fff;
+                font-size: 20px;
+                margin-bottom: 37px;
+                text-align: center
+            }
+
+            .contact[data-v-cac35620] {
+                margin-top: 16px
+            }
+
+            .contact-label[data-v-cac35620] {
+                opacity: .7
+            }
+
+            .contact a[data-v-cac35620],.privacy[data-v-cac35620] {
+                color: #000;
+                -webkit-text-decoration: none;
+                text-decoration: none
+            }
+
+            .privacy[data-v-cac35620] {
+                display: inline-block;
+                font-size: 16px;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 12px;
+                opacity: .5
+            }
+
+            .newsletter-tagline[data-v-cac35620] {
+                background: #fff;
+                border: 1px solid #b5b5b5;
+                border-radius: 10px;
+                cursor: pointer;
+                display: flex;
+                font-size: 17px;
+                padding: 8px 12px;
+                position: absolute;
+                right: 10px;
+                top: 11px;
+                transition: transform 75ms ease-in-out
+            }
+
+            .newsletter-tagline[data-v-cac35620]:hover {
+                background: #fffdf3;
+                box-shadow: 3px 3px 5px 0 rgba(0,0,0,.05);
+                transform: scale(1.03)
+            }
+
+            .newsletter-icon[data-v-cac35620] {
+                height: 17px;
+                margin-right: 7px;
+                position: relative;
+                top: 2px
+            }
+
+            .made-by-me[data-v-cac35620] {
+                margin-right: 10px;
+                width: 40px
+            }
+
+            .made-by-desc[data-v-cac35620] {
+                align-items: center;
+                display: flex;
+                justify-content: center
+            }
+
+            .plant-wrapper[data-v-cac35620] {
+                contain: style layout;
+                height: 75px;
+                position: absolute;
+                right: calc(50% - 550px);
+                top: 198px;
+                transform: translateY(-100%)
+            }
+
+            .watering[data-v-cac35620] {
+                animation: watering-cac35620 .1s ease-in-out 4s forwards;
+                left: -72px;
+                -o-object-fit: cover;
+                object-fit: cover;
+                position: absolute;
+                top: -46px;
+                width: 118px;
+                z-index: 1
+            }
+
+            @keyframes watering-cac35620 {
+                0% {
+                    opacity: 1
+                }
+
+                to {
+                    opacity: 0
+                }
+            }
+
+            .plant[data-v-cac35620] {
+                cursor: pointer;
+                height: 100%;
+                z-index: 5
+            }
+
+            .plant-wrapper[data-v-cac35620]:hover {
+                transform: translateY(-100%) scale(1.03);
+                transform-origin: bottom
+            }
+
+            .plant-stat[data-v-cac35620],.plant-watered[data-v-cac35620] {
+                pointer-events: none
+            }
+
+            .plant-stat[data-v-cac35620] {
+                background: #fff;
+                border: 1px solid #b5b5b5;
+                border-radius: 10px;
+                font-size: 14px;
+                left: -62px;
+                opacity: 0;
+                padding: 7px;
+                position: absolute;
+                text-align: center;
+                top: -61px;
+                width: 135px;
+                z-index: 5
+            }
+
+            .plant-watered .plant-stat[data-v-cac35620] {
+                animation: fadeInPlantStat-cac35620 .6s ease-in-out 4s forwards,fadeOutPlantStat-cac35620 .6s ease-in-out 7.6s forwards
+            }
+
+            @keyframes fadeInPlantStat-cac35620 {
+                0% {
+                    opacity: 0;
+                    transform: translateY(10px)
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0)
+                }
+            }
+
+            @keyframes fadeOutPlantStat-cac35620 {
+                0% {
+                    opacity: 1
+                }
+
+                to {
+                    opacity: 0;
+                    transform: translateY(-10px)
+                }
+            }
+
+            .plant-stat[data-v-cac35620]:before {
+                border-left: 9px solid transparent;
+                border-right: 9px solid transparent;
+                border-top: 9px solid #b5b5b5;
+                right: 20px;
+                z-index: 1
+            }
+
+            .plant-stat[data-v-cac35620]:after,.plant-stat[data-v-cac35620]:before {
+                content: "";
+                height: 0;
+                pointer-events: none;
+                position: absolute;
+                top: 100%;
+                transform: translateX(-50%);
+                width: 0
+            }
+
+            .plant-stat[data-v-cac35620]:after {
+                border-left: 8px solid transparent;
+                border-right: 8px solid transparent;
+                border-top: 8px solid #fff;
+                right: 22px;
+                z-index: 2
+            }
+
+            .home-footer[data-v-cac35620] {
+                height: 50px;
+                position: relative
+            }
+
+            .newsletter-btn[data-v-cac35620]:hover,.social-btn-newsletter[data-v-cac35620]:hover {
+                background: #fffdf3
+            }
+
+            .twitter-btn[data-v-cac35620]:hover {
+                background: #f3faff
+            }
+
+            .coffee-btn[data-v-cac35620]:hover {
+                background: #fffaf3
+            }
+
+            @media only screen and (max-width: 1350px) {
+                .plant-wrapper[data-v-cac35620] {
+                    height:70px;
+                    right: calc(50% - 450px)
+                }
+            }
+
+            @media only screen and (max-width: 1280px) {
+                .posts[data-v-cac35620] {
+                    grid-gap:15px 16px
+                }
+            }
+
+            @media only screen and (max-width: 1130px) {
+                .posts[data-v-cac35620] {
+                    grid-template-columns:1fr 1fr;
+                    max-width: 900px;
+                    grid-gap: 15px 18px
+                }
+
+                .plant-wrapper[data-v-cac35620] {
+                    height: 65px;
+                    right: calc(50% - 350px)
+                }
+            }
+
+            @media only screen and (max-width: 900px) {
+                .plant-wrapper[data-v-cac35620] {
+                    height:60px;
+                    right: calc(50% - 300px)
+                }
+            }
+
+            @media only screen and (max-width: 700px) {
+                .newsletter-tagline[data-v-cac35620],.plant-wrapper[data-v-cac35620] {
+                    display:none
+                }
+            }
+
+            @media only screen and (max-width: 600px) {
+                .posts[data-v-cac35620] {
+                    grid-template-columns:repeat(1,1fr);
+                    grid-gap: 11px;
+                    padding: 0 8px
+                }
+
+                .site-tagline[data-v-cac35620] {
+                    margin-top: 10px
+                }
+
+                .made-by[data-v-cac35620],.site-tagline[data-v-cac35620] {
+                    margin-bottom: 30px
+                }
+
+                .made-by-desc[data-v-cac35620] {
+                    margin-left: auto;
+                    margin-right: auto;
+                    max-width: 300px
+                }
+
+                .socials[data-v-cac35620] {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr
+                }
+
+                .social-btn[data-v-cac35620] {
+                    justify-content: center;
+                    padding: 10px 0
+                }
+
+                .social-full[data-v-cac35620] {
+                    grid-column: span 2
+                }
+            }
+
+            .main-logo[data-v-cfcc868e] {
+                align-items: center;
+                display: flex;
+                height: 64px;
+                justify-content: center;
+                grid-gap: 6px;
+                contain: layout style
+            }
+
+            .main-logo-img[data-v-cfcc868e] {
+                height: 100%
+            }
+
+            .my-head-wrapper[data-v-cfcc868e] {
+                contain: strict;
+                height: 100%;
+                position: relative;
+                width: 30px
+            }
+
+            .my-head-wrapper[data-v-cfcc868e],.my-head[data-v-cfcc868e] {
+                -webkit-tap-highlight-color: transparent;
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none
+            }
+
+            .my-head[data-v-cfcc868e] {
+                bottom: 0;
+                contain: layout style;
+                cursor: pointer;
+                display: block;
+                position: absolute;
+                width: 100%
+            }
+
+            .my-head-wrapper[data-v-cfcc868e]:hover {
+                scale: 1.05
+            }
+
+            .eyes[data-v-cfcc868e] {
+                left: 50%;
+                pointer-events: none;
+                top: 50%;
+                transform: translate(-50%,-50%);
+                z-index: 10
+            }
+
+            .eye[data-v-cfcc868e],.eyes[data-v-cfcc868e] {
+                position: absolute
+            }
+
+            .eye[data-v-cfcc868e] {
+                background: #fff;
+                border-radius: 50%;
+                height: 6px;
+                top: 6px;
+                width: 7px
+            }
+
+            .left-eye[data-v-cfcc868e] {
+                left: -12px
+            }
+
+            .right-eye[data-v-cfcc868e] {
+                right: -6px
+            }
+
+            .pupil[data-v-cfcc868e] {
+                background: #333;
+                border-radius: 50%;
+                height: 4px;
+                left: calc(50% - 2px);
+                position: absolute;
+                top: calc(50% - 2px);
+                transform: translate(-50%,-50%);
+                transition: transform 75ms ease-out;
+                width: 4px
+            }
+
+            @media (pointer: coarse) {
+                .pupil[data-v-cfcc868e] {
+                    transform:translate(-1px,-1px)
+                }
+            }
+
+            .page-link[data-v-47384030] {
+                background: #e7e7e7;
+                display: block;
+                min-width: 100%;
+                overflow: hidden;
+                position: relative;
+                transition: transform .07s linear,box-shadow .07s linear;
+                will-change: transform;
+                z-index: 2
+            }
+
+            .page-link-img[data-v-47384030],.page-link[data-v-47384030] {
+                aspect-ratio: 285/107;
+                border-radius: 15px;
+                contain: strict;
+                width: 100%
+            }
+
+            .page-link-img[data-v-47384030] {
+                cursor: pointer;
+                left: 0;
+                max-width: 100%;
+                position: absolute;
+                top: 0;
+                -webkit-user-drag: none
+            }
+
+            .page-link-img.loaded[data-v-47384030] {
+                opacity: 1
+            }
+
+            @media (hover: hover) {
+                .page-link[data-v-47384030]:hover {
+                    box-shadow:3px 6px 6px 0 rgba(0,0,0,.11);
+                    transform: scale(1.023)
+                }
+            }
+
+            .page-link[data-v-47384030]:active {
+                box-shadow: 3px 6px 6px 0 rgba(0,0,0,.15);
+                transform: scale(1.011)
+            }
+        </style>
+        <link rel="preload" href="/_nuxt/static/1753559705/state.js" as="script">
+        <link rel="preload" href="/_nuxt/static/1753559705/payload.js" as="script">
+        <link rel="preload" href="/_nuxt/static/1753559705/manifest.js" as="script">
+    </head>
+    <body>
+        <div data-server-rendered="true" id="__nuxt">
+            <!---->
+            <div id="__layout">
+                <div>
+                    <div class="container" data-v-cac35620>
+                        <div class="newsletter-tagline" data-v-cac35620>
+                            <img src="/general/mail.svg" class="newsletter-icon" data-v-cac35620>Get new posts
+  
+                        </div>
+                        <div class="main-logo" data-v-cfcc868e data-v-cac35620>
+                            <svg viewBox="0 0 141 76" class="main-logo-img" style="fill-rule:evenodd;clip-rule:evenodd" data-v-cfcc868e>
+                                <g transform="matrix(1,0,0,1,1.00084,0.981461)" data-v-cfcc868e>
+                                    <path d="M12.711,4.435C13.351,3.864 14.225,3.677 15.358,3.817L15.597,3.861C16.157,3.995 16.714,4.345 17.174,4.741C17.706,5.199 18.174,5.776 18.425,6.313L18.426,6.313C19.003,7.54 19.533,9.343 20.005,11.151C20.488,13.001 20.898,14.795 21.267,16.172L21.876,18.49C22.472,20.813 23.037,23.143 23.606,25.468C24.271,28.182 24.941,30.889 25.676,33.575L25.996,34.725L26.554,36.667C27.751,40.749 29.085,44.786 30.456,48.817L30.557,48.487C33.057,34.929 35.445,21.367 36.375,7.617L36.375,7.608L36.376,7.6C36.46,6.825 36.989,6.241 37.628,5.836C38.273,5.428 39.092,5.159 39.905,5.021C40.719,4.882 41.563,4.87 42.269,5.006C42.945,5.136 43.632,5.432 43.917,6.032L43.917,6.032C43.995,6.197 44.004,6.399 44.003,6.546C44.003,6.716 43.987,6.916 43.961,7.13C43.911,7.559 43.819,8.083 43.716,8.607C43.559,9.417 43.383,10.207 43.274,10.735L43.191,11.168C41.355,22.266 39.745,33.375 38.254,44.522L37.623,49.301C36.92,54.684 36.543,60.507 35.666,65.875L35.667,65.876C35.62,66.167 35.562,66.546 35.473,66.913C35.386,67.274 35.257,67.669 35.047,67.982L35.048,67.983C34.951,68.131 34.771,68.3 34.598,68.45C34.411,68.612 34.186,68.791 33.957,68.959C33.728,69.127 33.49,69.29 33.279,69.419C33.085,69.538 32.863,69.66 32.686,69.705L32.685,69.704C31.868,69.916 31.007,69.622 30.314,69.186C29.612,68.743 28.997,68.103 28.649,67.477L28.625,67.434L28.611,67.386L14.793,20.511L8.164,68.519L8.155,68.588L8.125,68.65C7.204,70.585 5.502,71.889 3.912,71.954C3.096,71.987 2.32,71.688 1.752,70.996C1.266,70.402 0.959,69.552 0.87,68.449L0.844,67.961L0.843,67.911L0.853,67.862C2.894,57.751 4.539,47.551 6.193,37.343C7.846,27.138 9.506,16.926 11.574,6.806L11.655,6.447C11.858,5.625 12.169,4.919 12.711,4.435Z" style="fill-rule:nonzero;stroke:black;stroke-width:.89px" data-v-cfcc868e></path>
+                                    <path d="M88.73,2.173C89.564,1.448 90.538,1.185 91.509,1.349C93.419,1.672 95.155,3.597 95.94,6.393L95.94,6.394L96.174,7.256C97.311,11.626 98.024,16.773 98.814,21.133L99.345,24.092C101.977,38.893 104.276,53.795 106.688,68.605L106.705,68.715L106.669,68.821C105.935,70.957 103.274,72.026 101.375,70.369L101.187,70.192C100.307,69.294 100.281,68.176 100.116,67.21L99.823,65.438C99.544,63.663 99.3,61.881 99.055,60.106C98.746,57.875 98.433,55.654 98.044,53.452L84.522,54.981C84.515,54.994 84.506,55.007 84.498,55.023C84.442,55.131 84.376,55.292 84.302,55.506C84.153,55.932 83.988,56.526 83.812,57.241C83.459,58.67 83.073,60.548 82.695,62.48C82.318,64.412 81.953,66.382 81.641,68.007C81.332,69.613 81.071,70.906 80.906,71.439L80.887,71.501L80.851,71.556C80.554,71.998 80.062,72.286 79.547,72.457C79.025,72.63 78.43,72.7 77.861,72.67C77.295,72.64 76.724,72.509 76.261,72.254C75.794,71.997 75.402,71.589 75.301,71.009L75.287,70.932L75.301,70.855L86.781,5.673L86.785,5.651L86.79,5.631C87.232,4.038 87.905,2.889 88.73,2.173ZM85.221,49.565L97.141,48.159L91.007,14.691L85.221,49.565Z" style="fill-rule:nonzero;stroke:black;stroke-width:.89px" data-v-cfcc868e></path>
+                                    <path d="M62.169,3.955C64.597,3.892 67.416,3.84 69.514,4.061L69.91,4.111C70.375,4.18 71.025,4.304 71.637,4.489C72.044,4.613 72.457,4.77 72.792,4.969C73.103,5.154 73.433,5.427 73.545,5.82L73.547,5.82C73.549,5.826 73.55,5.831 73.551,5.837C73.552,5.839 73.554,5.842 73.554,5.844L73.553,5.844C73.651,6.169 73.637,6.576 73.579,6.963C73.516,7.374 73.395,7.822 73.235,8.241C73.076,8.658 72.872,9.066 72.636,9.389C72.416,9.69 72.103,10.007 71.702,10.077L71.673,10.082L71.645,10.084C69.912,10.162 67.816,10.03 65.76,9.909C63.948,9.802 62.167,9.703 60.644,9.749L60.008,9.778L60.005,9.778C59.778,9.791 59.627,9.793 59.481,9.825L59.48,9.825C59.449,9.832 59.388,9.875 59.358,9.968L59.35,10.012C58.557,14.112 58.185,18.106 57.891,22.125C57.598,26.137 57.383,30.187 56.905,34.362L56.904,34.365C56.885,34.526 56.994,34.622 57.079,34.63L57.082,34.63L57.313,34.659C57.543,34.692 57.766,34.737 57.973,34.778C58.257,34.835 58.516,34.884 58.775,34.904L59.348,34.94C60.709,35 62.233,34.916 63.769,34.855C65.502,34.786 67.256,34.745 68.707,35.005L69.033,35.077C70.633,35.498 71.757,36.798 72.077,38.103C72.249,38.806 72.196,39.549 71.811,40.162C71.42,40.785 70.732,41.202 69.779,41.329L69.769,41.331L69.769,41.33C69.741,41.333 69.676,41.339 69.599,41.335L69.599,41.337L56.232,41.035C56.154,41.033 56.052,41.097 56.032,41.233L56.032,41.234L52.966,61.907C52.941,62.077 53.06,62.182 53.163,62.185L53.162,62.185C54.252,62.213 55.275,62.288 56.329,62.284L56.895,62.277C57.466,62.265 58.051,62.24 58.648,62.214C59.441,62.179 60.254,62.142 61.067,62.132C62.691,62.111 64.344,62.196 65.896,62.629L65.895,62.629C67.555,63.09 68.559,64.031 68.625,65.21C68.688,66.363 67.83,67.454 66.44,68.176L66.434,68.179C66.292,68.25 66.138,68.289 65.985,68.295L65.979,68.295C60.835,68.435 55.244,69.035 50.039,68.268L50.038,68.267C49.649,68.209 48.807,68.043 48.005,67.822C47.605,67.712 47.203,67.586 46.869,67.448C46.702,67.379 46.542,67.304 46.406,67.223C46.275,67.145 46.134,67.043 46.032,66.912L46.033,66.911C45.791,66.602 45.746,66.181 45.74,65.867C45.733,65.536 45.77,65.182 45.786,64.964L45.786,64.963L45.857,64.076C46.24,59.627 47.045,54.963 47.9,50.301C48.813,45.319 49.782,40.341 50.37,35.585L50.591,33.717C51.655,24.358 52.086,14.786 53.86,5.483L53.86,5.482L53.895,5.334C54.099,4.609 54.728,4.073 55.486,4.048L55.486,4.047C56.232,4.02 56.977,4.02 57.713,4.022C58.453,4.025 59.183,4.03 59.913,4.013L59.914,4.013L62.169,3.955Z" style="fill-rule:nonzero;stroke:black;stroke-width:.89px" data-v-cfcc868e></path>
+                                    <path d="M116.766,0.9C117.356,0.853 118.053,0.836 118.711,0.935C119.574,1.064 120.5,1.412 120.929,2.3L121.022,2.512C121.226,3.021 121.339,3.636 121.4,4.283C121.47,5.03 121.474,5.855 121.448,6.677C121.421,7.499 121.365,8.329 121.312,9.082C121.272,9.651 121.235,10.173 121.213,10.621L121.199,11.045C121.001,19.499 120.9,27.979 120.435,36.427L120.264,62.072C120.256,63.266 121.171,64.211 122.293,64.149L123.087,64.094C124.94,63.938 126.794,63.609 128.69,63.334C130.84,63.022 133.027,62.783 135.217,62.989L135.506,63.026C136.92,63.253 137.86,64.113 138.044,65.177C138.244,66.329 137.52,67.476 136.034,68.013L135.987,68.029L135.939,68.036L115.437,70.683C114.163,70.847 113.033,69.913 112.88,68.68L112.863,68.43C112.851,67.628 112.837,66.813 112.86,65.999C113.276,50.051 114.082,34.052 114.792,18.09C114.866,15.759 114.636,13.123 114.45,10.457C114.264,7.806 114.122,5.128 114.393,2.779L114.393,2.778L114.42,2.593C114.496,2.167 114.658,1.795 114.945,1.508C115.273,1.179 115.712,1.013 116.217,0.954L116.766,0.9Z" style="fill-rule:nonzero;stroke:black;stroke-width:.89px" data-v-cfcc868e></path>
+                                </g>
+                            </svg>
+                            <div class="my-head-wrapper" data-v-cfcc868e>
+                                <svg viewBox="0 0 42 50" class="my-head" data-v-cfcc868e>
+                                    <g transform="matrix(1,0,0,1,-3490.31,-1501.28)" data-v-cfcc868e>
+                                        <g transform="matrix(1,0,0,1.02073,3090.26,17.8656)" data-v-cfcc868e>
+                                            <g data-v-cfcc868e>
+                                                <g transform="matrix(1,0,0,0.979688,394,1449.09)" data-v-cfcc868e>
+                                                    <path d="M45.378,35.48C49.508,22.594 44.372,9.428 33.906,6.074C23.44,2.72 11.608,10.447 7.478,23.333C3.348,36.219 8.484,49.384 18.95,52.738C29.416,56.093 41.249,48.366 45.378,35.48Z" style="fill:rgb(195,153,103);fill-rule:nonzero" data-v-cfcc868e></path>
+                                                </g>
+                                                <g transform="matrix(1.16206,0,0,1.04909,386.374,1447.76)" data-v-cfcc868e>
+                                                    <path d="M12.863,13.171C12.682,13.402 12.646,13.726 12.771,13.997C12.895,14.267 13.156,14.43 13.434,14.412C18.562,14.104 34.147,13.739 40.587,20.394L40.283,28.264L46.021,33.321C46.021,33.321 52.279,11.395 34.026,6.07C23.172,2.904 15.573,10.04 12.863,13.171Z" style="fill:rgb(29,29,27);fill-rule:nonzero" data-v-cfcc868e></path>
+                                                </g>
+                                            </g>
+                                        </g>
+                                        <g transform="matrix(0.875522,0,0,0.795728,3486.38,1503.75)" data-v-cfcc868e>
+                                            <path d="M26.272,45.074C25.032,48.037 21.738,49.501 18.906,48.315C15.956,47.081 14.638,43.566 15.93,40.481C17.17,37.518 20.465,36.053 23.297,37.24C26.247,38.476 27.564,41.989 26.272,45.074ZM23.286,43.561C23.774,42.397 23.241,41.086 22.127,40.62C20.897,40.105 19.454,40.707 18.916,41.994C18.428,43.158 18.961,44.469 20.075,44.935C21.305,45.45 22.748,44.848 23.286,43.561Z" style="fill:rgb(133,45,32)" data-v-cfcc868e></path>
+                                        </g>
+                                        <g transform="matrix(1,0,0,0.999997,3484.26,1496.99)" data-v-cfcc868e>
+                                            <path d="M20.758,23.007L22.238,24.621C22.238,24.621 20.148,26.534 18.899,28.578C18.533,29.178 18.236,29.784 18.13,30.351C18.066,30.692 18.063,31.013 18.27,31.264C18.587,31.649 19.204,31.854 20.161,31.972C21.43,32.129 23.189,32.057 25.575,31.697L25.901,33.863C22.694,34.347 20.495,34.325 19.046,34.002C17.828,33.73 17.054,33.233 16.579,32.656C15.712,31.604 15.732,30.163 16.388,28.656C17.559,25.967 20.758,23.007 20.758,23.007Z" style="fill:rgb(133,45,32)" data-v-cfcc868e></path>
+                                        </g>
+                                    </g>
+                                </svg>
+                                <div class="eyes" data-v-cfcc868e>
+                                    <div class="eye left-eye" data-v-cfcc868e>
+                                        <div class="pupil" data-v-cfcc868e></div>
+                                    </div>
+                                    <div class="eye right-eye" data-v-cfcc868e>
+                                        <div class="pupil" data-v-cfcc868e></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <svg viewBox="0 0 114 76" class="main-logo-img" style="fill-rule:evenodd;clip-rule:evenodd" data-v-cfcc868e>
+                                <g transform="matrix(1,0,0,1,-193.267,1.13133)" data-v-cfcc868e>
+                                    <path d="M268.995,2.745C269.735,2.506 270.543,2.706 271.211,3.01C271.939,3.341 272.611,3.843 273.062,4.292C273.334,4.561 273.63,4.998 273.919,5.479C274.215,5.973 274.528,6.554 274.83,7.143C275.427,8.304 276.019,9.57 276.341,10.211L276.342,10.212L277.004,11.548C278.537,14.672 279.991,17.836 281.435,20.999C283.086,24.616 284.723,28.23 286.457,31.791L287.602,34.117C290.048,39.039 292.612,43.897 295.193,48.757C294.791,42.532 294.252,35.945 293.599,29.658L293.307,26.941C292.589,20.485 291.352,14.139 290.434,7.669L290.423,7.594L290.436,7.519C290.564,6.728 291.091,6.169 291.73,5.819C292.365,5.472 293.146,5.307 293.902,5.296C294.658,5.285 295.436,5.427 296.064,5.744C296.694,6.061 297.229,6.587 297.345,7.348L297.401,7.812C297.447,8.289 297.461,8.802 297.472,9.298C297.486,9.974 297.493,10.62 297.55,11.179L297.861,14.166C299.439,29.097 301.351,43.971 303.298,58.864L303.371,59.384C303.552,60.61 303.808,61.929 304.045,63.27C304.28,64.599 304.495,65.944 304.585,67.191L304.615,67.72L304.615,67.721L304.619,68.059C304.602,68.829 304.406,69.465 304.048,69.947C303.634,70.505 303.042,70.805 302.398,70.889C301.14,71.052 299.679,70.398 298.652,69.241L298.609,69.192L298.58,69.134L273.958,20.076L278.843,68.829L278.85,68.897L278.838,68.964C278.612,70.272 278.104,71.243 277.408,71.861C276.707,72.485 275.846,72.719 275.001,72.598C273.37,72.364 271.92,70.853 271.575,68.586L271.546,68.364C270.965,63.422 270.947,57.931 270.651,52.919L270.589,51.924C269.563,36.901 268.107,21.738 267.526,6.676L267.498,6.21C267.487,6.055 267.476,5.893 267.466,5.706C267.448,5.365 267.442,4.997 267.489,4.641C267.537,4.282 267.642,3.913 267.861,3.583C268.085,3.247 268.41,2.978 268.848,2.799L268.995,2.745Z" style="fill-rule:nonzero;stroke:black;stroke-width:1px" data-v-cfcc868e></path>
+                                    <path d="M227.249,1.385C228.638,1.148 229.737,1.386 230.545,2.085C231.236,2.683 231.655,3.568 231.897,4.609L231.991,5.064L232.079,5.59C232.499,8.257 232.601,11.491 232.611,14.733C232.623,18.213 232.53,21.683 232.601,24.572L232.635,26.479C232.692,31.178 232.631,37.559 233.11,43.768C233.384,47.31 233.833,50.776 234.575,53.815C235.319,56.859 236.349,59.438 237.763,61.237L238.014,61.544C239.288,63.033 240.819,63.851 242.327,63.947C243.923,64.049 245.573,63.347 246.957,61.616L247.163,61.35C249.262,58.538 250.391,54.095 251.021,49.38C251.668,44.531 251.776,39.494 251.926,35.828L252.035,32.91C252.247,26.578 252.288,20.186 251.853,13.87L251.744,12.414C251.645,11.192 251.441,9.908 251.243,8.605C251.047,7.311 250.857,6.001 250.793,4.762L250.792,4.762C250.777,4.456 250.756,4.158 250.756,3.904C250.756,3.647 250.777,3.384 250.867,3.136C251.064,2.591 251.527,2.276 252.237,2.029L252.479,1.951C253.694,1.59 254.984,1.659 256.038,2.166C257.178,2.714 258.021,3.769 258.171,5.271L258.354,7.261C259.151,16.619 259.116,26.948 258.811,36.346L258.741,38.345C258.534,43.937 258.476,52.389 256.345,59.12C255.277,62.491 253.674,65.484 251.225,67.472C248.836,69.41 245.691,70.354 241.579,69.827L241.178,69.772C237.9,69.282 235.387,67.994 233.459,66.165C231.536,64.34 230.216,61.996 229.288,59.421C227.438,54.288 227.113,48.138 226.74,43.142L226.74,43.141C225.74,29.777 224.888,16.44 225.029,3.02L225.029,2.98L225.037,2.941C225.09,2.664 225.249,2.44 225.42,2.27C225.593,2.097 225.805,1.953 226.017,1.836C226.433,1.605 226.912,1.446 227.249,1.387L227.249,1.385Z" style="fill-rule:nonzero;stroke:black;stroke-width:.89px" data-v-cfcc868e></path>
+                                    <path d="M208.376,0.825C209.976,0.717 211.598,0.655 212.886,0.789L212.887,0.789L213.34,0.85C214.415,1.024 215.6,1.454 216.283,2.501L216.284,2.501C216.5,2.831 216.723,3.329 216.813,3.831C216.9,4.312 216.888,4.95 216.419,5.373L216.418,5.374C216.167,5.599 215.759,5.736 215.338,5.836C214.893,5.941 214.34,6.024 213.723,6.088C212.487,6.217 210.945,6.281 209.385,6.315C207.823,6.35 206.23,6.355 204.891,6.363C203.852,6.37 202.979,6.378 202.383,6.402L204.188,22.524C204.224,22.529 204.264,22.535 204.31,22.54C204.566,22.567 204.929,22.585 205.374,22.595C206.262,22.614 207.439,22.601 208.657,22.578C209.866,22.556 211.135,22.525 212.17,22.507C213.198,22.489 214.052,22.483 214.442,22.52L214.442,22.52L214.666,22.551C215.184,22.646 215.676,22.901 216.09,23.231C216.563,23.609 216.962,24.108 217.196,24.648C217.43,25.187 217.515,25.803 217.293,26.378C217.067,26.964 216.556,27.419 215.778,27.69L215.776,27.69C215.473,27.795 214.824,27.92 214.222,28.016C213.768,28.088 213.292,28.151 212.956,28.179L212.672,28.192L204.994,28.19C204.204,28.189 203.585,28.868 203.657,29.654L205.001,44.217L205.002,44.231L205.002,44.244C205.23,51.853 205.98,59.586 205.831,67.234L205.83,67.283L205.818,67.331C205.451,68.838 203.916,69.466 202.583,69.44C201.258,69.413 199.763,68.725 199.55,67.208L199.55,67.207C199.074,63.807 198.993,60.197 198.948,56.603C198.909,53.45 198.899,50.31 198.681,47.3L198.574,46.018L198.572,45.991C198.332,39.337 197.576,32.553 196.828,25.758C196.081,18.969 195.341,12.171 195.14,5.517L195.114,4.784C195.108,4.504 195.109,4.198 195.131,3.901C195.173,3.332 195.3,2.642 195.741,2.215L195.897,2.083C196.288,1.791 196.854,1.616 197.437,1.499C198.128,1.36 198.944,1.283 199.759,1.239C200.576,1.196 201.408,1.184 202.133,1.179C202.865,1.173 203.476,1.175 203.876,1.155L203.876,1.154C205.172,1.089 206.752,0.935 208.376,0.825Z" style="fill-rule:nonzero;stroke:black;stroke-width:.89px" data-v-cfcc868e></path>
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="plant-wrapper" data-v-cac35620>
+                            <div class="plant-stat" data-v-cac35620>
+                                Watered <b data-v-cac35620>0</b>
+                                times today
+    
+                            </div>
+                            <img src="/general/plant.webp" class="plant" data-v-cac35620>
+                            <!---->
+                        </div>
+                        <div class="site-tagline" data-v-cac35620>games and stuff by Neal</div>
+                        <!---->
+                        <div class="posts" data-v-cac35620>
+                            <a href="/internet-roadtrip/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Internet Roadtrip" src="/link-images/internet-roadtrip.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/stimulation-clicker/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Stimulation Clicker" src="/link-images/stimulation-clicker.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/infinite-craft/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Infinite Craft" src="/link-images/infinite-craft.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/internet-artifacts/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Internet Artifacts" src="/link-images/internet-artifacts.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/password-game/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="The Password Game" src="/link-images/password-game.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/space-elevator/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Space Elevator" src="/link-images/space-elevator.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/asteroid-launcher/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Asteroid Launcher" src="/link-images/asteroid-launcher.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/perfect-circle/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Draw a Perfect Circle ⭕️💯" src="/link-images/perfect-circle.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/wonders-of-street-view/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Wonders of Street View" src="/link-images/wonders-of-street-view.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/days-since-incident/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Days Since Incident" src="/link-images/days-since-incident.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/design-the-next-iphone/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Design the next iPhone" src="/link-images/design-the-next-iphone.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/absurd-trolley-problems/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Absurd Trolley Problems" src="/link-images/absurd-trolley-problems.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/earth-reviews/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Earth Reviews" src="/link-images/earth-reviews.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/lets-settle-this/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Let's Settle This" src="/link-images/lets-settle-this.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/ambient-chaos/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Ambient Chaos" src="/link-images/ambient-chaos.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/rocks/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Rocks" src="/link-images/rocks.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/sell-sell-sell/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Sell! Sell! Sell!" src="/link-images/sell-sell-sell.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/universe-forecast/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Universe Forecast" src="/link-images/universe-forecast.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/auction-game/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="The Auction Game" src="/link-images/auction-game.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/printing-money/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Printing Money" src="/link-images/printing-money.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/life-stats/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Life Stats" src="/link-images/life-stats.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/deep-sea/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="The Deep Sea" src="/link-images/deep-sea.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/size-of-space/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="The Size of Space" src="/link-images/size-of-space.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/share-this-page/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Share This Page" src="/link-images/share-this-page.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/dark-patterns/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Dark Patterns" src="/link-images/dark-patterns.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/who-was-alive/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Who Was Alive?" src="/link-images/who-was-alive.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/where-does-the-day-go/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Where does the day go?" src="/link-images/where-does-the-day-go.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/life-checklist/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Life Checklist" src="/link-images/life-checklist.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/speed/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Speed" src="/link-images/speed.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/paper/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Paper" src="/link-images/paper.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/logos-from-memory/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Draw Logos From Memory" src="/link-images/logos-from-memory.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/progress/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Progress" src="/link-images/progress.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/spend/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Spend Bill Gates' Money" src="/link-images/spend.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                            <a href="/baby-map/" class="page-link" data-v-47384030 data-v-cac35620>
+                                <img alt="Baby Map" src="/link-images/baby-map.svg" class="page-link-img" data-v-47384030>
+                            </a>
+                        </div>
+                        <div class="made-by" data-v-cac35620>
+                            <div class="made-by-desc" data-v-cac35620>Hi! I'm Neal. This is where I make stuff on the web. Obligatory links:
+    </div>
+                            <div class="socials" data-v-cac35620>
+                                <div href="https://twitter.com/nealagarwal" target="_blank" class="social-btn social-full newsletter-btn" data-v-cac35620>
+                                    <img src="/general/mail.svg" alt="Mail" class="social-btn-icon social-btn-newsletter" data-v-cac35620>
+                                    <span data-v-cac35620>Newsletter</span>
+                                </div>
+                                <a href="https://twitter.com/nealagarwal" target="_blank" class="social-btn social-full twitter-btn" data-v-cac35620>
+                                    <img src="/general/twitter.svg" alt="Twitter" class="social-btn-icon social-btn-twitter" data-v-cac35620>Twitter
+      
+                                </a>
+                                <a target="_blank" href="https://buymeacoffee.com/neal" class="social-btn social-full coffee-btn" data-v-cac35620>
+                                    <img alt="Coffee" src="/general/coffee.svg" class="social-btn-icon" data-v-cac35620>Buy me a coffee
+      
+                                </a>
+                            </div>
+                            <div class="contact" data-v-cac35620>
+                                <span class="contact-label" data-v-cac35620>Contact -</span>
+                                <a target="_blank" href="/cdn-cgi/l/email-protection#b2dadbf2dcd7d3de9cd4c7dc" data-v-cac35620>
+                                    <span class="__cf_email__" data-cfemail="056d6c456b6064692b63706b">[email &#160;protected]</span>
+                                </a>
+                            </div>
+                            <a href="/privacy-policy/" class="privacy" data-v-cac35620>Privacy policy</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+        <script defer src="/_nuxt/static/1753559705/state.js"></script>
+        <script src="/_nuxt/ec7a90f.js" defer></script>
+        <script src="/_nuxt/7b61381.js" defer></script>
+        <script src="/_nuxt/c9108d6.js" defer></script>
+        <script src="/_nuxt/4576e40.js" defer></script>
+        <script src="/_nuxt/2a542a9.js" defer></script>
+        <script src="/_nuxt/cd7cdb7.js" defer></script>
+    </body>
+</html>
