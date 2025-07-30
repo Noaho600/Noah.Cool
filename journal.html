@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dev Journal</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f8f8f8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      padding: 40px;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      font-size: 28px;
+    }
+
+    .journal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 20px;
+      max-width: 600px;
+      width: 100%;
+      justify-items: center;
+    }
+
+    .journal-entry {
+      background: white;
+      border: 1.5px solid black;
+      border-radius: 18px;
+      width: 90px;
+      height: 90px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 22px;
+      padding: 6px;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .label {
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    .back-btn {
+      margin-top: 40px;
+      background: black;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📓 Dev Journal</h1>
+
+  <div class="journal-grid">
+    <div class="journal-entry">
+      💡
+      <div class="label">Idea</div>
+    </div>
+    <div class="journal-entry">
+      🛠️
+      <div class="label">Build</div>
+    </div>
+    <div class="journal-entry">
+      🧪
+      <div class="label">Experiment</div>
+    </div>
+    <div class="journal-entry">
+      🐞
+      <div class="label">Debug</div>
+    </div>
+    <div class="journal-entry">
+      🚀
+      <div class="label">Launch</div>
+    </div>
+    <div class="journal-entry">
+      🔁
+      <div class="label">Update</div>
+    </div>
+  </div>
+
+  <a href="index.html" class="back-btn">← Back to Home</a>
+
+</body>
+</html>
