@@ -22,32 +22,38 @@
 
     .journal-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 20px;
-      max-width: 600px;
+      max-width: 900px;
       width: 100%;
-      justify-items: center;
     }
 
     .journal-entry {
       background: white;
       border: 1.5px solid black;
-      border-radius: 18px;
-      width: 90px;
-      height: 90px;
+      border-radius: 20px;
+      padding: 15px;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       text-align: center;
-      font-size: 22px;
-      padding: 6px;
-      box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .emoji {
+      font-size: 40px;
+      margin-bottom: 10px;
     }
 
     .label {
-      font-size: 12px;
-      margin-top: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .log {
+      font-size: 14px;
+      color: #333;
     }
 
     .back-btn {
@@ -68,28 +74,39 @@
 
   <div class="journal-grid">
     <div class="journal-entry">
-      💡
-      <div class="label">Idea</div>
+      <div class="emoji">🪐</div>
+      <div class="label">Planet Drawing</div>
+      <div class="log">Added planet styles, ring toggle, stamps, color picker, undo/redo buttons, and download/share options.</div>
     </div>
+
     <div class="journal-entry">
-      🛠️
-      <div class="label">Build</div>
+      <div class="emoji">🪴</div>
+      <div class="label">Grow a Plant</div>
+      <div class="log">Redesigned layout, added pot upgrades, animated growth, shop, reset button, and save feature.</div>
     </div>
+
     <div class="journal-entry">
-      🧪
-      <div class="label">Experiment</div>
+      <div class="emoji">💰</div>
+      <div class="label">Spend Elon’s Money</div>
+      <div class="log">Rewrote from Bill Gates version, added receipt UI, animations, and product categories.</div>
     </div>
+
     <div class="journal-entry">
-      🐞
-      <div class="label">Debug</div>
+      <div class="emoji">🧪</div>
+      <div class="label">Experiments Hub</div>
+      <div class="log">Built out experiments layout with animated tiles and better navigation system.</div>
     </div>
+
     <div class="journal-entry">
-      🚀
-      <div class="label">Launch</div>
+      <div class="emoji">🌐</div>
+      <div class="label">Domain Setup</div>
+      <div class="log">Switched to noah.cool, configured DNS, SSL, and added banner to notify users.</div>
     </div>
+
     <div class="journal-entry">
-      🔁
-      <div class="label">Update</div>
+      <div class="emoji">🛠️</div>
+      <div class="label">General Fixes</div>
+      <div class="log">Fixed broken back buttons, drawing bugs, mobile UI issues, and favicon/favicon updates.</div>
     </div>
   </div>
 
