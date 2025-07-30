@@ -20,40 +20,42 @@
       font-size: 28px;
     }
 
-    .journal-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      max-width: 900px;
+    .version-tile {
+      background: white;
+      border: 2px solid black;
+      border-radius: 25px;
+      padding: 25px;
+      margin-bottom: 30px;
+      max-width: 800px;
       width: 100%;
+      box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .journal-entry {
-      background: white;
-      border: 1.5px solid black;
-      border-radius: 20px;
-      padding: 15px;
-      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+    .version-header {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 20px;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      text-align: center;
+      gap: 10px;
+    }
+
+    .log-entry {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      margin-bottom: 15px;
     }
 
     .emoji {
-      font-size: 40px;
-      margin-bottom: 10px;
+      font-size: 32px;
+      line-height: 1;
     }
 
-    .label {
-      font-size: 16px;
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-
-    .log {
-      font-size: 14px;
+    .log-text {
+      font-size: 15px;
       color: #333;
+      max-width: 700px;
     }
 
     .back-btn {
@@ -72,41 +74,43 @@
 
   <h1>📓 Dev Journal</h1>
 
-  <div class="journal-grid">
-    <div class="journal-entry">
+  <div class="version-tile">
+    <div class="version-header">🧪 Version 1.2.0 – July 30, 2025</div>
+    <div class="log-entry">
       <div class="emoji">🪐</div>
-      <div class="label">Planet Drawing</div>
-      <div class="log">Added planet styles, ring toggle, stamps, color picker, undo/redo buttons, and download/share options.</div>
+      <div class="log-text">Improved "Draw a Planet" with working stamps, a color picker, undo/redo, download/share buttons, and ring toggle fix.</div>
     </div>
+    <div class="log-entry">
+      <div class="emoji">🎨</div>
+      <div class="log-text">Redesigned drawing area to be a rounded square and fixed the drawing issue where strokes weren’t appearing.</div>
+    </div>
+    <div class="log-entry">
+      <div class="emoji">🌈</div>
+      <div class="log-text">Added background style options, dropdown stamp selector, and full support for planet styles (Earth-like, Fire-like, etc).</div>
+    </div>
+  </div>
 
-    <div class="journal-entry">
+  <div class="version-tile">
+    <div class="version-header">🧪 Version 1.1.0 – July 28, 2025</div>
+    <div class="log-entry">
       <div class="emoji">🪴</div>
-      <div class="label">Grow a Plant</div>
-      <div class="log">Redesigned layout, added pot upgrades, animated growth, shop, reset button, and save feature.</div>
+      <div class="log-text">Grow a Plant game added with UI matching the homepage, pot upgrades, plant stages, and growth animation.</div>
     </div>
-
-    <div class="journal-entry">
-      <div class="emoji">💰</div>
-      <div class="label">Spend Elon’s Money</div>
-      <div class="log">Rewrote from Bill Gates version, added receipt UI, animations, and product categories.</div>
-    </div>
-
-    <div class="journal-entry">
-      <div class="emoji">🧪</div>
-      <div class="label">Experiments Hub</div>
-      <div class="log">Built out experiments layout with animated tiles and better navigation system.</div>
-    </div>
-
-    <div class="journal-entry">
-      <div class="emoji">🌐</div>
-      <div class="label">Domain Setup</div>
-      <div class="log">Switched to noah.cool, configured DNS, SSL, and added banner to notify users.</div>
-    </div>
-
-    <div class="journal-entry">
+    <div class="log-entry">
       <div class="emoji">🛠️</div>
-      <div class="label">General Fixes</div>
-      <div class="log">Fixed broken back buttons, drawing bugs, mobile UI issues, and favicon/favicon updates.</div>
+      <div class="log-text">Fixed navigation buttons, added favicon, and connected Netlify domain to noah.cool via Porkbun.</div>
+    </div>
+  </div>
+
+  <div class="version-tile">
+    <div class="version-header">🧪 Version 1.0.0 – July 25, 2025</div>
+    <div class="log-entry">
+      <div class="emoji">🌍</div>
+      <div class="log-text">Website launched with homepage navigation, game selection tiles, early experiments, and base styling.</div>
+    </div>
+    <div class="log-entry">
+      <div class="emoji">💡</div>
+      <div class="log-text">Ideas board created for Rocks, Planet, and Spend Elon's Money games inspired by neal.fun.</div>
     </div>
   </div>
 
