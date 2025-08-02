@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Draw Your Island</title>
+  <style>
+    body {
+      font-family: 'Arial Rounded MT Bold', 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f6f7f9;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    .prompt-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 180px);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .prompt {
+      background: white;
+      border-radius: 20px;
+      padding: 1rem;
+      text-align: center;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      transition: 0.2s ease;
+    }
+
+    .prompt:hover {
+      background: #def7e5;
+    }
+
+    canvas {
+      border-radius: 20px;
+      background: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      margin-bottom: 1rem;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 0.5rem 1rem;
+      background: #eeeeee;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Draw Your Island</h1>
+  <div class="container">
+    <div class="prompt-grid">
+      <div class="prompt">Draw Yourself</div>
+      <div class="prompt">Draw a Pet</div>
+      <div class="prompt">Draw a Tree</div>
+      <div class="prompt">Draw a House</div>
+      <div class="prompt">Draw a Cloud</div>
+      <div class="prompt">Draw a Fish</div>
+    </div>
+
+    <canvas id="canvas" width="400" height="300"></canvas>
+    <div class="buttons">
+      <button onclick="clearCanvas()">Clear</button>
+      <button onclick="eraseMode()">Erase</button>
+      <button onclick="drawMode()">Draw</button>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    let drawing = false;
+    let erase = false;
+
+    canvas.addEventListener("mousedown", () => drawing = true);
+    canvas.addEventListener("mouseup", () => drawing = false);
+    canvas.addEventListener("mouseleave", () => drawing = false);
+
+    canvas.addEventListener("mousemove", draw);
+
+    function draw(e) {
+      if (!drawing) return;
+
+      ctx.fillStyle = erase ? "#fff" : "#000";
+      ctx.beginPath();
+      ctx.arc(e.offsetX, e.offsetY, 5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function eraseMode() {
+      erase = true;
+    }
+
+    function drawMode() {
+      erase = false;
+    }
+  </script>
+</body>
+</html>
