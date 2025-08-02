@@ -1,0 +1,1335 @@
+<!doctype html>
+<html data-n-head-ssr lang="en" data-n-head="%7B%22lang%22:%7B%22ssr%22:%22en%22%7D%7D">
+    <head>
+        <meta data-n-head="ssr" charset="utf-8">
+        <meta data-n-head="ssr" name="viewport" content="width=device-width,initial-scale=1">
+        <meta data-n-head="ssr" name="google-site-verification" content="Vyp6Lq2HJODQviN98DbqlmqefoUuDj_cwlmS7jAgaao">
+        <meta data-n-head="ssr" name="title" content="Spend Bill Gates' Money">
+        <meta data-n-head="ssr" name="description" content="An interactive game that lets you spend Bill Gates' money. What would you do with 100 billion dollars?">
+        <meta data-n-head="ssr" property="og:type" content="website">
+        <meta data-n-head="ssr" property="og:url" content="https://neal.fun/spend/">
+        <meta data-n-head="ssr" property="og:title" content="Spend Bill Gates' Money">
+        <meta data-n-head="ssr" property="og:description" content="What would you do with 100 billion dollars?">
+        <meta data-n-head="ssr" property="og:image" content="https://neal.fun/share-cards/spend.png">
+        <meta data-n-head="ssr" property="twitter:card" content="summary_large_image">
+        <meta data-n-head="ssr" property="twitter:url" content="https://neal.fun/spend/">
+        <meta data-n-head="ssr" property="twitter:image" content="https://neal.fun/share-cards/spend.png">
+        <meta data-n-head="ssr" property="twitter:title" content="Spend Bill Gates' Money">
+        <meta data-n-head="ssr" property="twitter:description" content="What would you do with 100 billion dollars?">
+        <title>Spend Bill Gates' Money</title>
+        <link data-n-head="ssr" rel="canonical" href="https://neal.fun/spend/">
+        <link data-n-head="ssr" rel="icon" type="image/png" href="/favicons/spend.png">
+        <script data-n-head="ssr" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4556406968269041" async crossorigin="anonymous"></script>
+        <script data-n-head="ssr" src="https://plausible.io/js/script.js" defer data-domain="neal.fun"></script>
+        <link rel="preload" href="/_nuxt/ec7a90f.js" as="script">
+        <link rel="preload" href="/_nuxt/4576e40.js" as="script">
+        <link rel="preload" href="/_nuxt/2a542a9.js" as="script">
+        <link rel="preload" href="/_nuxt/cd7cdb7.js" as="script">
+        <link rel="preload" href="/_nuxt/f2f22d4.js" as="script">
+        <link rel="preload" href="/_nuxt/c9108d6.js" as="script">
+        <link rel="preload" href="/_nuxt/836cb62.js" as="script">
+        <style data-vue-ssr-id="49569972:0 6e9698fd:0 7316bacc:0 805413fa:0 7f1f2fe7:0 476872ae:0 e4c18c28:0 4a4cf88f:0">
+            .nuxt-progress {
+                background-color: #000;
+                height: 2px;
+                left: 0;
+                opacity: 1;
+                position: fixed;
+                right: 0;
+                top: 0;
+                transition: width .1s,opacity .4s;
+                width: 0;
+                z-index: 999999
+            }
+
+            .nuxt-progress.nuxt-progress-notransition {
+                transition: none
+            }
+
+            .nuxt-progress-failed {
+                background-color: red
+            }
+
+            @font-face {
+                font-family: Roboto;
+                src: url(/_nuxt/fonts/Roboto-Medium.3ac5d40.woff2)
+            }
+
+            @font-face {
+                font-family: Roboto;
+                font-weight: 700;
+                src: url(/_nuxt/fonts/Roboto-Bold.a65527f.woff2)
+            }
+
+            @font-face {
+                font-family: RobotoLight;
+                src: url(/_nuxt/fonts/Roboto-Light.76fcea7.woff2)
+            }
+
+            html {
+                font-size: 16px;
+                -ms-text-size-adjust: 100%;
+                -webkit-text-size-adjust: 100%;
+                -moz-osx-font-smoothing: grayscale;
+                -webkit-font-smoothing: antialiased;
+                background: #fff;
+                box-sizing: border-box;
+                color: #000;
+                font-family: Roboto,sans-serif,system-ui,-apple-system,Segoe UI,Ubuntu,Cantarell,Noto Sans
+            }
+
+            *,:after,:before {
+                box-sizing: border-box;
+                margin: 0
+            }
+
+            .simple-page {
+                background: #f1f2f6
+            }
+
+            [data-v-6d748bf9]::-webkit-inner-spin-button,[data-v-6d748bf9]::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0
+            }
+
+            .wrapper[data-v-6d748bf9] {
+                background: #f1f2f6
+            }
+
+            .container[data-v-6d748bf9] {
+                color: #333;
+                margin-left: auto;
+                margin-right: auto;
+                max-width: 1000px
+            }
+
+            .title[data-v-6d748bf9] {
+                background: #fff;
+                font-size: 32px;
+                font-weight: 700;
+                line-height: 1.3em;
+                margin-bottom: 10px;
+                padding: 30px 20px;
+                text-align: center
+            }
+
+            .header-img[data-v-6d748bf9] {
+                border-radius: 125px;
+                display: block;
+                height: 125px;
+                margin: 10px auto 25px;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none;
+                width: 125px
+            }
+
+            .items[data-v-6d748bf9] {
+                display: grid;
+                grid-template-columns: repeat(3,minmax(0,1fr));
+                grid-gap: 10px 10px
+            }
+
+            .item-img[data-v-6d748bf9] {
+                display: block;
+                height: 120px;
+                margin: 15px auto;
+                max-width: 100%;
+                -o-object-fit: contain;
+                object-fit: contain;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none
+            }
+
+            .item-name[data-v-6d748bf9] {
+                font-size: 22px;
+                font-weight: 700
+            }
+
+            .item-cost[data-v-6d748bf9] {
+                color: #24c486;
+                font-size: 20px
+            }
+
+            .item-controls[data-v-6d748bf9] {
+                display: grid;
+                font-size: 20px;
+                font-weight: 700;
+                grid-template-columns: repeat(3,1fr);
+                grid-gap: 10px 10px;
+                margin-top: 25px
+            }
+
+            .item-wrapper[data-v-6d748bf9] {
+                background-color: #fff;
+                font-size: 18px;
+                max-width: 100%;
+                padding: 20px 15px;
+                text-align: center;
+                width: 100%
+            }
+
+            .item-input[data-v-6d748bf9] {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                border: 1px solid #b2bec3;
+                border-radius: 3px;
+                color: #333;
+                padding: 9px 12px;
+                width: 100%
+            }
+
+            .item-input[data-v-6d748bf9],button[data-v-6d748bf9] {
+                font-size: 16px;
+                text-align: center
+            }
+
+            button[data-v-6d748bf9] {
+                border: none;
+                border-radius: 3px;
+                color: #fff;
+                cursor: pointer;
+                font-weight: 700;
+                padding: 10px 12px;
+                touch-action: manipulation;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none
+            }
+
+            .item-buy[data-v-6d748bf9] {
+                background: linear-gradient(180deg,#2ecc71,#1abc9c)
+            }
+
+            .item-sell[data-v-6d748bf9] {
+                background: linear-gradient(180deg,#f53b82,#f53b57)
+            }
+
+            button[data-v-6d748bf9]:disabled {
+                background: #f1f2f6!important;
+                border: none;
+                color: #333;
+                cursor: auto;
+                touch-action: manipulation
+            }
+
+            .spree-wrapper[data-v-6d748bf9] {
+                font-size: 18px;
+                margin-top: 10px;
+                max-width: 100%;
+                padding: 15px 15px 30px
+            }
+
+            .spree-headline[data-v-6d748bf9],.spree-wrapper[data-v-6d748bf9] {
+                background-color: #fff;
+                text-align: center
+            }
+
+            .spree-headline[data-v-6d748bf9] {
+                font-size: 28px;
+                font-weight: 700;
+                padding: 15px 15px 25px
+            }
+
+            .spree-items[data-v-6d748bf9] {
+                display: grid;
+                margin-left: auto;
+                margin-right: auto;
+                max-width: 290px;
+                text-align: center;
+                grid-gap: 10px 0;
+                font-size: 18px;
+                grid-template-columns: 170px 45px 75px
+            }
+
+            .spree-item-name[data-v-6d748bf9] {
+                text-align: left;
+                text-overflow: ellipsis
+            }
+
+            .spree-item-amount[data-v-6d748bf9] {
+                text-align: left
+            }
+
+            .spree-item-cost[data-v-6d748bf9] {
+                font-weight: 700
+            }
+
+            .spree-item-cost[data-v-6d748bf9],.spree-total-money[data-v-6d748bf9] {
+                color: #24c486;
+                text-align: right
+            }
+
+            .spree-total[data-v-6d748bf9] {
+                border-top: 1px solid #333;
+                display: flex;
+                font-weight: 700;
+                justify-content: space-between;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 10px;
+                max-width: 300px;
+                padding-top: 10px
+            }
+
+            .header-ad[data-v-6d748bf9] {
+                margin-bottom: 5px;
+                margin-top: -18px
+            }
+
+            @media only screen and (max-width: 900px) {
+                .items[data-v-6d748bf9] {
+                    grid-template-columns:repeat(2,1fr)
+                }
+            }
+
+            @media only screen and (max-width: 600px) {
+                .items[data-v-6d748bf9] {
+                    grid-template-columns:repeat(1,1fr)
+                }
+
+                .item-image[data-v-6d748bf9] {
+                    height: 140px;
+                    max-width: 100%;
+                    padding-left: 5px;
+                    padding-right: 5px
+                }
+
+                .money-bar[data-v-6d748bf9] {
+                    font-size: 26px
+                }
+
+                #spend-ad[data-v-6d748bf9] {
+                    margin-top: 10px
+                }
+            }
+
+            .header-wrapper[data-v-56d32094] {
+                background-color: #fff;
+                font-size: 30px;
+                font-weight: 700;
+                height: 94px;
+                margin-bottom: 25px
+            }
+
+            .header-inner[data-v-56d32094],.header-wrapper[data-v-56d32094] {
+                align-items: center;
+                display: flex
+            }
+
+            .header-inner[data-v-56d32094] {
+                margin-left: auto;
+                margin-right: auto;
+                padding: 0 0 0 14px;
+                position: relative;
+                width: 100%
+            }
+
+            .header-site-link[data-v-56d32094] {
+                width: 144px
+            }
+
+            .social-img[data-v-56d32094] {
+                height: 23px
+            }
+
+            .social-img-twitter[data-v-56d32094] {
+                padding: 1px
+            }
+
+            .social-link[data-v-56d32094]:hover {
+                transform: scale(1.08)
+            }
+
+            .socials[data-v-56d32094] {
+                display: flex;
+                grid-gap: 15px;
+                display: none
+            }
+
+            #header-skyscraper[data-v-56d32094] {
+                bottom: 0;
+                height: 105px;
+                overflow: hidden;
+                position: absolute;
+                right: 0;
+                width: 720px
+            }
+
+            @media only screen and (max-width: 600px) {
+                .header-wrapper[data-v-56d32094] {
+                    height:90px
+                }
+
+                .header-inner[data-v-56d32094] {
+                    padding: 0 20px
+                }
+
+                .header-site-link[data-v-56d32094] {
+                    width: 130px
+                }
+            }
+
+            .site-logo[data-v-4b4ecb6e] {
+                cursor: pointer;
+                -webkit-tap-highlight-color: transparent
+            }
+
+            .site-logo-img[data-v-4b4ecb6e] {
+                width: 100%;
+                -webkit-user-drag: none
+            }
+
+            @media (hover: hover) {
+                .site-logo[data-v-4b4ecb6e]:hover {
+                    transform:scale(1.033)
+                }
+
+                .site-logo[data-v-4b4ecb6e]:active {
+                    transform: scale(1)
+                }
+            }
+
+            @media (hover: none) {
+                .site-logo[data-v-4b4ecb6e]:active {
+                    transform:scale(1.033)
+                }
+            }
+
+            .money-bar[data-v-e8c2d42e] {
+                background-color: #2ecc71;
+                background: linear-gradient(180deg,#2ecc71,#1abc9c);
+                color: #fff;
+                font-family: Roboto,sans-serif;
+                font-size: 32px;
+                font-weight: 700;
+                margin: 10px 0;
+                padding: 20px;
+                position: sticky;
+                text-align: center;
+                top: 0;
+                z-index: 9999
+            }
+
+            .hide[data-v-e23380e2] {
+                display: none!important
+            }
+
+            .footer-wrapper[data-v-51be010e] {
+                font-family: RobotoLight,sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans;
+                font-size: 22px;
+                margin-top: 15px;
+                padding: 30px 20px 45px;
+                text-align: center
+            }
+
+            .related-text[data-v-51be010e] {
+                font-size: 22px
+            }
+
+            .related-posts[data-v-51be010e] {
+                display: grid;
+                grid-template-columns: repeat(2,1fr);
+                max-width: 870px;
+                grid-gap: 16px 18px;
+                font-size: 0;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 15px
+            }
+
+            .heart[data-v-51be010e] {
+                height: 17px;
+                position: relative;
+                top: 4px;
+                width: 17px
+            }
+
+            .site-title-logo[data-v-51be010e] {
+                height: 25px
+            }
+
+            .newsletter-text[data-v-51be010e] {
+                font-size: 19px;
+                margin-bottom: 8px
+            }
+
+            .newsletter-img[data-v-51be010e] {
+                height: 16px;
+                margin-right: 7px;
+                position: relative;
+                top: 3px
+            }
+
+            .newsletter-input[data-v-51be010e] {
+                background-color: #fff;
+                background-image: url(/general/mail.svg);
+                background-position: 10px;
+                background-repeat: no-repeat;
+                background-size: auto 15px;
+                border: 1px solid #000;
+                border-radius: 5px;
+                color: #000;
+                font-family: RobotoLight;
+                font-size: 17px;
+                max-width: 220px;
+                outline: 0;
+                padding: 7px 5px 7px 40px;
+                width: 100%
+            }
+
+            .newsletter-input[data-v-51be010e]::-moz-placeholder {
+                color: rgba(0,0,0,.8)
+            }
+
+            .newsletter-input[data-v-51be010e]::placeholder {
+                color: rgba(0,0,0,.8)
+            }
+
+            .newsletter-subscribe[data-v-51be010e] {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                background: #fff5d9;
+                border: 1px solid #000;
+                border-radius: 5px;
+                box-shadow: none;
+                color: #000;
+                cursor: pointer;
+                font-family: RobotoLight;
+                font-size: 17px;
+                height: 100%;
+                margin-left: 5px;
+                padding: 7px 12px
+            }
+
+            .newsletter-subscribe[data-v-51be010e]:hover {
+                transform: scale(1.03)
+            }
+
+            .newsletter-box[data-v-51be010e] {
+                border-radius: 5px;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 10px;
+                padding: 20px 10px
+            }
+
+            .newsletter-inner[data-v-51be010e] {
+                display: flex;
+                height: 42px;
+                justify-content: center
+            }
+
+            .footer-logo[data-v-51be010e] {
+                display: block;
+                margin-top: 20px;
+                width: 145px
+            }
+
+            #footer-ad[data-v-51be010e],.footer-logo[data-v-51be010e] {
+                margin-left: auto;
+                margin-right: auto
+            }
+
+            #footer-ad[data-v-51be010e] {
+                margin-top: 15px;
+                max-width: 1200px;
+                width: 100%
+            }
+
+            @media only screen and (max-width: 700px) {
+                .footer-wrapper[data-v-51be010e] {
+                    padding-left:12px;
+                    padding-right: 12px
+                }
+
+                .related-posts[data-v-51be010e] {
+                    grid-template-columns: repeat(1,1fr)
+                }
+
+                .site-title[data-v-51be010e] {
+                    margin-top: 25px;
+                    max-width: 145px
+                }
+            }
+        </style>
+        <link rel="preload" href="/_nuxt/static/1753559705/spend/state.js" as="script">
+        <link rel="preload" href="/_nuxt/static/1753559705/spend/payload.js" as="script">
+        <link rel="preload" href="/_nuxt/static/1753559705/manifest.js" as="script">
+    </head>
+    <body>
+        <div data-server-rendered="true" id="__nuxt">
+            <!---->
+            <div id="__layout">
+                <div>
+                    <div class="simple-page" data-v-6d748bf9>
+                        <div class="header-wrapper" data-v-56d32094 data-v-6d748bf9>
+                            <div class="header-inner" style="max-width:1000px" data-v-56d32094>
+                                <a href="/" class="site-logo header-site-link" data-v-4b4ecb6e data-v-56d32094>
+                                    <img src="/general/logos/default.svg" class="site-logo-img" data-v-4b4ecb6e>
+                                </a>
+                                <!---->
+                            </div>
+                        </div>
+                        <div class="container" data-v-6d748bf9>
+                            <div data-v-6d748bf9>
+                                <div class="title" data-v-6d748bf9>
+                                    <img alt="Image of Bill Gates" src="/spend/billgates.jpg" class="header-img" data-v-6d748bf9>Spend Bill Gates' Money
+      
+                                </div>
+                                <div class="money-bar" data-v-e8c2d42e data-v-6d748bf9>$100,000,000,000</div>
+                                <div class="items" data-v-6d748bf9>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/big-mac.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Big Mac</div>
+                                            <div class="item-cost" data-v-6d748bf9>$2</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/flip-flops.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Flip Flops</div>
+                                            <div class="item-cost" data-v-6d748bf9>$3</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/coca-cola-pack.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Coca-Cola Pack</div>
+                                            <div class="item-cost" data-v-6d748bf9>$5</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/movie-ticket.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Movie Ticket</div>
+                                            <div class="item-cost" data-v-6d748bf9>$12</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/book.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Book</div>
+                                            <div class="item-cost" data-v-6d748bf9>$15</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/lobster-dinner.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Lobster Dinner</div>
+                                            <div class="item-cost" data-v-6d748bf9>$45</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/video-game.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Video Game</div>
+                                            <div class="item-cost" data-v-6d748bf9>$60</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/amazon-echo.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Amazon Echo</div>
+                                            <div class="item-cost" data-v-6d748bf9>$99</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/year-of-netflix.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Year of Netflix</div>
+                                            <div class="item-cost" data-v-6d748bf9>$100</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/air-jordans.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Air Jordans</div>
+                                            <div class="item-cost" data-v-6d748bf9>$125</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/airpods.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Airpods</div>
+                                            <div class="item-cost" data-v-6d748bf9>$199</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/gaming-console.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Gaming Console</div>
+                                            <div class="item-cost" data-v-6d748bf9>$299</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/drone.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Drone</div>
+                                            <div class="item-cost" data-v-6d748bf9>$350</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/smartphone.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Smartphone</div>
+                                            <div class="item-cost" data-v-6d748bf9>$699</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/bike.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Bike</div>
+                                            <div class="item-cost" data-v-6d748bf9>$800</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/kitten.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Kitten</div>
+                                            <div class="item-cost" data-v-6d748bf9>$1,500</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/puppy.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Puppy</div>
+                                            <div class="item-cost" data-v-6d748bf9>$1,500</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/auto-rickshaw.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Auto Rickshaw</div>
+                                            <div class="item-cost" data-v-6d748bf9>$2,300</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/horse.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Horse</div>
+                                            <div class="item-cost" data-v-6d748bf9>$2,500</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/acre-of-farmland.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Acre of Farmland</div>
+                                            <div class="item-cost" data-v-6d748bf9>$3,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/designer-handbag.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Designer Handbag</div>
+                                            <div class="item-cost" data-v-6d748bf9>$5,500</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/hot-tub.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Hot Tub</div>
+                                            <div class="item-cost" data-v-6d748bf9>$6,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/luxury-wine.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Luxury Wine</div>
+                                            <div class="item-cost" data-v-6d748bf9>$7,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/diamond-ring.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Diamond Ring</div>
+                                            <div class="item-cost" data-v-6d748bf9>$10,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/jet-ski.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Jet Ski</div>
+                                            <div class="item-cost" data-v-6d748bf9>$12,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/rolex.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Rolex</div>
+                                            <div class="item-cost" data-v-6d748bf9>$15,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/ford-f-150.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Ford F-150</div>
+                                            <div class="item-cost" data-v-6d748bf9>$30,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/tesla.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Tesla</div>
+                                            <div class="item-cost" data-v-6d748bf9>$75,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/monster-truck.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Monster Truck</div>
+                                            <div class="item-cost" data-v-6d748bf9>$150,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/ferrari.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Ferrari</div>
+                                            <div class="item-cost" data-v-6d748bf9>$250,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/single-family-home.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Single Family Home</div>
+                                            <div class="item-cost" data-v-6d748bf9>$300,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/gold-bar.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Gold Bar</div>
+                                            <div class="item-cost" data-v-6d748bf9>$700,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/mcdonalds-franchise.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>McDonalds Franchise</div>
+                                            <div class="item-cost" data-v-6d748bf9>$1,500,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/superbowl-ad.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Superbowl Ad</div>
+                                            <div class="item-cost" data-v-6d748bf9>$5,250,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/yacht.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Yacht</div>
+                                            <div class="item-cost" data-v-6d748bf9>$7,500,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/m1-abrams.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>M1 Abrams</div>
+                                            <div class="item-cost" data-v-6d748bf9>$8,000,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/formula-1-car.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Formula 1 Car</div>
+                                            <div class="item-cost" data-v-6d748bf9>$15,000,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/apache-helicopter.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Apache Helicopter</div>
+                                            <div class="item-cost" data-v-6d748bf9>$31,000,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/mansion.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Mansion</div>
+                                            <div class="item-cost" data-v-6d748bf9>$45,000,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/make-a-movie.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Make a Movie</div>
+                                            <div class="item-cost" data-v-6d748bf9>$100,000,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/boeing-747.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Boeing 747</div>
+                                            <div class="item-cost" data-v-6d748bf9>$148,000,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/mona-lisa.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Mona Lisa</div>
+                                            <div class="item-cost" data-v-6d748bf9>$780,000,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/skyscraper.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Skyscraper</div>
+                                            <div class="item-cost" data-v-6d748bf9>$850,000,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/cruise-ship.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>Cruise Ship</div>
+                                            <div class="item-cost" data-v-6d748bf9>$930,000,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                    <div data-v-6d748bf9>
+                                        <div class="item-wrapper" data-v-6d748bf9>
+                                            <img src="/spend/images/nba-team.jpg" class="item-img" data-v-6d748bf9>
+                                            <div class="item-name" data-v-6d748bf9>NBA Team</div>
+                                            <div class="item-cost" data-v-6d748bf9>$2,120,000,000</div>
+                                            <div class="item-controls" data-v-6d748bf9>
+                                                <button disabled class="item-sell" data-v-6d748bf9>Sell
+              </button>
+                                                <input pattern="\d*" type="number" value="0" class="item-input" data-v-6d748bf9>
+                                                <button class="item-buy" data-v-6d748bf9>Buy
+              </button>
+                                            </div>
+                                        </div>
+                                        <!---->
+                                    </div>
+                                </div>
+                                <!---->
+                            </div>
+                            <!---->
+                        </div>
+                        <div data-v-51be010e data-v-6d748bf9>
+                            <!---->
+                            <!---->
+                            <div class="footer-wrapper" style="color:#000;background:#fff" data-v-51be010e>
+                                <div class="related-text" data-v-51be010e>You may also like</div>
+                                <div class="related-posts" data-v-51be010e></div>
+                                <div class="newsletter-box" data-v-51be010e>
+                                    <div class="newsletter-text" data-v-51be010e>Get new posts!
+      </div>
+                                    <form class="newsletter-inner" data-v-51be010e>
+                                        <input type="email" placeholder="Your email" class="newsletter-input" data-v-51be010e>
+                                        <button class="newsletter-subscribe" data-v-51be010e>Subscribe</button>
+                                    </form>
+                                    <div data-v-51be010e></div>
+                                </div>
+                                <a href="/" class="site-logo footer-logo" data-v-4b4ecb6e data-v-51be010e>
+                                    <img src="/general/logos/default.svg" class="site-logo-img" data-v-4b4ecb6e>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script defer src="/_nuxt/static/1753559705/spend/state.js"></script>
+        <script src="/_nuxt/ec7a90f.js" defer></script>
+        <script src="/_nuxt/f2f22d4.js" defer></script>
+        <script src="/_nuxt/c9108d6.js" defer></script>
+        <script src="/_nuxt/836cb62.js" defer></script>
+        <script src="/_nuxt/4576e40.js" defer></script>
+        <script src="/_nuxt/2a542a9.js" defer></script>
+        <script src="/_nuxt/cd7cdb7.js" defer></script>
+        <script>
+            (function() {
+                function c() {
+                    var b = a.contentDocument || a.contentWindow.document;
+                    if (b) {
+                        var d = b.createElement('script');
+                        d.innerHTML = "window.__CF$cv$params={r:'968f6a3b3b491482',t:'MTc1NDE1Njk5OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+                        b.getElementsByTagName('head')[0].appendChild(d)
+                    }
+                }
+                if (document.body) {
+                    var a = document.createElement('iframe');
+                    a.height = 1;
+                    a.width = 1;
+                    a.style.position = 'absolute';
+                    a.style.top = 0;
+                    a.style.left = 0;
+                    a.style.border = 'none';
+                    a.style.visibility = 'hidden';
+                    document.body.appendChild(a);
+                    if ('loading' !== document.readyState)
+                        c();
+                    else if (window.addEventListener)
+                        document.addEventListener('DOMContentLoaded', c);
+                    else {
+                        var e = document.onreadystatechange || function() {}
+                        ;
+                        document.onreadystatechange = function(b) {
+                            e(b);
+                            'loading' !== document.readyState && (document.onreadystatechange = e,
+                            c())
+                        }
+                    }
+                }
+            }
+            )();
+        </script>
+    </body>
+</html>
