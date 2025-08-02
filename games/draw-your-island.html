@@ -5,125 +5,143 @@
   <title>Draw Your Island</title>
   <style>
     body {
-      font-family: 'Arial Rounded MT Bold', 'Segoe UI', sans-serif;
+      font-family: 'Arial Rounded MT Bold', sans-serif;
+      background: #e0f7fa;
       margin: 0;
       padding: 0;
-      background: #f6f7f9;
-      color: #333;
+      text-align: center;
     }
 
     h1 {
-      text-align: center;
-      padding: 1rem;
+      margin-top: 20px;
     }
 
-    .container {
+    #island {
+      position: relative;
+      margin: 20px auto;
+      background: url('https://upload.wikimedia.org/wikipedia/commons/3/3e/Island_icon_cartoon.svg') center/cover no-repeat;
+      width: 500px;
+      height: 300px;
+      border-radius: 30px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+
+    .draw-section {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 20px;
+    }
+
+    .draw-box {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 1rem;
-    }
-
-    .prompt-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 180px);
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .prompt {
-      background: white;
-      border-radius: 20px;
-      padding: 1rem;
-      text-align: center;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-      transition: 0.2s ease;
-    }
-
-    .prompt:hover {
-      background: #def7e5;
     }
 
     canvas {
-      border-radius: 20px;
-      background: white;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-      margin-bottom: 1rem;
-    }
-
-    .buttons {
-      display: flex;
-      gap: 1rem;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      cursor: crosshair;
     }
 
     button {
+      margin-top: 8px;
+      padding: 6px 12px;
+      border-radius: 8px;
       border: none;
-      border-radius: 12px;
-      padding: 0.5rem 1rem;
-      background: #eeeeee;
-      cursor: pointer;
+      background: #4caf50;
+      color: white;
       font-weight: bold;
-      transition: 0.2s;
+      cursor: pointer;
     }
 
-    button:hover {
-      background: #ccc;
+    .placed {
+      position: absolute;
+      cursor: move;
     }
   </style>
 </head>
 <body>
   <h1>Draw Your Island</h1>
-  <div class="container">
-    <div class="prompt-grid">
-      <div class="prompt">Draw Yourself</div>
-      <div class="prompt">Draw a Pet</div>
-      <div class="prompt">Draw a Tree</div>
-      <div class="prompt">Draw a House</div>
-      <div class="prompt">Draw a Cloud</div>
-      <div class="prompt">Draw a Fish</div>
-    </div>
 
-    <canvas id="canvas" width="400" height="300"></canvas>
-    <div class="buttons">
-      <button onclick="clearCanvas()">Clear</button>
-      <button onclick="eraseMode()">Erase</button>
-      <button onclick="drawMode()">Draw</button>
+  <div id="island"></div>
+
+  <div class="draw-section">
+    <div class="draw-box">
+      <canvas width="100" height="100" data-index="0"></canvas>
+      <button onclick="placeDrawing(0)">Place</button>
+    </div>
+    <div class="draw-box">
+      <canvas width="100" height="100" data-index="1"></canvas>
+      <button onclick="placeDrawing(1)">Place</button>
+    </div>
+    <div class="draw-box">
+      <canvas width="100" height="100" data-index="2"></canvas>
+      <button onclick="placeDrawing(2)">Place</button>
+    </div>
+    <div class="draw-box">
+      <canvas width="100" height="100" data-index="3"></canvas>
+      <button onclick="placeDrawing(3)">Place</button>
     </div>
   </div>
 
   <script>
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
-    let drawing = false;
-    let erase = false;
+    const canvases = document.querySelectorAll("canvas");
+    const island = document.getElementById("island");
 
-    canvas.addEventListener("mousedown", () => drawing = true);
-    canvas.addEventListener("mouseup", () => drawing = false);
-    canvas.addEventListener("mouseleave", () => drawing = false);
+    canvases.forEach((canvas, index) => {
+      const ctx = canvas.getContext("2d");
+      let drawing = false;
 
-    canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("mousedown", () => drawing = true);
+      canvas.addEventListener("mouseup", () => drawing = false);
+      canvas.addEventListener("mouseleave", () => drawing = false);
 
-    function draw(e) {
-      if (!drawing) return;
+      canvas.addEventListener("mousemove", (e) => {
+        if (!drawing) return;
+        ctx.fillStyle = "black";
+        ctx.beginPath();
+        ctx.arc(e.offsetX, e.offsetY, 3, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    });
 
-      ctx.fillStyle = erase ? "#fff" : "#000";
-      ctx.beginPath();
-      ctx.arc(e.offsetX, e.offsetY, 5, 0, Math.PI * 2);
-      ctx.fill();
+    function placeDrawing(index) {
+      const srcCanvas = canvases[index];
+      const imageURL = srcCanvas.toDataURL();
+
+      const img = document.createElement("img");
+      img.src = imageURL;
+      img.className = "placed";
+      img.style.width = "60px";
+      img.style.top = Math.random() * 240 + "px";
+      img.style.left = Math.random() * 440 + "px";
+
+      makeDraggable(img);
+      island.appendChild(img);
     }
 
-    function clearCanvas() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
+    function makeDraggable(el) {
+      let offsetX, offsetY, isDragging = false;
 
-    function eraseMode() {
-      erase = true;
-    }
+      el.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        offsetX = e.offsetX;
+        offsetY = e.offsetY;
+      });
 
-    function drawMode() {
-      erase = false;
+      document.addEventListener("mouseup", () => isDragging = false);
+
+      document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        const rect = island.getBoundingClientRect();
+        el.style.left = (e.clientX - rect.left - offsetX) + "px";
+        el.style.top = (e.clientY - rect.top - offsetY) + "px";
+      });
     }
   </script>
 </body>
