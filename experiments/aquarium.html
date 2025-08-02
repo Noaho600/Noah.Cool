@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Digital Aquarium</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: linear-gradient(to bottom, #a0e6ff, #0077be); /* Water look */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: white;
+    }
+
+    header {
+      width: 100%;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    button {
+      background: #fff;
+      color: #0077be;
+      padding: 8px 14px;
+      margin: 4px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #e0f7ff;
+    }
+
+    .aquarium {
+      width: 90vw;
+      height: 60vh;
+      background: url('https://i.imgur.com/BQxkG4R.png') center/cover no-repeat; /* Optional: transparent water image */
+      border: 8px solid #004d80;
+      border-radius: 24px;
+      margin: 20px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .draggable {
+      font-size: 32px;
+      position: absolute;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .palette {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .palette span {
+      font-size: 32px;
+      cursor: grab;
+      background: #ffffffaa;
+      padding: 4px;
+      border-radius: 10px;
+    }
+
+    footer {
+      margin-bottom: 20px;
+      font-size: 14px;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <button onclick="window.location.href='experiments.html'">⬅ Back</button>
+    <div>
+      <button onclick="resetAquarium()">Reset</button>
+      <button onclick="downloadAquarium()">Download</button>
+    </div>
+  </header>
+
+  <div class="palette" id="palette">
+    <span draggable="true">🐠</span>
+    <span draggable="true">🐟</span>
+    <span draggable="true">🐡</span>
+    <span draggable="true">🪸</span>
+    <span draggable="true">🌿</span>
+    <span draggable="true">🪵</span>
+  </div>
+
+  <div class="aquarium" id="aquarium"></div>
+
+  <footer>
+    Drag fish and decor into the aquarium!
+  </footer>
+
+  <script>
+    const palette = document.getElementById('palette');
+    const aquarium = document.getElementById('aquarium');
+
+    palette.querySelectorAll('span').forEach(item => {
+      item.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text/plain', item.textContent);
+      });
+    });
+
+    aquarium.addEventListener('dragover', e => {
+      e.preventDefault();
+    });
+
+    aquarium.addEventListener('drop', e => {
+      e.preventDefault();
+      const emoji = e.dataTransfer.getData('text/plain');
+      const newItem = document.createElement('div');
+      newItem.className = 'draggable';
+      newItem.textContent = emoji;
+      newItem.style.left = `${e.offsetX - 16}px`;
+      newItem.style.top = `${e.offsetY - 16}px`;
+      makeDraggable(newItem);
+      aquarium.appendChild(newItem);
+    });
+
+    function makeDraggable(el) {
+      el.addEventListener('mousedown', function (e) {
+        const shiftX = e.clientX - el.getBoundingClientRect().left;
+        const shiftY = e.clientY - el.getBoundingClientRect().top;
+
+        function moveAt(pageX, pageY) {
+          el.style.left = pageX - aquarium.offsetLeft - shiftX + 'px';
+          el.style.top = pageY - aquarium.offsetTop - shiftY + 'px';
+        }
+
+        function onMouseMove(e) {
+          moveAt(e.pageX, e.pageY);
+        }
+
+        document.addEventListener('mousemove', onMouseMove);
+
+        el.onmouseup = () => {
+          document.removeEventListener('mousemove', onMouseMove);
+          el.onmouseup = null;
+        };
+      });
+
+      el.ondragstart = () => false;
+    }
+
+    function resetAquarium() {
+      aquarium.innerHTML = '';
+    }
+
+    function downloadAquarium() {
+      html2canvas(aquarium).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'my-aquarium.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    }
+  </script>
+
+  <!-- Optional: For Downloading -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</body>
+</html>
