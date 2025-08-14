@@ -5,110 +5,106 @@
   <title>Fart Machine</title>
   <style>
     body {
-      background: #f0f8ff;
-      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1e1e2f, #2b2b40);
+      font-family: "Poppins", sans-serif;
+      color: #eee;
       text-align: center;
       margin: 0;
       padding: 0;
     }
     header {
-      padding: 20px;
-      background: #4CAF50;
-      color: white;
-      font-size: 24px;
+      padding: 25px;
+      font-size: 28px;
       font-weight: bold;
+      letter-spacing: 1px;
+      color: #fff;
+      background: #3a3a55;
+      border-bottom: 3px solid #4CAF50;
+      border-radius: 0 0 20px 20px;
     }
     .machine {
-      margin: 50px auto;
-      padding: 30px;
-      background: white;
-      border-radius: 20px;
-      width: 320px;
-      box-shadow: 4px 6px 15px rgba(0,0,0,0.2);
+      margin: 60px auto;
+      padding: 40px;
+      background: #2a2a3d;
+      border-radius: 35px;
+      width: 500px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
     }
-    .btn {
-      margin: 10px;
-      padding: 15px 20px;
-      border-radius: 12px;
+    .label {
+      font-size: 20px;
+      margin-bottom: 30px;
+      color: #bbb;
+    }
+    .sound-buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+      justify-items: center;
+    }
+    .sound-btn {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
       border: none;
-      font-size: 18px;
+      font-size: 40px;
       cursor: pointer;
       background: #4CAF50;
       color: white;
-      font-weight: bold;
-      transition: 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.3);
     }
-    .btn:hover {
-      background: #45a049;
+    .sound-btn:hover {
+      background: #66bb6a;
+      transform: scale(1.15);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
     }
-    #counter, #message {
-      margin-top: 20px;
-      font-size: 18px;
-      font-weight: bold;
-    }
-    .emoji {
-      font-size: 60px;
-      margin-top: 20px;
-      animation: pop 0.5s ease;
-    }
-    @keyframes pop {
-      0% { transform: scale(0.5); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
+    .sound-btn:active {
+      transform: scale(0.95);
+      background: #388e3c;
     }
     .back {
       display: block;
       margin: 30px auto;
       text-decoration: none;
-      color: #4CAF50;
+      color: #66bb6a;
       font-size: 18px;
       font-weight: bold;
+    }
+    .back:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <header>💨 Fart Machine</header>
+  <header>💨 Sleek Fart Machine</header>
   <div class="machine">
-    <button class="btn" onclick="fart(0)">Fart 1 💨</button>
-    <button class="btn" onclick="fart(1)">Fart 2 💨</button>
-    <button class="btn" onclick="randomFart()">🎲 Random</button>
-    <div id="emoji"></div>
-    <div id="message"></div>
-    <div id="counter">Total Farts: 0</div>
+    <div class="label">Tap a button to unleash the farts</div>
+    <div class="sound-buttons">
+      <button class="sound-btn" onclick="playFart(0)">💨</button>
+      <button class="sound-btn" onclick="playFart(1)">🎺</button>
+      <button class="sound-btn" onclick="playFart(2)">🍑</button>
+      <button class="sound-btn" onclick="playFart(3)">🤯</button>
+      <button class="sound-btn" onclick="playFart(4)">🐸</button>
+      <button class="sound-btn" onclick="playFart(5)">🧨</button>
+    </div>
   </div>
   <a href="index.html" class="back">⬅ Back</a>
 
   <script>
-    let fartCount = 0;
-    const messages = [
-      "Silent but deadly...",
-      "That one lingered 💨",
-      "Echo chamber unlocked 🎶",
-      "Oops, that was loud!",
-      "Disaster strikes 🚨"
-    ];
-
-    // load fart sounds
+    // preload sounds (replace with your actual fart .mp3 files)
     const fartSounds = [
       new Audio("fart1.mp3"),
       new Audio("fart2.mp3"),
-      new Audio("fart3.mp3")
+      new Audio("fart3.mp3"),
+      new Audio("fart4.mp3"),
+      new Audio("fart5.mp3"),
+      new Audio("fart6.mp3")
     ];
 
-    function fart(type) {
-      fartCount++;
-      document.getElementById("counter").textContent = "Total Farts: " + fartCount;
-      document.getElementById("emoji").innerHTML = '<div class="emoji">💨</div>';
-      document.getElementById("message").textContent = messages[type % messages.length];
-
-      // play sound
-      let sound = fartSounds[type % fartSounds.length];
-      sound.currentTime = 0; // rewind in case it was already playing
+    function playFart(i) {
+      let sound = fartSounds[i % fartSounds.length];
+      sound.currentTime = 0; 
       sound.play();
-    }
-
-    function randomFart() {
-      const type = Math.floor(Math.random() * messages.length);
-      fart(type);
     }
   </script>
 </body>
