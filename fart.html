@@ -5,69 +5,89 @@
   <title>Fart Machine</title>
   <style>
     body {
-      background: linear-gradient(to bottom, #87ceeb, #fff);
-      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #dfffe0, #b6fcb9);
+      font-family: "Comic Sans MS", cursive, sans-serif;
       text-align: center;
-      padding: 40px;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      padding: 20px;
+      background: #4CAF50;
+      color: white;
+      font-size: 26px;
+      font-weight: bold;
+      letter-spacing: 1px;
     }
     .machine {
-      background: #ffcc80;
-      border: 4px solid #e65100;
-      border-radius: 20px;
-      display: inline-block;
+      margin: 50px auto;
       padding: 40px;
-      box-shadow: 4px 6px 15px rgba(0,0,0,0.3);
+      background: #fff;
+      border-radius: 30px;
+      width: 380px;
+      box-shadow: 6px 8px 20px rgba(0,0,0,0.25);
     }
-    .btn {
-      margin: 10px;
-      padding: 15px 25px;
-      border-radius: 12px;
-      border: none;
-      font-size: 18px;
-      cursor: pointer;
-      background: #ff7043;
-      color: white;
-      font-weight: bold;
-    }
-    .btn:hover {
-      background: #f4511e;
-    }
-    #counter {
-      margin-top: 20px;
+    .label {
       font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 25px;
+      color: #333;
+    }
+    .sound-buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      justify-items: center;
+    }
+    .sound-btn {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: none;
+      font-size: 40px;
+      cursor: pointer;
+      background: #4CAF50;
+      color: white;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .sound-btn:hover {
+      background: #45a049;
+      transform: scale(1.1);
+    }
+    .back {
+      display: block;
+      margin: 30px auto;
+      text-decoration: none;
+      color: #4CAF50;
+      font-size: 18px;
       font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>💨 The Fart Machine</h1>
+  <header>💨 Fart Machine</header>
   <div class="machine">
-    <button class="btn" onclick="playFart(0)">Fart 1 💨</button>
-    <button class="btn" onclick="playFart(1)">Fart 2 💨</button>
-    <button class="btn" onclick="playFart(2)">Fart 3 💨</button>
-    <button class="btn" onclick="randomFart()">🎲 Random Fart</button>
-    <div id="counter">Total Farts: 0</div>
+    <div class="label">Press a button to fart!</div>
+    <div class="sound-buttons">
+      <button class="sound-btn" onclick="playFart(0)">💨</button>
+      <button class="sound-btn" onclick="playFart(1)">🎺</button>
+      <button class="sound-btn" onclick="playFart(2)">🤯</button>
+    </div>
   </div>
-
-  <!-- Sounds -->
-  <audio id="fart0" src="https://www.myinstants.com/media/sounds/fart-meme.mp3"></audio>
-  <audio id="fart1" src="https://www.myinstants.com/media/sounds/fart-with-reverb.mp3"></audio>
-  <audio id="fart2" src="https://www.myinstants.com/media/sounds/epic-fart.mp3"></audio>
+  <a href="index.html" class="back">⬅ Back</a>
 
   <script>
-    let fartCount = 0;
+    // preload sounds
+    const fartSounds = [
+      new Audio("fart1.mp3"),
+      new Audio("fart2.mp3"),
+      new Audio("fart3.mp3")
+    ];
 
-    function playFart(num) {
-      const sound = document.getElementById("fart" + num);
-      sound.currentTime = 0;
+    function playFart(i) {
+      let sound = fartSounds[i % fartSounds.length];
+      sound.currentTime = 0; 
       sound.play();
-      fartCount++;
-      document.getElementById("counter").textContent = "Total Farts: " + fartCount;
-    }
-
-    function randomFart() {
-      const num = Math.floor(Math.random() * 3);
-      playFart(num);
     }
   </script>
 </body>
