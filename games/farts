@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fart Machine</title>
+  <style>
+    body {
+      background: #f0f8ff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      padding: 20px;
+      background: #4CAF50;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .machine {
+      margin: 50px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 20px;
+      width: 320px;
+      box-shadow: 4px 6px 15px rgba(0,0,0,0.2);
+    }
+    .btn {
+      margin: 10px;
+      padding: 15px 20px;
+      border-radius: 12px;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      background: #4CAF50;
+      color: white;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    .btn:hover {
+      background: #45a049;
+    }
+    #counter, #message {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .emoji {
+      font-size: 60px;
+      margin-top: 20px;
+      animation: pop 0.5s ease;
+    }
+    @keyframes pop {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .back {
+      display: block;
+      margin: 30px auto;
+      text-decoration: none;
+      color: #4CAF50;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>💨 Fart Machine</header>
+  <div class="machine">
+    <button class="btn" onclick="fart(0)">Fart 1 💨</button>
+    <button class="btn" onclick="fart(1)">Fart 2 💨</button>
+    <button class="btn" onclick="randomFart()">🎲 Random</button>
+    <div id="emoji"></div>
+    <div id="message"></div>
+    <div id="counter">Total Farts: 0</div>
+  </div>
+  <a href="index.html" class="back">⬅ Back</a>
+
+  <script>
+    let fartCount = 0;
+    const messages = [
+      "Silent but deadly...",
+      "That one lingered 💨",
+      "Echo chamber unlocked 🎶",
+      "Oops, that was loud!",
+      "Disaster strikes 🚨"
+    ];
+
+    // load fart sounds
+    const fartSounds = [
+      new Audio("fart1.mp3"),
+      new Audio("fart2.mp3"),
+      new Audio("fart3.mp3")
+    ];
+
+    function fart(type) {
+      fartCount++;
+      document.getElementById("counter").textContent = "Total Farts: " + fartCount;
+      document.getElementById("emoji").innerHTML = '<div class="emoji">💨</div>';
+      document.getElementById("message").textContent = messages[type % messages.length];
+
+      // play sound
+      let sound = fartSounds[type % fartSounds.length];
+      sound.currentTime = 0; // rewind in case it was already playing
+      sound.play();
+    }
+
+    function randomFart() {
+      const type = Math.floor(Math.random() * messages.length);
+      fart(type);
+    }
+  </script>
+</body>
+</html>
