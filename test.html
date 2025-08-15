@@ -3,76 +3,146 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Fun Site</title>
+  <title>Noah.Cool</title>
   <style>
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
-      background: #f3f3f3;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      background: #fff;
+      text-align: center;
+    }
+
+    header {
+      padding: 40px 20px 10px;
+    }
+
+    header h1 {
+      font-size: 48px;
       margin: 0;
     }
 
-    .container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 20px;
-      max-width: 600px;
-      width: 90%;
+    header p {
+      font-size: 16px;
+      color: #666;
+      margin: 8px 0 20px;
     }
 
-    .tile {
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 15px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      text-align: center;
-      padding: 20px;
-      transition: transform 0.2s, box-shadow 0.2s;
+    .random-btn {
+      background: #222;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
       cursor: pointer;
+      margin-bottom: 40px;
+      transition: background 0.2s;
+    }
+    .random-btn:hover {
+      background: #444;
     }
 
-    .tile:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      max-width: 1100px;
+      margin: 0 auto 60px;
+      padding: 0 20px;
     }
 
-    .tile img {
-      width: 50px;
-      height: 50px;
-      margin-bottom: 10px;
-    }
-
-    .tile span {
-      display: block;
-      font-size: 14px;
+    .game-tile {
+      background: #f2f2f2;
+      border-radius: 12px;
+      padding: 40px 20px;
+      font-size: 20px;
       font-weight: bold;
+      color: #222;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .game-tile:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+    }
+
+    footer {
+      background: #fafafa;
+      padding: 40px 20px;
+      border-top: 1px solid #ddd;
+      text-align: left;
+    }
+
+    footer h2 {
+      margin-top: 0;
+    }
+
+    .footer-sections {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .footer-box {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 20px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="tile" onclick="location.href='rocks.html'">
-      <img src="https://img.icons8.com/ios-filled/50/rock.png" alt="Rocks">
-      <span>Rocks</span>
-    </div>
+  <header>
+    <h1>Noah.Cool</h1>
+    <p>games and experiments by Noah</p>
+    <button class="random-btn" onclick="randomGame()">🎲 Random Game</button>
+  </header>
 
-    <div class="tile" onclick="location.href='planet.html'">
-      <img src="https://img.icons8.com/ios-filled/50/planet.png" alt="Planet Maker">
-      <span>Planet Maker</span>
-    </div>
+  <main class="game-grid">
+    <div class="game-tile" onclick="goTo('rocks.html')">🪨 Rocks</div>
+    <div class="game-tile" onclick="goTo('planets.html')">🪐 Draw a Planet</div>
+    <div class="game-tile" onclick="goTo('aquarium.html')">🐟 Digital Aquarium</div>
+    <div class="game-tile" onclick="goTo('fart-machine.html')">💨 Fart Machine</div>
+    <!-- Add more tiles here -->
+  </main>
 
-    <div class="tile" onclick="location.href='aquarium.html'">
-      <img src="https://img.icons8.com/ios-filled/50/fish.png" alt="Aquarium">
-      <span>Aquarium</span>
+  <footer>
+    <div class="footer-sections">
+      <div class="footer-box">
+        <h2>🧪 Experiments</h2>
+        <p>Fun side projects and interactive experiments.</p>
+      </div>
+      <div class="footer-box">
+        <h2>💬 Feedback</h2>
+        <p>Have ideas or bugs to report? Send feedback here.</p>
+      </div>
+      <div class="footer-box">
+        <h2>📜 Changelog</h2>
+        <p>v1.0 – Homepage launched<br>
+           v1.1 – Added Digital Aquarium<br>
+           v1.2 – Added Fart Machine</p>
+      </div>
     </div>
+  </footer>
 
-    <div class="tile" onclick="location.href='fart.html'">
-      <img src="https://img.icons8.com/ios-filled/50/speaker.png" alt="Fart Machine">
-      <span>Fart Machine</span>
-    </div>
-  </div>
+  <script>
+    function goTo(page) {
+      window.location.href = page;
+    }
+
+    function randomGame() {
+      const games = [
+        "rocks.html",
+        "planets.html",
+        "aquarium.html",
+        "fart-machine.html"
+      ];
+      const pick = games[Math.floor(Math.random() * games.length)];
+      window.location.href = pick;
+    }
+  </script>
 </body>
 </html>
