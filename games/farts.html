@@ -2,109 +2,125 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Fart Machine</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Noah.Cool — Fart Machine</title>
   <style>
     body {
-      background: linear-gradient(135deg, #1e1e2f, #2b2b40);
-      font-family: "Poppins", sans-serif;
-      color: #eee;
-      text-align: center;
       margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #333;
     }
+
+    /* Header */
     header {
-      padding: 25px;
-      font-size: 28px;
-      font-weight: bold;
-      letter-spacing: 1px;
-      color: #fff;
-      background: #3a3a55;
-      border-bottom: 3px solid #4CAF50;
-      border-radius: 0 0 20px 20px;
+      background: white;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
-    .machine {
-      margin: 60px auto;
-      padding: 40px;
-      background: #2a2a3d;
-      border-radius: 35px;
-      width: 500px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-    }
-    .label {
-      font-size: 20px;
-      margin-bottom: 30px;
-      color: #bbb;
-    }
-    .sound-buttons {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 25px;
-      justify-items: center;
-    }
-    .sound-btn {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      border: none;
-      font-size: 40px;
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+      color: #222;
       cursor: pointer;
-      background: #4CAF50;
+    }
+    header button {
+      background: #0078ff;
       color: white;
-      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s ease;
     }
-    .sound-btn:hover {
-      background: #66bb6a;
-      transform: scale(1.15);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    header button:hover {
+      background: #005fcc;
     }
-    .sound-btn:active {
-      transform: scale(0.95);
-      background: #388e3c;
+
+    /* Main */
+    main {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
     }
-    .back {
-      display: block;
-      margin: 30px auto;
-      text-decoration: none;
-      color: #66bb6a;
+    h2 {
+      margin-top: 0;
+      font-size: 26px;
+      text-align: center;
+    }
+
+    /* Fart Machine Card */
+    .machine {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    .machine button {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 14px 24px;
       font-size: 18px;
-      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.1s ease;
     }
-    .back:hover {
-      text-decoration: underline;
+    .machine button:hover {
+      background: #218838;
+      transform: scale(1.05);
+    }
+    .machine p {
+      margin-top: 15px;
+      color: #666;
+      font-size: 15px;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 25px 20px;
+      color: #666;
+      font-size: 14px;
+      border-top: 1px solid #eee;
+      margin-top: 40px;
     }
   </style>
 </head>
 <body>
-  <header>💨 Fart Machine</header>
-  <div class="machine">
-    <div class="label">Tap a button to unleash the farts</div>
-    <div class="sound-buttons">
-      <button class="sound-btn" onclick="playFart(0)">💨</button>
-      <button class="sound-btn" onclick="playFart(1)">🎺</button>
-      <button class="sound-btn" onclick="playFart(2)">🍑</button>
-      <button class="sound-btn" onclick="playFart(3)">🤯</button>
-      <button class="sound-btn" onclick="playFart(4)">🐸</button>
-      <button class="sound-btn" onclick="playFart(5)">🧨</button>
+  <!-- Header -->
+  <header>
+    <h1 onclick="window.location.href='index.html'">Noah.Cool</h1>
+    <button onclick="window.location.href='random.html'">🎲 Random Game</button>
+  </header>
+
+  <!-- Main -->
+  <main>
+    <h2>💨 Fart Machine</h2>
+    <div class="machine">
+      <button onclick="playFart()">Play Fart</button>
+      <p>Press the button for endless laughter.</p>
     </div>
-  </div>
-  <a href="index.html" class="back">⬅ Back</a>
+  </main>
 
+  <!-- Footer -->
+  <footer>
+    © 2025 Noah.Cool — All experiments and games made by Noah
+  </footer>
+
+  <!-- Script -->
   <script>
-    // preload sounds (replace with your actual fart .mp3 files)
-    const fartSounds = [
-      new Audio("assets/fart1.mp3"),
-      new Audio("assets/fart2.mp3"),
-      new Audio("assets/fart3.mp3"),
-      new Audio("assets/fart4.mp3"),
-      new Audio("assets/fart5.mp3"),
-      new Audio("assets/fart6.mp3")
-    ];
-
-    function playFart(i) {
-      let sound = fartSounds[i % fartSounds.length];
-      sound.currentTime = 0; 
-      sound.play();
+    function playFart() {
+      const fart = new Audio("fart.mp3"); // make sure fart.mp3 is in the same folder
+      fart.play();
     }
   </script>
 </body>
