@@ -12,160 +12,171 @@
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #fdfdfd;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2rem;
+      font-family: Arial, sans-serif;
+      background: #fff;
+      text-align: center;
     }
 
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.25rem;
+    header {
+      padding: 40px 20px 10px;
     }
 
-    .subtitle {
-      font-size: 1.1rem;
-      color: #777;
-      margin-bottom: 2rem;
+    header h1 {
+      font-size: 48px;
+      margin: 0;
     }
 
-    .grid {
+    header p {
+      font-size: 16px;
+      color: #666;
+      margin: 8px 0 20px;
+    }
+
+    .random-btn {
+      background: #222;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-bottom: 40px;
+      transition: background 0.2s;
+    }
+    .random-btn:hover {
+      background: #444;
+    }
+
+    .game-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.5rem;
-      width: 100%;
-      max-width: 1000px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      max-width: 1100px;
+      margin: 0 auto 60px;
+      padding: 0 20px;
+    }
+
+    .game-tile {
+      background: #f2f2f2;
+      border-radius: 12px;
+      padding: 40px 20px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #222;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .game-tile:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
     }
 
     .tile {
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
-      transition: transform 0.2s, box-shadow 0.2s;
-      cursor: pointer;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 1.1rem;
-      height: 130px;
-      text-align: center;
-      padding: 1rem;
-      text-decoration: none;
-      color: black;
-    }
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
 
-    .tile:hover {
-      transform: scale(1.03);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-    }
+.tile:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
 
-    .random-button {
-      margin: 2rem auto 1.5rem;
-      padding: 0.75rem 1.5rem;
-      font-size: 1rem;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .random-button:hover {
-      background: #0056b3;
+    footer {
+      background: #fafafa;
+      padding: 40px 20px;
+      border-top: 1px solid #ddd;
+      text-align: left;
     }
 
     footer {
-      margin-top: 3rem;
-      color: #aaa;
-      font-size: 0.9rem;
+  text-align: center;
+  padding: 30px 20px;
+  color: #555;
+  font-size: 14px;
+  border-top: 1px solid #ddd;
+  margin-top: 40px;
+}
+
+    footer h2 {
+      margin-top: 0;
     }
 
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 2rem;
-      }
-      .tile {
-        font-size: 1rem;
-        height: 110px;
-      }
-          .banner {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1em;
+    .footer-sections {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .footer-box {
       background: #fff;
-      border-radius: 1rem;
-      margin: 1rem auto;
-      max-width: 800px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      font-size: 1.1rem;
-      transition: transform 0.3s ease;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 20px;
     }
-
-    .banner:hover {
-      transform: scale(1.02);
-    }
-
-    .banner a {
-      color: #007aff;
-      font-weight: bold;
-      margin-left: 0.5em;
-      text-decoration: none;
-    }
-
-    .banner a:hover {
-      text-decoration: underline;
-    }    }
   </style>
 </head>
 <body>
+  <header>
+    <h1>Noah.Cool</h1>
+    <p>Games and Experiments by Noah</p>
+    <button class="random-btn" onclick="randomGame()">🎲 Random Game</button>
+  </header>
 
-  <h1>Noah.Cool</h1>
-  <div class="subtitle">Games and Stuff by Noah</div>
-
-  <button class="random-button" onclick="goToRandomGame()">🎲 Random Game</button>
-
-  <div class="grid" id="tile-grid">
-    <a class="tile" href="games/rocks.html">🪨 Rocks Game</a>
-    <a class="tile" href="games/planet.html">🪐 Draw a Planet <span style="font-size: 0.75rem; color: crimson; margin-left: 4px;">[Beta]</span></a>
-    <a class="tile" href="games/love-calculator.html"> <3 Love Calculator</a>    
-    <a class="tile" href="games/farts.html">Fart Machine</a>
-    <a class="tile" href="games/spend-bill-gates.html">💸 Spend Bill Gates' Money</a>
-    <a class="tile" href="games/draw-your-island.html">Create Your Island <span style="font-size: 0.75rem; color: crimson; margin-left: 4px;">[Beta]</span></a>
-    <a class="tile" href="games/coming-soon.html">🚧 Coming Soon</a>
-    <a class="tile" href="changelog.html">📜 Changelog</a>
-    <a class="tile" href="feedback.html">💬 Feedback</a>
-    <a class="tile" href="experiments.html">🧪 Experiments</a>    
-    
-  </div>
-
-  <footer style="margin-top: 40px; font-size: 14px; color: #666;">
-  Contact: <a href="mailto:hello@noah.cool">hello@noah.cool</a>
-</footer>
+  <main class="game-grid">
+    <div class="game-tile" onclick="goTo('games/rocks.html')">🪨 Rocks</div>
+    <div class="game-tile" onclick="goTo('planets.html')">🪐 Draw a Planet</div>
+    <div class="game-tile" onclick="goTo('games/love-calculator.html')"><3 Love Calculator</div>
+    <div class="game-tile" onclick="goTo('aquarium.html')">Coming Soon</div>
+    <div class="game-tile" onclick="goTo('games/fart-machine.html')">💨 Fart Machine</div>
+    <div class="game-tile" onclick="goTo('games/spend-bill-gates.html')">Spend Bill Gates Money</div>
+    <div class="game-tile" onclick="goTo('games/coming-soon.html')">Coming Soon</div>
+    <!-- Add more tiles here -->
+  </main>
 
   <footer>
-    Noah.Cool – v0.1.6
+    <div class="footer-sections">
+<div class="tile" onclick="window.location.href='experiments.html'">
+  <h2>Experiments</h2>
+  <p>Try out new ideas and prototypes.</p>
+</div>
+
+<div class="tile" onclick="window.location.href='feedback.html'">
+  <h2>Feedback</h2>
+  <p>Share your thoughts and suggestions.</p>
+</div>
+
+<div class="tile" onclick="window.location.href='changelog.html'">
+  <h2>Changelog</h2>
+  <p>See what’s new and updated.</p>
+</div>
+    </div>
+  <p>© 2025 Noah.Cool — All experiments and games made by Noah</p>
   </footer>
 
   <script>
-    const links = [
-      'games/rocks.html',
-      'games/planet.html',
-      'games/love-calculator.html',
-      'games/spend-bill-gates.html',
-      'games/coming-soon.html'
-    ];
+    function goTo(page) {
+      window.location.href = page;
+    }
 
-    function goToRandomGame() {
-      const random = links[Math.floor(Math.random() * links.length)];
-      window.location.href = random;
+    function randomGame() {
+      const games = [
+        "rocks.html",
+        "planets.html",
+        "aquarium.html",
+        "fart-machine.html"
+      ];
+      const pick = games[Math.floor(Math.random() * games.length)];
+      window.location.href = pick;
     }
   </script>
-
 </body>
 </html>
