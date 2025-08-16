@@ -4,53 +4,94 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Love Calculator</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: "Segoe UI", Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
       text-align: center;
-      margin-top: 50px;
+      width: 320px;
+    }
+    h1 {
+      color: #e91e63;
+      margin-bottom: 20px;
     }
     input {
-      padding: 8px;
-      margin: 5px;
+      width: 90%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+      text-align: center;
+      transition: border 0.3s;
+    }
+    input:focus {
+      border: 2px solid #e91e63;
+      outline: none;
     }
     button {
-      padding: 10px 20px;
-      margin-top: 10px;
+      margin-top: 15px;
+      padding: 12px 25px;
       background: #e91e63;
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 12px;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 18px;
+      font-weight: bold;
+      transition: 0.3s;
     }
     button:hover {
       background: #c2185b;
+      transform: scale(1.05);
     }
     #result {
       margin-top: 20px;
       font-size: 22px;
       font-weight: bold;
+      color: #333;
     }
   </style>
 </head>
 <body>
-  <h1>💘 Love Calculator</h1>
-  <input type="text" id="name1" placeholder="Your Name">
-  <input type="text" id="name2" placeholder="Crush's Name">
-  <br>
-  <button onclick="calculateLove()">Calculate Love %</button>
-  <p id="result"></p>
+  <div class="container">
+    <h1>💘 Love Calculator</h1>
+    <input type="text" id="name1" placeholder="Your Name">
+    <input type="text" id="name2" placeholder="Crush's Name">
+    <br>
+    <button onclick="calculateLove()">Calculate Love %</button>
+    <p id="result"></p>
+  </div>
 
   <script>
     function calculateLove() {
-      const name1 = document.getElementById("name1").value;
-      const name2 = document.getElementById("name2").value;
+      const name1 = document.getElementById("name1").value.trim();
+      const name2 = document.getElementById("name2").value.trim();
 
       if (name1 && name2) {
         const percent = Math.floor(Math.random() * 101); // 0–100
-        document.getElementById("result").innerText = 
+        document.getElementById("result").innerText =
           `${name1} ❤️ ${name2} = ${percent}% Love`;
+
+        // 🎉 Launch confetti
+        confetti({
+          particleCount: 120,
+          spread: 80,
+          origin: { y: 0.6 }
+        });
       } else {
         document.getElementById("result").innerText = "Please enter both names!";
       }
