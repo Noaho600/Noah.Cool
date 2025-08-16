@@ -133,10 +133,9 @@
 
   <main class="game-grid">
     <div class="game-tile" onclick="goTo('games/rocks.html')">🪨 Rocks</div>
-    <div class="game-tile" onclick="goTo('planets.html')">🪐 Draw a Planet</div>
+    <div class="game-tile" onclick="goTo('planet.html')">🪐 Draw a Planet</div>
     <div class="game-tile" onclick="goTo('games/love-calculator.html')"><3 Love Calculator</div>
-    <div class="game-tile" onclick="goTo('aquarium.html')">Coming Soon</div>
-    <div class="game-tile" onclick="goTo('games/fart-machine.html')">💨 Fart Machine</div>
+    <div class="game-tile" onclick="goTo('games/farts.html')">💨 Fart Machine</div>
     <div class="game-tile" onclick="goTo('games/spend-bill-gates.html')">Spend Bill Gates Money</div>
     <div class="game-tile" onclick="goTo('games/coming-soon.html')">Coming Soon</div>
     <!-- Add more tiles here -->
@@ -169,10 +168,11 @@
 
     function randomGame() {
       const games = [
-        "rocks.html",
-        "planets.html",
+        "games/rocks.html",
+        "games/planet.html",
+        "games/spend-bill-gates.html",
         "aquarium.html",
-        "fart-machine.html"
+        "games/farts.html"
       ];
       const pick = games[Math.floor(Math.random() * games.length)];
       window.location.href = pick;
