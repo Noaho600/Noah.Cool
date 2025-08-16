@@ -98,7 +98,7 @@
 <body>
   <!-- Header -->
   <header>
-    <h1 onclick="window.location.href='index.html'">Noah.Cool</h1>
+    <h1 onclick="window.location.href='../index.html'">Noah.Cool</h1>
     <button onclick="window.location.href='random.html'">🎲 Random Game</button>
   </header>
 
@@ -106,6 +106,10 @@
   <main>
     <h2>💨 Fart Machine</h2>
     <div class="machine">
+      <button onclick="playFart()">Play Fart</button>
+      <p>Press the button for endless laughter.</p>
+    </div>
+        <div class="machine">
       <button onclick="playFart()">Play Fart</button>
       <p>Press the button for endless laughter.</p>
     </div>
@@ -119,7 +123,7 @@
   <!-- Script -->
   <script>
     function playFart() {
-      const fart = new Audio("fart.mp3"); // make sure fart.mp3 is in the same folder
+      const fart = new Audio("assets/fart1.mp3"); // make sure 1.mp3 is in the same folder
       fart.play();
     }
   </script>
