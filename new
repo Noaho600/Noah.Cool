@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coming Soon - Noah.Cool</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #a8edea, #fed6e3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    .card {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      max-width: 500px;
+      width: 90%;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .card h1 {
+      font-size: 2rem;
+      margin-bottom: 15px;
+    }
+
+    .card p {
+      font-size: 1.1rem;
+      color: #555;
+      margin-bottom: 25px;
+    }
+
+    .coming-soon {
+      font-weight: bold;
+      font-size: 1.3rem;
+      color: #ff4081;
+    }
+
+    footer {
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🚀 New Game Coming Soon!</h1>
+    <p>We’re working hard on something fun and exciting for Noah.Cool.  
+       Stay tuned for the launch!</p>
+    <p class="coming-soon">Launching Soon ⏳</p>
+    <footer>✨ Noah.Cool Experiments ✨</footer>
+  </div>
+</body>
+</html>
