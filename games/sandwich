@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ultimate Sandwich Creator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      width: 100%;
+      padding: 20px;
+      background: #4CAF50;
+      color: white;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .container {
+      margin: 30px;
+      display: flex;
+      gap: 30px;
+    }
+
+    .ingredients, .sandwich, .scoreboard {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .ingredients {
+      width: 200px;
+    }
+
+    .ingredients h2 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .ingredient {
+      background: #e3e3e3;
+      border-radius: 12px;
+      padding: 10px;
+      margin: 10px 0;
+      text-align: center;
+      cursor: grab;
+    }
+
+    .sandwich {
+      width: 250px;
+      height: 400px;
+      border: 2px dashed #ccc;
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      justify-content: flex-start;
+      overflow-y: auto;
+    }
+
+    .sandwich h2 {
+      margin-bottom: 15px;
+    }
+
+    .sandwich-item {
+      width: 180px;
+      padding: 8px;
+      margin: 5px 0;
+      text-align: center;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+    }
+
+    .scoreboard {
+      width: 200px;
+      text-align: center;
+    }
+
+    .scoreboard h2 {
+      margin-bottom: 15px;
+    }
+
+    #eatButton {
+      margin-top: 20px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 12px;
+      background: #4CAF50;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #review {
+      margin-top: 20px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <header>🥪 Noah.Cool – Ultimate Sandwich Creator</header>
+
+  <div class="container">
+    <!-- Ingredient Menu -->
+    <div class="ingredients">
+      <h2>Ingredients</h2>
+      <div class="ingredient" draggable="true" data-name="Bread" data-color="#deb887">🍞 Bread</div>
+      <div class="ingredient" draggable="true" data-name="Lettuce" data-color="#4CAF50">🥬 Lettuce</div>
+      <div class="ingredient" draggable="true" data-name="Tomato" data-color="#e74c3c">🍅 Tomato</div>
+      <div class="ingredient" draggable="true" data-name="Cheese" data-color="#f1c40f">🧀 Cheese</div>
+      <div class="ingredient" draggable="true" data-name="Meat" data-color="#8b0000">🍖 Meat</div>
+
+      <!-- Secret Ingredients -->
+      <div class="ingredient" draggable="true" data-name="Car Tire" data-color="#333">🛞 Car Tire</div>
+      <div class="ingredient" draggable="true" data-name="Shoe" data-color="#6d4c41">👟 Shoe</div>
+      <div class="ingredient" draggable="true" data-name="Fart Cloud" data-color="#9acd32">💨 Fart Cloud</div>
+    </div>
+
+    <!-- Sandwich Build Area -->
+    <div class="sandwich" id="sandwich">
+      <h2>Drop Here</h2>
+    </div>
+
+    <!-- Scoreboard -->
+    <div class="scoreboard">
+      <h2>Score</h2>
+      <p>Height: <span id="heightScore">0</span></p>
+      <p>Weirdness: <span id="weirdScore">0</span></p>
+      <p>Integrity: <span id="integrityScore">100</span></p>
+      <button id="eatButton">🍴 Eat Sandwich</button>
+      <p id="review"></p>
+    </div>
+  </div>
+
+  <script>
+    const sandwich = document.getElementById("sandwich");
+    const heightScore = document.getElementById("heightScore");
+    const weirdScore = document.getElementById("weirdScore");
+    const integrityScore = document.getElementById("integrityScore");
+    const review = document.getElementById("review");
+
+    let height = 0;
+    let weirdness = 0;
+    let integrity = 100;
+
+    // Drag & Drop
+    document.querySelectorAll(".ingredient").forEach(item => {
+      item.addEventListener("dragstart", e => {
+        e.dataTransfer.setData("name", item.dataset.name);
+        e.dataTransfer.setData("color", item.dataset.color);
+      });
+    });
+
+    sandwich.addEventListener("dragover", e => e.preventDefault());
+
+    sandwich.addEventListener("drop", e => {
+      e.preventDefault();
+      const name = e.dataTransfer.getData("name");
+      const color = e.dataTransfer.getData("color");
+
+      const newItem = document.createElement("div");
+      newItem.className = "sandwich-item";
+      newItem.style.background = color;
+      newItem.innerText = name;
+      sandwich.appendChild(newItem);
+
+      // Update Scores
+      height++;
+      if (["Car Tire", "Shoe", "Fart Cloud"].includes(name)) weirdness += 10;
+      if (height > 5) integrity -= 5;
+
+      heightScore.innerText = height;
+      weirdScore.innerText = weirdness;
+      integrityScore.innerText = integrity;
+    });
+
+    // Eat Button
+    document.getElementById("eatButton").addEventListener("click", () => {
+      const funnyReviews = [
+        "🤢 Gordon Ramsay fainted!",
+        "😂 This belongs in a museum, not a stomach.",
+        "👏 10/10, would regret again.",
+        "🔥 Structural collapse detected!",
+        "🥇 Truly a sandwich for the history books."
+      ];
+      review.innerText = funnyReviews[Math.floor(Math.random() * funnyReviews.length)];
+
+      // Confetti effect
+      for (let i = 0; i < 30; i++) {
+        let confetti = document.createElement("div");
+        confetti.style.position = "fixed";
+        confetti.style.top = Math.random() * window.innerHeight + "px";
+        confetti.style.left = Math.random() * window.innerWidth + "px";
+        confetti.style.width = "10px";
+        confetti.style.height = "10px";
+        confetti.style.background = `hsl(${Math.random() * 360},100%,50%)`;
+        confetti.style.borderRadius = "50%";
+        confetti.style.opacity = "0.8";
+        confetti.style.transition = "transform 1s ease-out, opacity 1s";
+        document.body.appendChild(confetti);
+
+        setTimeout(() => {
+          confetti.style.transform = "translateY(100px)";
+          confetti.style.opacity = "0";
+        }, 100);
+
+        setTimeout(() => confetti.remove(), 2000);
+      }
+    });
+  </script>
+</body>
+</html>
