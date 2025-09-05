@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Win the Powerball (Noah.Cool)</title>
+<style>
+  :root{
+    --accent:#0078ff; --card:#fff; --muted:#666;
+    --bg: #f5f7fb;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;font-family:Inter,system-ui,Segoe UI,Arial;
+    background:var(--bg); color:#111; display:flex;flex-direction:column;align-items:center;
+  }
+
+  header{
+    width:100%; background:var(--card); border-bottom:1px solid #e7e9ee;
+    padding:18px 20px; display:flex;align-items:center;justify-content:space-between; gap:12px;
+  }
+  header h1{margin:0;font-size:18px}
+  header .small{color:var(--muted);font-size:13px}
+
+  main{max-width:1000px;width:92%; margin:28px 0; display:grid;grid-template-columns:1fr 360px; gap:22px}
+  .panel{background:var(--card); border-radius:14px;padding:18px; box-shadow:0 8px 24px rgba(16,24,40,0.04)}
+  .panel h2{margin:0 0 12px;font-size:16px}
+
+  /* left column */
+  .controls{display:flex;gap:12px;flex-wrap:wrap}
+  .ticket-box{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+  .numbers{display:flex;gap:8px;flex-wrap:wrap}
+  .num{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#f1f5ff;border:1px solid #dbe9ff;font-weight:600}
+  .power{background:#fff1f0;border:1px solid #ffd6d4;color:#a12}
+
+  button, input[type="number"]{font:inherit}
+  button{
+    background:var(--accent);color:white;border:none;padding:10px 12px;border-radius:10px;cursor:pointer;
+    box-shadow:0 6px 14px rgba(0,120,255,0.12);
+  }
+  .ghost{background:#f3f5f8;color:#333;border:1px solid #e6e9ee;box-shadow:none}
+
+  .tickets-list{display:flex;flex-direction:column;gap:10px; margin-top:12px}
+  .ticket-card{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:12px;background:#fbfcff;border:1px solid #eef2ff}
+
+  /* right column */
+  .status-row{display:flex;gap:12px;flex-wrap:wrap}
+  .stat{flex:1;min-width:120px;background:#fff;padding:12px;border-radius:10px;border:1px solid #f0f2f7;text-align:center}
+  .stat b{display:block;font-size:18px;margin-top:6px}
+  .draw-area{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:14px}
+  .draw-numbers{display:flex;gap:8px;align-items:center}
+  .drawn{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#f7fbff;border:1px solid #e1efff;font-weight:700}
+  .drawn.power{background:#ffeef0;border-color:#ffd6d6;color:#b21}
+
+  .results{margin-top:14px}
+  .result-row{display:flex;justify-content:space-between;padding:10px;border-radius:10px;background:#fff;margin-bottom:8px;border:1px solid #f0f2f7}
+
+  footer{width:100%;padding:20px;text-align:center;color:var(--muted);font-size:13px}
+  .confetti {position:fixed;left:0;top:0;right:0;bottom:0;pointer-events:none;}
+  .note{color:var(--muted);font-size:13px;margin-top:10px}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Noah.Cool — Win the Powerball (Simulator)</h1>
+    <div class="small">Pick 5 white balls (1–69) + Powerball (1–26). $2 per ticket.</div>
+  </div>
+  <div class="small">This is a simulation for fun — not real gambling.</div>
+</header>
+
+<main>
+  <!-- LEFT: ticket builder & results -->
+  <section class="panel">
+    <h2>Buy Tickets</h2>
+
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
+      <button id="quickPick">🎲 Quick Pick</button>
+      <button id="addTicket" class="ghost">➕ Add Ticket</button>
+      <button id="clearTickets" class="ghost">🗑️ Clear</button>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+        <label style="font-size:13px;color:var(--muted)">Tickets</label>
+        <input id="ticketCount" type="number" min="1" value="1" style="width:68px;padding:8px;border-radius:8px;border:1px solid #e6e9ee">
+      </div>
+    </div>
+
+    <div class="note">Click Quick Pick to fill one ticket randomly. Click a ticket number to edit it.</div>
+
+    <div class="tickets-list" id="ticketsList"></div>
+
+    <div style="margin-top:16px;display:flex;gap:10px;align-items:center">
+      <button id="drawBtn">🎯 Draw Winning Numbers</button>
+      <button id="simulateBtn" class="ghost">🔁 Simulate Until Jackpot</button>
+      <div style="margin-left:auto;color:var(--muted)">Cost: $2 / ticket</div>
+    </div>
+
+    <div class="results" id="results"></div>
+  </section>
+
+  <!-- RIGHT: status, drawn numbers, payouts -->
+  <aside class="panel">
+    <h2>Game Status</h2>
+    <div class="status-row">
+      <div class="stat">
+        Tickets Bought <b id="countTickets">0</b>
+      </div>
+      <div class="stat">
+        Total Cost <b id="totalCost">$0</b>
+      </div>
+      <div class="stat">
+        Last Win <b id="lastWin">$0</b>
+      </div>
+    </div>
+
+    <div class="draw-area">
+      <div style="font-size:13px;color:var(--muted)">Winning Numbers</div>
+      <div class="draw-numbers" id="drawNumbers">
+        <div class="drawn">--</div>
+        <div class="drawn">--</div>
+        <div class="drawn">--</div>
+        <div class="drawn">--</div>
+        <div class="drawn">--</div>
+        <div style="width:10px"></div>
+        <div class="drawn power">--</div>
+      </div>
+
+      <div style="width:100%;margin-top:8px">
+        <strong>Prize Table</strong>
+        <ul style="text-align:left;padding-left:18px;margin:6px 0 0;color:var(--muted);font-size:13px">
+          <li>5 + PB = Jackpot</li>
+          <li>5 = $1,000,000</li>
+          <li>4 + PB = $50,000</li>
+          <li>4 = $100</li>
+          <li>3 + PB = $100</li>
+          <li>3 = $7</li>
+          <li>2 + PB = $7</li>
+          <li>1 + PB = $4</li>
+          <li>0 + PB = $4</li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<div class="confetti" id="confetti"></div>
+
+<footer>
+  © Noah.Cool — For fun only. Want this layout on your site? Customize the prizes or visuals.
+</footer>
+
+<script>
+/* ====== Utility & state ====== */
+const TICKET_PRICE = 2;
+let tickets = []; // array of {white:[5 numbers], power}
+let lastWinning = {white:[], power:null};
+let lastWinAmount = 0;
+
+const ticketsList = document.getElementById('ticketsList');
+const countTicketsEl = document.getElementById('countTickets');
+const totalCostEl = document.getElementById('totalCost');
+const lastWinEl = document.getElementById('lastWin');
+const drawNumbersEl = document.getElementById('drawNumbers');
+const resultsEl = document.getElementById('results');
+
+function randRange(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function uniqueRandoms(count,min,max){
+  const s=new Set();
+  while(s.size<count) s.add(randRange(min,max));
+  return Array.from(s).sort((a,b)=>a-b);
+}
+
+/* ====== UI helpers ====== */
+function updateStatus(){
+  countTicketsEl.textContent = tickets.length;
+  totalCostEl.textContent = '$' + (tickets.length * TICKET_PRICE).toLocaleString();
+  lastWinEl.textContent = '$' + (lastWinAmount).toLocaleString();
+}
+function renderTickets(){
+  ticketsList.innerHTML = '';
+  tickets.forEach((t,idx)=>{
+    const el = document.createElement('div');
+    el.className='ticket-card';
+    // show numbers (click to edit)
+    const left = document.createElement('div');
+    left.style.display='flex'; left.style.gap='8px'; left.style.alignItems='center';
+    t.white.forEach((n,i)=>{
+      const span = document.createElement('div');
+      span.className='num';
+      span.textContent = n;
+      span.title = 'Click to change';
+      span.style.cursor='pointer';
+      span.onclick = ()=> editNumber(idx,'white',i);
+      left.appendChild(span);
+    });
+    const powerSpan = document.createElement('div');
+    powerSpan.className='num power';
+    powerSpan.textContent = t.power;
+    powerSpan.onclick = ()=> editNumber(idx,'power');
+    left.appendChild(powerSpan);
+
+    const right = document.createElement('div');
+    right.style.display='flex'; right.style.gap='8px';
+    const rem = document.createElement('button');
+    rem.className='ghost'; rem.textContent='Remove';
+    rem.onclick = ()=> { tickets.splice(idx,1); renderTickets(); updateStatus(); };
+    right.appendChild(rem);
+    el.appendChild(left);
+    el.appendChild(right);
+    ticketsList.appendChild(el);
+  });
+}
+
+/* ====== ticket editing ====== */
+function editNumber(ticketIndex,type,pos){
+  const t = tickets[ticketIndex];
+  if(type==='white'){
+    const newVal = prompt('Enter white ball number (1-69)', t.white[pos]);
+    const v = Number(newVal);
+    if(v>=1 && v<=69 && !t.white.includes(v)){
+      t.white[pos]=v; t.white.sort((a,b)=>a-b);
+      renderTickets(); updateStatus();
+    } else alert('Invalid or duplicate number.');
+  } else {
+    const newVal = prompt('Enter Powerball number (1-26)', t.power);
+    const v = Number(newVal);
+    if(v>=1 && v<=26){ t.power=v; renderTickets(); updateStatus(); }
+    else alert('Invalid number.');
+  }
+}
+
+/* ====== actions ====== */
+document.getElementById('quickPick').onclick = ()=>{
+  const white = uniqueRandoms(5,1,69);
+  const power = randRange(1,26);
+  const count = Number(document.getElementById('ticketCount').value) || 1;
+  for(let i=0;i<count;i++) tickets.push({white: uniqueRandoms(5,1,69), power: randRange(1,26)});
+  renderTickets(); updateStatus();
+};
+
+document.getElementById('addTicket').onclick = ()=>{
+  tickets.push({white:[1,2,3,4,5], power:1});
+  renderTickets(); updateStatus();
+};
+document.getElementById('clearTickets').onclick = ()=>{ tickets=[]; renderTickets(); updateStatus(); resultsEl.innerHTML=''; };
+
+document.getElementById('drawBtn').onclick = ()=>{
+  if(tickets.length===0){ alert('Buy at least one ticket (Quick Pick)'); return; }
+  // draw
+  const drawWhite = uniqueRandoms(5,1,69);
+  const drawPower = randRange(1,26);
+  lastWinning = {white:drawWhite, power:drawPower};
+  showDrawn(drawWhite, drawPower);
+  evaluateDraw(drawWhite, drawPower);
+};
+
+function showDrawn(white,power){
+  const cells = drawNumbersEl.querySelectorAll('.drawn');
+  // first 5 whites
+  for(let i=0;i<5;i++) cells[i].textContent = white[i];
+  cells[6].textContent = power;
+  // highlight color briefly
+  cells.forEach(c => { c.style.background='#fff'; c.style.transform='scale(1)'; });
+}
+
+/* ====== evaluate tickets ====== */
+function evaluateDraw(white, power){
+  resultsEl.innerHTML = '';
+  lastWinAmount = 0;
+  let bigWin = false;
+
+  tickets.forEach((t,idx)=>{
+    const matchedWhite = t.white.filter(n => white.includes(n)).length;
+    const powerMatch = (t.power === power);
+    const prize = prizeFor(matchedWhite, powerMatch);
+    lastWinAmount += prize;
+    const row = document.createElement('div');
+    row.className='result-row';
+    row.innerHTML = `<div>Ticket #${idx+1} — matched ${matchedWhite} + PB:${powerMatch?'Yes':'No'}</div><div><strong>$${prize.toLocaleString()}</strong></div>`;
+    resultsEl.appendChild(row);
+    if(prize >= 1000000) bigWin = true;
+    if(prize === 'JACKPOT') bigWin = true;
+  });
+
+  // adjust display for jackpot (string 'JACKPOT' handled)
+  // convert JACKPOT to a very large number for display
+  let displayWin = lastWinAmount;
+  const jackpotHit = tickets.some(t => {
+    return t.power === power && t.white.every(n => white.includes(n));
+  });
+  if(jackpotHit){
+    // show jackpot event
+    // set lastWinAmount to a huge number to show.
+    displayWin = 1000000000;
+    lastWinAmount = displayWin;
+    resultsEl.insertAdjacentHTML('afterbegin', `<div class="result-row" style="background:linear-gradient(90deg,#fff7e6,#fff1e6)"><div><strong>🎉 JACKPOT!!!</strong></div><div><strong>$${displayWin.toLocaleString()}</strong></div></div>`);
+  }
+
+  lastWinEl.textContent = '$' + (displayWin).toLocaleString();
+  updateStatus();
+
+  // small confetti for >100 or big confetti for >1,000,000
+  if(displayWin >= 1000000) launchConfetti(250);
+  else if(displayWin > 100) launchConfetti(60);
+}
+
+/* prize rules */
+function prizeFor(whiteMatch, powerMatch){
+  // Return numeric prize or special 'JACKPOT'
+  if(whiteMatch===5 && powerMatch) return 'JACKPOT';
+  if(whiteMatch===5) return 1000000;
+  if(whiteMatch===4 && powerMatch) return 50000;
+  if(whiteMatch===4) return 100;
+  if(whiteMatch===3 && powerMatch) return 100;
+  if(whiteMatch===3) return 7;
+  if(whiteMatch===2 && powerMatch) return 7;
+  if(whiteMatch===1 && powerMatch) return 4;
+  if(whiteMatch===0 && powerMatch) return 4;
+  return 0;
+}
+
+/* confetti */
+function launchConfetti(count=100){
+  const container = document.getElementById('confetti');
+  container.innerHTML = '';
+  for(let i=0;i<count;i++){
+    const c = document.createElement('div');
+    c.style.position='absolute';
+    c.style.left = Math.random()*100+'%';
+    c.style.top = Math.random()*10+'%';
+    c.style.width = '10px'; c.style.height='10px';
+    c.style.background = `hsl(${Math.random()*360},80%,60%)`;
+    c.style.opacity = '0.9';
+    c.style.borderRadius='3px';
+    c.style.transform = `translateY(0) rotate(${Math.random()*360}deg)`;
+    c.style.transition = `transform 1.5s ease-out, opacity 1.5s`;
+    container.appendChild(c);
+    setTimeout(()=>{ c.style.transform = `translateY(${200+Math.random()*600}px) rotate(${Math.random()*360}deg)`; c.style.opacity=0; }, 100 + Math.random()*200);
+    setTimeout(()=>c.remove(), 1700 + Math.random()*400);
+  }
+}
+
+/* simulate until jackpot - careful: potentially long loops, run with confirmation */
+document.getElementById('simulateBtn').onclick = ()=>{
+  if(tickets.length===0){ alert('Buy at least one ticket to simulate.'); return; }
+  if(!confirm('Simulate draws until one of your tickets wins the JACKPOT? This may take many iterations. OK to continue?')) return;
+  // simple loop—stop after some max iterations for safety
+  const maxIter = 2000000;
+  let iter=0;
+  const ticketSnapshot = JSON.parse(JSON.stringify(tickets)); // freeze current tickets
+  resultsEl.innerHTML = '<div class="result-row">Simulating... please wait (safe cap: 2,000,000 draws)</div>';
+  setTimeout(()=>{ // run off UI thread
+    for(;iter<maxIter;iter++){
+      const w = uniqueRandoms(5,1,69);
+      const p = randRange(1,26);
+      // check jackpot
+      const jackpot = ticketSnapshot.some(t => {
+        return t.power===p && t.white.every(n => w.includes(n));
+      });
+      if(jackpot){
+        showDrawn(w,p);
+        resultsEl.innerHTML = `<div class="result-row">Jackpot hit after ${iter+1} draws!</div>`;
+        launchConfetti(300);
+        break;
+      }
+    }
+    if(iter>=maxIter) resultsEl.innerHTML = `<div class="result-row">No jackpot in ${maxIter} draws (stopped).</div>`;
+  },50);
+};
+
+/* initial seed */
+updateStatus(); renderTickets();
+</script>
+</body>
+</html>
