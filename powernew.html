@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Coming Soon – Win the Powerball</title>
+  <style>
+    :root {
+      --bg: #f9fafb;
+      --card: #fff;
+      --text: #111;
+      --muted: #555;
+      --border: #e5e7eb;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+    }
+    body {
+      font-family: system-ui, sans-serif;
+      background: var(--bg);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      color: var(--text);
+    }
+    .card {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      max-width: 500px;
+      width: 100%;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 2rem;
+    }
+    p {
+      color: var(--muted);
+      margin: 10px 0 20px;
+    }
+    .hints {
+      display: grid;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .hint {
+      background: #f3f4f6;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .emoji {
+      font-size: 20px;
+    }
+    .footer {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🎱 Coming Soon: Win the Powerball</h1>
+    <p>A new game is on the way... test your luck, buy tickets, and maybe hit the jackpot 💰</p>
+
+    <div class="hints">
+      <div class="hint"><span class="emoji">🎟️</span> Buy tickets and track your cost</div>
+      <div class="hint"><span class="emoji">🎰</span> Match numbers to win prizes</div>
+      <div class="hint"><span class="emoji">📊</span> Breakdowns of wins and losses</div>
+      <div class="hint"><span class="emoji">🏆</span> Jackpot awaits the lucky one</div>
+    </div>
+
+    <p style="font-weight:bold;">Launching soon on Noah.cool</p>
+
+    <div class="footer">
+      Stay tuned – more games & experiments coming soon ✨
+    </div>
+  </div>
+</body>
+</html>
