@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Magical 9 Ball</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Use Inter font -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d0d0d; /* Very dark background */
+        }
+        
+        /* Custom Keyframes for a fun shake effect */
+        @keyframes shake {
+            0%, 100% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+        }
+
+        .animate-shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        /* Basic styling for the 8 Ball */
+        .eight-ball {
+            background: radial-gradient(circle at 30% 30%, #303030, #1a1a1a);
+        }
+
+        /* Styling for the answer screen */
+        .answer-screen {
+            background-color: #3b82f6; /* Blue for contrast */
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.5); /* Glowing effect */
+            border: 4px solid #1e40af;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="flex flex-col items-center space-y-8 w-full max-w-lg">
+        
+        <h1 class="text-4xl font-bold text-white mb-6 text-center">Ask The Magic Orb</h1>
+
+        <!-- Magic 8 Ball Container -->
+        <div id="magicBall" 
+             class="eight-ball w-64 h-64 sm:w-80 sm:h-80 rounded-full flex items-center justify-center relative 
+                    shadow-2xl transition-all duration-300">
+            
+            <!-- Inner Answer Screen -->
+            <div id="answerScreen" 
+                 class="answer-screen w-32 h-32 sm:w-40 sm:h-40 rounded-full flex items-center justify-center text-center p-3 
+                        text-sm sm:text-lg uppercase transition-all duration-300 transform scale-0 opacity-0">
+                
+                <span id="answerText" class="text-center leading-tight"></span>
+            </div>
+
+            <!-- Initial Prompt (Hidden when answer is showing) -->
+            <div id="initialPrompt" 
+                 class="absolute answer-screen w-32 h-32 sm:w-40 sm:h-40 rounded-full flex items-center justify-center text-center p-3 
+                        text-sm sm:text-lg uppercase text-white transition-opacity duration-500 bg-gray-600 shadow-none border-0">
+                <span class="text-white text-base opacity-70">Ask me anything!</span>
+            </div>
+        </div>
+
+        <!-- Input and Button Area -->
+        <div class="w-full space-y-4">
+            <input type="text" id="questionInput" placeholder="Enter your yes or no question..."
+                   class="w-full p-4 rounded-xl border border-gray-700 bg-gray-800 text-white placeholder-gray-500 
+                          focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 shadow-lg">
+            
+            <button id="shakeButton"
+                    class="w-full py-4 bg-blue-600 text-white font-bold text-xl rounded-xl shadow-lg 
+                           hover:bg-blue-700 transition-colors duration-200 disabled:bg-gray-500 disabled:cursor-not-allowed 
+                           focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-opacity-50 active:scale-[0.98]">
+                Shake the Orb!
+            </button>
+            <p id="errorMessage" class="text-red-400 text-center mt-2 h-5"></p>
+        </div>
+
+    </div>
+
+    <script>
+        // Define all possible Magic 8 Ball responses
+        const ANSWERS = [
+            // Positive
+            "It is decidedly so.", "Without a doubt.", "Yes – definitely.", 
+            "You may rely on it.", "As I see it, yes.", "Most likely.", 
+            "Outlook good.", "Yes.", "Signs point to yes.",
+            
+            // Neutral
+            "Reply hazy, try again.", "Ask again later.", "Better not tell you now.",
+            "Cannot predict now.", "Concentrate and ask again.",
+            
+            // Negative
+            "Don't count on it.", "My reply is no.", "My sources say no.", 
+            "Outlook not so good.", "Very doubtful."
+        ];
+
+        // Get DOM elements
+        const magicBall = document.getElementById('magicBall');
+        const answerScreen = document.getElementById('answerScreen');
+        const answerText = document.getElementById('answerText');
+        const initialPrompt = document.getElementById('initialPrompt');
+        const questionInput = document.getElementById('questionInput');
+        const shakeButton = document.getElementById('shakeButton');
+        const errorMessage = document.getElementById('errorMessage');
+
+        let isShaking = false;
+
+        // Function to perform the shake and get the answer
+        function shakeBall() {
+            if (isShaking) return;
+
+            const question = questionInput.value.trim();
+            if (question.length < 5 || !question.endsWith('?')) {
+                errorMessage.textContent = 'Please ask a proper question (must end with a "?").';
+                return;
+            }
+
+            // Clear previous error and disable button
+            errorMessage.textContent = '';
+            shakeButton.disabled = true;
+            isShaking = true;
+            
+            // Hide the initial prompt and existing answer immediately
+            initialPrompt.classList.add('opacity-0', 'scale-0');
+            answerScreen.classList.remove('scale-100', 'opacity-100');
+            answerText.textContent = '';
+
+            // 1. Start the shaking animation
+            magicBall.classList.add('animate-shake');
+
+            // Wait 500ms for the "shake" animation to complete
+            setTimeout(() => {
+                magicBall.classList.remove('animate-shake');
+                
+                // 2. Select a random answer
+                const randomIndex = Math.floor(Math.random() * ANSWERS.length);
+                const result = ANSWERS[randomIndex];
+
+                // 3. Display the answer with a short delay for dramatic effect
+                setTimeout(() => {
+                    answerText.textContent = result;
+                    answerScreen.classList.add('scale-100', 'opacity-100');
+                    
+                    // 4. Re-enable the button and reset state
+                    shakeButton.disabled = false;
+                    isShaking = false;
+                    
+                    // Optional: Clear the question for the next one
+                    questionInput.value = '';
+                }, 200); // Short delay after shake stops
+                
+            }, 500); // Duration of the shake animation
+        }
+
+        // Event Listeners
+        shakeButton.addEventListener('click', shakeBall);
+        questionInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                shakeBall();
+            }
+        });
+        
+        // Initial setup to show the prompt
+        window.onload = () => {
+             // Ensure the initial prompt is visible on load
+            initialPrompt.classList.remove('opacity-0', 'scale-0');
+        };
+
+    </script>
+</body>
+</html>
