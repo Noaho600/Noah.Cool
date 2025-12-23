@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Size of Cities</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #f5efdc; /* paper-like background inspired by Neal.fun */
+      color: #111;
+      font-family: Georgia, "Times New Roman", serif;
+      overflow: hidden;
+    }
+
+    .frame {
+      position: absolute;
+      inset: 20px;
+      border: 2px solid #111;
+      pointer-events: none;
+    }
+
+    .ui {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .title {
+      font-size: clamp(2.2rem, 6vw, 3.2rem);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      opacity: 0.75;
+      margin-bottom: 40px;
+      font-size: 1.1rem;
+    }
+
+    .city-name {
+      font-size: clamp(2rem, 7vw, 4rem);
+      font-weight: 800;
+    }
+
+    .population {
+      margin-top: 8px;
+      font-size: 1.3rem;
+      opacity: 0.85;
+    }
+
+    .scale-area {
+      position: relative;
+      width: 100%;
+      height: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 20px;
+      gap: 60px;
+    }
+
+    .circle {
+      border-radius: 50%;
+      background: #111;
+      transition: width 0.9s ease, height 0.9s ease, opacity 0.4s ease;
+    }
+
+    .circle.compare {
+      background: transparent;
+      border: 2px dashed #111;
+    }
+
+    .compare-ui {
+      position: absolute;
+      bottom: 24px;
+      right: 90px;
+      padding: 8px 14px;
+      border: 2px solid #111;
+      background: #f5efdc;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .compare-text {
+      margin-top: 12px;
+      font-size: 1rem;
+      opacity: 0.85;
+    }
+
+    .nav-btn {
+      position: absolute;
+      bottom: 24px;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 2px solid #111;
+      background: #f5efdc;
+      font-size: 1.4rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-left { left: 32px; }
+    .nav-right { right: 32px; }
+
+    .hint {
+      position: absolute;
+      bottom: 20px;
+      opacity: 0.5;
+      font-size: 0.95rem;
+    }
+
+    .index {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      opacity: 0.5;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="frame"></div>
+
+  <div class="ui">
+    <div class="title">The Size of Cities</div>
+    <div class="subtitle">From the smallest towns to the largest megacities</div>
+
+    <div class="city-name" id="cityName"></div>
+    <div class="population" id="population"></div>
+
+    <div class="scale-area">
+      <div class="circle" id="circle"></div>
+      <div class="circle compare" id="compareCircle" style="display:none"></div>
+    </div>
+
+    <div class="compare-text" id="compareText"></div>
+  </div>
+
+  <button class="nav-btn nav-left" id="prev">←</button>
+  <button class="nav-btn nav-right" id="next">→</button>
+  <button class="compare-ui" id="compareBtn">Compare to…</button>
+
+  <div class="hint">Use arrow keys or buttons</div>
+  <div class="index" id="index"></div>
+
+<script>
+  const cities = [
+    { name: "Monowi, Nebraska", pop: 1 },
+    { name: "Buford, Wyoming", pop: 1 },
+    { name: "Vatican City", pop: 825 },
+    { name: "Hum, Croatia", pop: 30 },
+    { name: "San Marino", pop: 34000 },
+    { name: "Reykjavík, Iceland", pop: 139000 },
+    { name: "Venice, Italy", pop: 260000 },
+    { name: "Orlando, Florida", pop: 320000 },
+    { name: "Miami, Florida", pop: 455000 },
+    { name: "Los Angeles, California", pop: 3900000 },
+    { name: "Paris, France", pop: 2140000 },
+    { name: "New York City, USA", pop: 8400000 },
+    { name: "Tokyo, Japan", pop: 14000000 },
+    { name: "Delhi, India", pop: 32000000 }
+  ];
+
+  let i = 0;
+  let compareIndex = null;
+  const maxPop = cities[cities.length - 1].pop;
+
+  const cityName = document.getElementById("cityName");
+  const population = document.getElementById("population");
+  const circle = document.getElementById("circle");
+  const compareCircle = document.getElementById("compareCircle");
+  const compareText = document.getElementById("compareText");
+  const compareBtn = document.getElementById("compareBtn");
+  const index = document.getElementById("index");
+
+  function update() {
+    const c = cities[i];
+    cityName.textContent = c.name;
+    population.textContent = `Population: ${c.pop.toLocaleString()}`;
+
+    const minSize = 10;
+    const maxSize = 260;
+    const size = minSize + (c.pop / maxPop) * maxSize;
+    circle.style.width = size + "px";
+    circle.style.height = size + "px";
+
+    if (compareIndex !== null) {
+      const other = cities[compareIndex];
+      const otherSize = minSize + (other.pop / maxPop) * maxSize;
+      compareCircle.style.display = "block";
+      compareCircle.style.width = otherSize + "px";
+      compareCircle.style.height = otherSize + "px";
+
+      const ratio = (c.pop / other.pop).toFixed(1);
+      compareText.textContent = `${c.name} is about ${ratio}× the size of ${other.name}`;
+    } else {
+      compareCircle.style.display = "none";
+      compareText.textContent = "";
+    }
+
+    index.textContent = `${i + 1} / ${cities.length}`;
+  }
+
+  document.getElementById("next").onclick = () => {
+    if (i < cities.length - 1) {
+      i++;
+      update();
+    }
+  };
+
+  document.getElementById("prev").onclick = () => {
+    if (i > 0) {
+      i--;
+      update();
+    }
+  };
+
+  compareBtn.onclick = () => {
+    compareIndex = compareIndex === null ? i : null;
+    update();
+  };
+
+  window.addEventListener("keydown", e => {
+    if (e.key === "ArrowRight" && i < cities.length - 1) {
+      i++;
+      update();
+    }
+    if (e.key === "ArrowLeft" && i > 0) {
+      i--;
+      update();
+    }
+  });
+
+  update();
+</script>
+
+</body>
+</html>
