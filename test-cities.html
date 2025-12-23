@@ -1,0 +1,893 @@
+<!doctype html>
+<html data-n-head-ssr lang="en" data-n-head="%7B%22lang%22:%7B%22ssr%22:%22en%22%7D%7D">
+    <head>
+        <meta data-n-head="ssr" charset="utf-8">
+        <meta data-n-head="ssr" name="viewport" content="width=device-width,initial-scale=1">
+        <meta data-n-head="ssr" name="google-site-verification" content="Vyp6Lq2HJODQviN98DbqlmqefoUuDj_cwlmS7jAgaao">
+        <meta data-n-head="ssr" name="title" content="Size of Life">
+        <meta data-n-head="ssr" name="description" content="Explore the scale of living things, from an amoeba to a blue whale.">
+        <meta data-n-head="ssr" property="og:type" content="website">
+        <meta data-n-head="ssr" property="og:url" content="https://neal.fun/size-of-life/">
+        <meta data-n-head="ssr" property="og:title" content="Size of Life">
+        <meta data-n-head="ssr" property="og:description" content="From an amoeba to a blue whale">
+        <meta data-n-head="ssr" property="og:image" content="https://neal.fun/share-cards/size-of-life.png">
+        <meta data-n-head="ssr" property="twitter:card" content="summary_large_image">
+        <meta data-n-head="ssr" property="twitter:url" content="https://neal.fun/size-of-life/">
+        <meta data-n-head="ssr" property="twitter:image" content="https://neal.fun/share-cards/size-of-life.png">
+        <meta data-n-head="ssr" property="twitter:title" content="Size of Life">
+        <meta data-n-head="ssr" property="twitter:description" content="From an amoeba to a blue whale">
+        <meta data-n-head="ssr" data-hid="theme-color" name="theme-color" content="#f2ebd8">
+        <title>Size of Life</title>
+        <link data-n-head="ssr" rel="canonical" href="https://neal.fun/size-of-life/">
+        <link data-n-head="ssr" rel="icon" type="image/png" href="/favicons/size-of-life.png">
+        <script data-n-head="ssr" src="https://plausible.io/js/script.js" defer data-domain="neal.fun"></script>
+        <link rel="preload" href="/_nuxt/6d3dfb5.js" as="script">
+        <link rel="preload" href="/_nuxt/4bb2f66.js" as="script">
+        <link rel="preload" href="/_nuxt/3453749.js" as="script">
+        <link rel="preload" href="/_nuxt/7b0071a.js" as="script">
+        <link rel="preload" href="/_nuxt/f264588.js" as="script">
+        <link rel="preload" href="/_nuxt/6e152fc.js" as="script">
+        <link rel="preload" href="/_nuxt/f7e0efe.js" as="script">
+        <link rel="preload" href="/_nuxt/7018c89.js" as="script">
+        <link rel="preload" href="/_nuxt/b92d268.js" as="script">
+        <style data-vue-ssr-id="49569972:0 6e9698fd:0 7461e826:0 6d6e575f:0 6ca27326:0 df268022:0">
+            .nuxt-progress {
+                background-color: #000;
+                height: 2px;
+                left: 0;
+                opacity: 1;
+                position: fixed;
+                right: 0;
+                top: 0;
+                transition: width .1s,opacity .4s;
+                width: 0;
+                z-index: 999999
+            }
+
+            .nuxt-progress.nuxt-progress-notransition {
+                transition: none
+            }
+
+            .nuxt-progress-failed {
+                background-color: red
+            }
+
+            @font-face {
+                font-family: Roboto;
+                src: url(/_nuxt/fonts/Roboto-Medium.3ac5d40.woff2)
+            }
+
+            @font-face {
+                font-family: Roboto;
+                font-weight: 700;
+                src: url(/_nuxt/fonts/Roboto-Bold.a65527f.woff2)
+            }
+
+            @font-face {
+                font-family: RobotoLight;
+                src: url(/_nuxt/fonts/Roboto-Light.76fcea7.woff2)
+            }
+
+            html {
+                font-size: 16px;
+                -ms-text-size-adjust: 100%;
+                -webkit-text-size-adjust: 100%;
+                -moz-osx-font-smoothing: grayscale;
+                -webkit-font-smoothing: antialiased;
+                background: #fff;
+                box-sizing: border-box;
+                color: #000;
+                font-family: Roboto,sans-serif,system-ui,-apple-system,Segoe UI,Ubuntu,Cantarell,Noto Sans
+            }
+
+            *,:after,:before {
+                box-sizing: border-box;
+                margin: 0
+            }
+
+            .simple-page {
+                background: #f1f2f6
+            }
+
+            @font-face {
+                font-family: RobotoLight;
+                src: url(/_nuxt/fonts/Roboto-Light.76fcea7.woff2)
+            }
+
+            .container[data-v-1e23bce8] {
+                background: #fffaec;
+                position: fixed
+            }
+
+            .container[data-v-1e23bce8],.vignette[data-v-1e23bce8] {
+                height: 100%;
+                left: 0;
+                top: 0;
+                width: 100%
+            }
+
+            .vignette[data-v-1e23bce8] {
+                background: radial-gradient(circle,transparent 0,rgba(255,89,0,.04) 60%,rgba(106,37,0,.07) 80%);
+                position: absolute
+            }
+
+            .border-outline[data-v-1e23bce8] {
+                border: 2px solid #000;
+                height: calc(100% - 40px);
+                left: 20px;
+                pointer-events: none;
+                position: absolute;
+                top: 20px;
+                transition: all .3s linear;
+                width: calc(100% - 40px);
+                z-index: 3
+            }
+
+            .is-title-card .border-outline[data-v-1e23bce8] {
+                height: calc(100% - 160px);
+                left: 80px;
+                top: 80px;
+                width: calc(100% - 160px)
+            }
+
+            .animal-name[data-v-1e23bce8] {
+                color: #2e2307;
+                font-family: Garamond,serif;
+                font-size: 38px;
+                line-height: 110%;
+                margin-bottom: 8px;
+                padding: 0 35px;
+                text-align: center;
+                text-transform: uppercase
+            }
+
+            .animal-name-long[data-v-1e23bce8] {
+                font-size: 32px
+            }
+
+            .animal-desc[data-v-1e23bce8] {
+                color: #2e2307;
+                font-family: RobotoLight;
+                font-size: 18px;
+                line-height: 1.6em;
+                margin-top: 4px;
+                max-width: 600px;
+                padding: 0 20px;
+                word-wrap: break-word;
+                opacity: .87
+            }
+
+            .animal-desc[data-v-1e23bce8],.animal-info[data-v-1e23bce8] {
+                text-align: center;
+                width: 100%
+            }
+
+            .animal-info[data-v-1e23bce8] {
+                animation: fadeIn-1e23bce8 .4s linear 1s forwards;
+                contain: style layout paint;
+                left: 50%;
+                max-width: 590px;
+                opacity: 0;
+                position: absolute;
+                top: 9%;
+                transform: translate(-50%);
+                z-index: 3
+            }
+
+            .site-title[data-v-1e23bce8] {
+                cursor: pointer;
+                left: 35px;
+                max-width: 140px;
+                position: fixed;
+                -webkit-text-decoration: none;
+                text-decoration: none;
+                top: 35px;
+                transition: all .1s linear;
+                width: 100%;
+                z-index: 99
+            }
+
+            .is-title-card .site-title[data-v-1e23bce8] {
+                left: 20px;
+                top: 20px
+            }
+
+            .animal-era-container[data-v-1e23bce8] {
+                align-items: center;
+                display: flex;
+                gap: 6px;
+                justify-content: center
+            }
+
+            .animal-era[data-v-1e23bce8] {
+                background: #fff8ef;
+                border: 1px solid rgba(121,32,32,.25);
+                border-radius: 5px;
+                color: #5d1616;
+                display: inline-block;
+                margin-top: 8px;
+                padding: 4px 10px
+            }
+
+            .animal-era[data-v-1e23bce8],.more[data-v-1e23bce8] {
+                font-size: 13px;
+                text-align: center
+            }
+
+            .more[data-v-1e23bce8] {
+                color: #2a1e00;
+                color: #ff922c;
+                cursor: pointer;
+                opacity: 0;
+                position: relative;
+                top: -3px
+            }
+
+            .life-button[data-v-1e23bce8] {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                background: #fff6e6;
+                border: none;
+                border-radius: 20px;
+                box-shadow: 2px 2px 5px 0 rgba(0,0,0,.1);
+                cursor: pointer;
+                font-family: RobotoLight;
+                outline: 1px solid rgba(79,34,34,.5);
+                outline-offset: -3px;
+                text-align: center;
+                transition: background .11s linear;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none
+            }
+
+            .life-button[data-v-1e23bce8]:active,.life-button[data-v-1e23bce8]:hover {
+                background: #fffcf0
+            }
+
+            .controls[data-v-1e23bce8] {
+                bottom: 40px;
+                display: flex;
+                justify-content: space-between;
+                left: 50px;
+                position: fixed;
+                width: calc(100% - 100px);
+                z-index: 100
+            }
+
+            .control-button[data-v-1e23bce8] {
+                align-items: center;
+                border-radius: 100%;
+                display: flex;
+                font-size: 24px;
+                height: 50px;
+                justify-content: center;
+                position: relative;
+                top: 2px;
+                width: 50px
+            }
+
+            .control-button:hover .arrow[data-v-1e23bce8] {
+                transform: translateX(1px)
+            }
+
+            .control-button:hover .arrow-left[data-v-1e23bce8] {
+                transform: rotate(180deg) translateX(1px)
+            }
+
+            .container-stripes[data-v-1e23bce8] {
+                background-image: repeating-linear-gradient(180deg,rgba(0,0,0,.03),rgba(0,0,0,.03) 1px,transparent 0,transparent 30px);
+                height: 100%;
+                left: 0;
+                pointer-events: none;
+                position: fixed;
+                top: 0;
+                width: 100%
+            }
+
+            .arrow[data-v-1e23bce8] {
+                transition: transform .2s ease-in-out;
+                width: 18px
+            }
+
+            .arrow-left[data-v-1e23bce8] {
+                transform: rotate(180deg)
+            }
+
+            @keyframes fadeIn-1e23bce8 {
+                0% {
+                    opacity: 0
+                }
+
+                to {
+                    opacity: 1
+                }
+            }
+
+            @keyframes fadeOut-1e23bce8 {
+                0% {
+                    opacity: 1
+                }
+
+                to {
+                    opacity: 0
+                }
+            }
+
+            .life-button[disabled][data-v-1e23bce8] {
+                opacity: .3;
+                pointer-events: none
+            }
+
+            .instruction[data-v-1e23bce8] {
+                animation: instructionFadeIn-1e23bce8 .6s linear 2.5s forwards;
+                bottom: 50px;
+                font-family: RobotoLight;
+                font-size: 17px;
+                left: 50%;
+                opacity: 0;
+                position: fixed;
+                transform: translateX(-50%);
+                z-index: 5
+            }
+
+            @keyframes instructionFadeIn-1e23bce8 {
+                0% {
+                    opacity: 0
+                }
+
+                to {
+                    opacity: 1
+                }
+            }
+
+            @media only screen and (max-width: 800px) {
+                .desktop-only[data-v-1e23bce8] {
+                    display:none
+                }
+
+                .animal-info[data-v-1e23bce8] {
+                    margin-top: 30px;
+                    top: 9%
+                }
+
+                .site-title[data-v-1e23bce8] {
+                    left: 25px;
+                    max-width: 110px;
+                    top: 25px
+                }
+
+                .animal-desc[data-v-1e23bce8] {
+                    font-size: 15px;
+                    margin-left: auto;
+                    margin-right: auto;
+                    padding: 0 36px
+                }
+
+                .animal-name[data-v-1e23bce8] {
+                    font-size: max(20px,min(calc(115vw/var(--char-count)),34px));
+                    padding: 0 10px;
+                    white-space: nowrap;
+                    width: 100%
+                }
+
+                .animal-era[data-v-1e23bce8] {
+                    font-size: 12px;
+                    padding: 3px 8px
+                }
+
+                .instruction[data-v-1e23bce8] {
+                    display: none
+                }
+
+                .border-outline[data-v-1e23bce8],.is-title-card .border-outline[data-v-1e23bce8] {
+                    height: calc(100% - 24px);
+                    left: 12px;
+                    top: 12px;
+                    width: calc(100% - 24px)
+                }
+
+                .border-outline[data-v-1e23bce8] {
+                    border-width: 1px
+                }
+
+                .controls[data-v-1e23bce8] {
+                    bottom: 35px;
+                    left: 30px;
+                    width: calc(100% - 60px)
+                }
+            }
+
+            .fade-enter-active[data-v-1e23bce8],.fade-leave-active[data-v-1e23bce8] {
+                transition: opacity .3s ease
+            }
+
+            .fade-enter[data-v-1e23bce8],.fade-leave-to[data-v-1e23bce8] {
+                opacity: 0
+            }
+
+            .life-button-blink[data-v-1e23bce8] {
+                animation: lifeButtonBlink-1e23bce8 .7s ease-in-out infinite alternate-reverse
+            }
+
+            @keyframes lifeButtonBlink-1e23bce8 {
+                0% {
+                    background: #f5dbbc
+                }
+
+                to {
+                    background: #fffcf0
+                }
+            }
+
+            .title-card[data-v-65011149] {
+                font-family: RobotoLight;
+                height: 100%;
+                left: 0;
+                opacity: 0;
+                pointer-events: none;
+                position: fixed;
+                top: 0;
+                transition: opacity .4s linear .3s;
+                width: 100%;
+                z-index: 98
+            }
+
+            .show.title-card[data-v-65011149] {
+                opacity: 1;
+                pointer-events: auto
+            }
+
+            .title-card-inner[data-v-65011149] {
+                left: 50%;
+                margin-top: -10px;
+                position: absolute;
+                text-align: center;
+                top: 50%;
+                transform: translate(-50%,-50%);
+                width: 100%
+            }
+
+            .title-card-stripes[data-v-65011149] {
+                background-image: repeating-linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.02) 1px,transparent 0,transparent 30px);
+                height: 100%;
+                left: 0;
+                pointer-events: none;
+                position: absolute;
+                top: 0;
+                width: 100%
+            }
+
+            .title-card-title[data-v-65011149] {
+                font-family: Garamond,serif;
+                font-size: 78px;
+                font-weight: 700;
+                margin-bottom: 35px;
+                margin-top: -10px;
+                position: relative
+            }
+
+            .title-card-title[data-v-65011149]:after {
+                background: url(/size-of-life/icons/dna.svg);
+                background-position: 50%;
+                background-size: 100% 100%;
+                bottom: -10px;
+                content: "";
+                height: 20px;
+                left: 50%;
+                pointer-events: none;
+                position: absolute;
+                transform: translateX(-50%);
+                width: 370px
+            }
+
+            .title-card-credit[data-v-65011149] {
+                font-size: 22px;
+                font-weight: 300;
+                margin-top: 15px
+            }
+
+            .is-end .title-card-credit[data-v-65011149] {
+                font-size: 21px;
+                margin-top: 10px
+            }
+
+            .title-card-cat[data-v-65011149] {
+                bottom: 0;
+                position: absolute;
+                right: 18%;
+                transform: translateY(10px);
+                width: 300px
+            }
+
+            .title-card-butterfly[data-v-65011149] {
+                left: 10%;
+                position: absolute;
+                top: 135px;
+                width: 230px
+            }
+
+            .show .title-card-butterfly[data-v-65011149] {
+                animation: butterflyHover-65011149 1.5s ease-in-out infinite alternate-reverse
+            }
+
+            @keyframes butterflyHover-65011149 {
+                0% {
+                    transform: translateY(0)
+                }
+
+                to {
+                    transform: translateY(3px) rotate(-1deg)
+                }
+            }
+
+            .title-card-vines[data-v-65011149] {
+                position: absolute;
+                right: 0;
+                top: 0;
+                width: 350px
+            }
+
+            .enter[data-v-65011149] {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                background: #fff6e6;
+                border: none;
+                border-radius: 16px;
+                box-shadow: 2px 2px 4px 0 rgba(0,0,0,.1);
+                cursor: pointer;
+                display: inline-block;
+                font-family: RobotoLight;
+                font-size: 23px;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 40px;
+                opacity: 0;
+                outline: 1px solid rgba(79,34,34,.6);
+                outline-offset: -3px;
+                padding: 15px 32px;
+                text-align: center;
+                transition: opacity .2s linear
+            }
+
+            .enter[data-v-65011149]:hover {
+                background: #fffcf0
+            }
+
+            .enter:hover .arrow[data-v-65011149] {
+                transform: translateX(3px)
+            }
+
+            .show .enter[data-v-65011149] {
+                opacity: 1
+            }
+
+            .end-buttons[data-v-65011149] {
+                display: flex;
+                gap: 10px;
+                justify-content: center;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 35px;
+                max-width: 550px
+            }
+
+            .end-button[data-v-65011149] {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                background: #fff6e6;
+                border: none;
+                border-radius: 12px;
+                box-shadow: 2px 2px 5px 0 rgba(0,0,0,.1);
+                color: #000;
+                cursor: pointer;
+                font-family: RobotoLight;
+                font-size: 18px;
+                outline: 1px solid rgba(79,34,34,.5);
+                outline-offset: -3px;
+                padding: 14px 18px;
+                text-align: center;
+                -webkit-text-decoration: none;
+                text-decoration: none
+            }
+
+            .end-button[data-v-65011149]:active,.end-button[data-v-65011149]:hover {
+                background: #fffcf0
+            }
+
+            .title-card-back[data-v-65011149] {
+                align-items: center;
+                background: #fff6e6;
+                border-radius: 100%;
+                bottom: 20px;
+                cursor: pointer;
+                display: flex;
+                height: 47px;
+                justify-content: center;
+                left: 20px;
+                opacity: 0;
+                outline: 1px solid rgba(79,34,34,.5);
+                outline-offset: -3px;
+                position: absolute;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none;
+                width: 47px;
+                z-index: 5
+            }
+
+            .show .title-card-back[data-v-65011149] {
+                opacity: 1
+            }
+
+            .arrow[data-v-65011149] {
+                margin-left: 5px;
+                transition: transform .2s ease-in-out;
+                width: 18px
+            }
+
+            .show .arrow[data-v-65011149] {
+                animation: arrowMove-65011149 1s ease-in-out infinite alternate-reverse
+            }
+
+            @keyframes arrowMove-65011149 {
+                0% {
+                    transform: translateX(0)
+                }
+
+                to {
+                    transform: translateX(2px)
+                }
+            }
+
+            .arrow-left[data-v-65011149] {
+                animation: none!important;
+                margin-left: 0;
+                transform: rotate(180deg)
+            }
+
+            .title-card-sticker[data-v-65011149] {
+                pointer-events: none
+            }
+
+            .notebook[data-v-65011149] {
+                height: 100%;
+                left: 0;
+                opacity: 0;
+                pointer-events: none;
+                position: absolute;
+                top: 0;
+                width: 100%
+            }
+
+            .title-card-grass[data-v-65011149] {
+                background-image: url(/size-of-life/grass.png);
+                background-position: 0 20px;
+                background-repeat: repeat-x;
+                background-size: auto 100%;
+                bottom: 0;
+                display: none;
+                height: 90px;
+                left: 0;
+                position: fixed;
+                width: 100%;
+                z-index: 2
+            }
+
+            .title-card-flower[data-v-65011149] {
+                bottom: -150px;
+                left: -200px;
+                position: fixed;
+                width: 500px;
+                z-index: 3
+            }
+
+            @media only screen and (max-width: 1100px) {
+                .title-card-inner[data-v-65011149] {
+                    z-index:100
+                }
+
+                .title-card-flower[data-v-65011149] {
+                    bottom: -100px;
+                    left: -150px;
+                    width: 400px
+                }
+
+                .end-buttons[data-v-65011149] {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    grid-gap: 9px;
+                    gap: 9px;
+                    max-width: calc(100% - 50px)
+                }
+
+                .end-button[data-v-65011149] {
+                    font-size: 17px;
+                    padding: 15px 16px
+                }
+
+                .end-button-credits[data-v-65011149] {
+                    grid-column: span 2
+                }
+
+                .title-card-cat[data-v-65011149] {
+                    width: 250px
+                }
+
+                .title-card-butterfly[data-v-65011149] {
+                    left: 50px;
+                    top: 100px;
+                    width: 180px
+                }
+            }
+
+            @media only screen and (max-width: 800px) {
+                .title-card-back[data-v-65011149] {
+                    bottom:33px;
+                    height: 50px;
+                    left: 30px;
+                    width: 50px
+                }
+
+                .title-card-title[data-v-65011149] {
+                    font-size: 56px;
+                    white-space: nowrap
+                }
+
+                .title-card-title[data-v-65011149]:after {
+                    width: 270px
+                }
+
+                .title-card-credit[data-v-65011149] {
+                    font-size: 19px
+                }
+
+                .title-card-butterfly[data-v-65011149] {
+                    top: 70px;
+                    width: 120px;
+                    z-index: -1
+                }
+
+                .title-card-cat[data-v-65011149] {
+                    bottom: 0;
+                    right: 0;
+                    width: 155px
+                }
+
+                .title-card-vines[data-v-65011149] {
+                    width: 240px;
+                    z-index: -1
+                }
+
+                .enter[data-v-65011149] {
+                    font-size: 22px;
+                    padding: 12px 28px
+                }
+
+                .title-card-flower[data-v-65011149] {
+                    bottom: -50px;
+                    left: -100px;
+                    width: 300px
+                }
+            }
+
+            .human[data-v-51b84080] {
+                bottom: 15.8%;
+                contain: style layout paint;
+                left: calc(50% + 27svh + var(--human-offset));
+                opacity: .07;
+                position: absolute;
+                transform: translate(-50%)
+            }
+
+            .human-small[data-v-51b84080] {
+                opacity: .15
+            }
+
+            .human-enter-active[data-v-51b84080] {
+                transition: opacity 1s linear
+            }
+
+            .human-enter[data-v-51b84080] {
+                opacity: 0
+            }
+
+            .human-enter-to[data-v-51b84080] {
+                opacity: .07
+            }
+
+            .human-enter-to.human-small[data-v-51b84080] {
+                opacity: .15
+            }
+
+            .human-leave-active[data-v-51b84080] {
+                animation: none;
+                transition: opacity .11s linear
+            }
+
+            .human-leave-to[data-v-51b84080] {
+                opacity: 0
+            }
+
+            @media only screen and (max-width: 800px) {
+                .human[data-v-51b84080] {
+                    bottom:21%;
+                    left: calc(50% + 22svh + var(--human-offset))
+                }
+            }
+
+            .renderer[data-v-f881337a] {
+                height: 100%;
+                left: 0;
+                position: absolute;
+                top: 0;
+                touch-action: manipulation;
+                width: 100%;
+                z-index: 2
+            }
+        </style>
+        <link rel="preload" href="/_nuxt/static/1765477396/size-of-life/state.js" as="script">
+        <link rel="preload" href="/_nuxt/static/1765477396/size-of-life/payload.js" as="script">
+        <link rel="preload" href="/_nuxt/static/1765477396/manifest.js" as="script">
+    </head>
+    <body>
+        <div data-server-rendered="true" id="__nuxt">
+            <!---->
+            <div id="__layout">
+                <div>
+                    <div class="container is-title-card" data-v-1e23bce8>
+                        <div class="title-card show" data-v-65011149 data-v-1e23bce8>
+                            <div class="title-card-stripes" data-v-65011149></div>
+                            <div class="title-card-grass" data-v-65011149></div>
+                            <div class="title-card-inner" data-v-65011149>
+                                <div class="title-card-credit" data-v-65011149>
+                                    <div class="title-card-title" data-v-65011149>Size of Life</div>
+                                    <div class="title-card-credit" data-v-65011149>By Neal Agarwal</div>
+                                    <div class="title-card-credit" data-v-65011149>Illustrations by Julius Csotonyi</div>
+                                </div>
+                                <div class="enter" data-v-65011149>
+                                    Enter
+      <img src="/size-of-life/icons/arrow.svg" class="arrow" data-v-65011149>
+                                </div>
+                                <!---->
+                            </div>
+                            <!---->
+                            <img src="/size-of-life/animals/stickers/corpse-flower.webp" class="title-card-sticker title-card-flower" data-v-65011149>
+                            <img src="/size-of-life/animals/stickers/vines.webp" class="title-card-sticker title-card-vines" data-v-65011149>
+                            <img src="/size-of-life/animals/stickers/cat.webp" class="title-card-sticker title-card-cat" data-v-65011149>
+                            <img src="/size-of-life/animals/stickers/alexandra-birdwing.webp" class="title-card-sticker title-card-butterfly" data-v-65011149>
+                        </div>
+                        <div class="container-stripes" data-v-1e23bce8></div>
+                        <a href="/" class="site-title" data-v-1e23bce8>
+                            <img src="/general/logo.svg" data-v-1e23bce8>
+                        </a>
+                        <div class="border-outline" data-v-1e23bce8></div>
+                        <!---->
+                        <div class="vignette" data-v-1e23bce8></div>
+                        <!---->
+                        <!---->
+                        <!---->
+                        <!---->
+                        <!---->
+                        <!---->
+                        <!---->
+                        <div class="renderer" data-v-f881337a data-v-1e23bce8></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script defer src="/_nuxt/static/1765477396/size-of-life/state.js"></script>
+        <script src="/_nuxt/6d3dfb5.js" defer></script>
+        <script src="/_nuxt/f264588.js" defer></script>
+        <script src="/_nuxt/6e152fc.js" defer></script>
+        <script src="/_nuxt/f7e0efe.js" defer></script>
+        <script src="/_nuxt/7018c89.js" defer></script>
+        <script src="/_nuxt/b92d268.js" defer></script>
+        <script src="/_nuxt/4bb2f66.js" defer></script>
+        <script src="/_nuxt/3453749.js" defer></script>
+        <script src="/_nuxt/7b0071a.js" defer></script>
+    </body>
+</html>
