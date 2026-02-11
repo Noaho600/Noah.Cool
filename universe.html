@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Star Clicker — Coming Soon</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #05060f;
+      --bg-2: #0b1026;
+      --star: #ffffff;
+      --accent: #6cf0ff;
+      --accent-2: #a78bfa;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: radial-gradient(ellipse at bottom, var(--bg-2), var(--bg));
+      overflow: hidden;
+    }
+
+    /* Star background */
+    .stars, .stars2, .stars3 {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      background: transparent;
+      box-shadow: 0 0 1px var(--star);
+      animation: animStar 120s linear infinite;
+    }
+
+    .stars {
+      box-shadow: 1000px 2000px var(--star), 300px 800px var(--star), 1500px 1200px var(--star), 700px 1700px var(--star), 1200px 400px var(--star);
+    }
+
+    .stars2 {
+      width: 2px;
+      height: 2px;
+      animation-duration: 200s;
+      box-shadow: 400px 900px var(--star), 1400px 1600px var(--star), 900px 300px var(--star), 1800px 700px var(--star);
+    }
+
+    .stars3 {
+      width: 3px;
+      height: 3px;
+      animation-duration: 300s;
+      box-shadow: 600px 1300px var(--star), 1600px 500px var(--star), 200px 1500px var(--star);
+    }
+
+    @keyframes animStar {
+      from { transform: translateY(0); }
+      to { transform: translateY(-2000px); }
+    }
+
+    /* Main container */
+    .container {
+      position: relative;
+      z-index: 10;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+      text-shadow: 0 0 30px rgba(108, 240, 255, 0.35);
+    }
+
+    .subtitle {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 32px;
+    }
+
+    .planet {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #9ae6ff, #3b82f6, #1e1b4b);
+      box-shadow: 0 0 60px rgba(99, 179, 237, 0.6);
+      margin-bottom: 36px;
+      position: relative;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .planet::after {
+      content: '';
+      position: absolute;
+      width: 220px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid rgba(167, 139, 250, 0.5);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-15deg);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-14px); }
+    }
+
+    .coming-soon {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      letter-spacing: 0.25em;
+      margin-bottom: 20px;
+    }
+
+    .description {
+      max-width: 560px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text);
+      opacity: 0.9;
+    }
+
+    footer {
+      position: absolute;
+      bottom: 18px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      opacity: 0.8;
+    }
+
+    footer span {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <!-- Star layers -->
+  <div class="stars"></div>
+  <div class="stars2"></div>
+  <div class="stars3"></div>
+
+  <main class="container">
+    <div class="planet"></div>
+
+    <h1 class="logo">Star Clicker</h1>
+    <p class="subtitle">A cosmic idle game where every click creates a universe.</p>
+
+    <div class="coming-soon">Coming Soon</div>
+
+    <p class="description">
+      Build galaxies, harvest starlight, and watch your universe expand.
+      Star Clicker is launching soon on <strong>Noah.cool</strong>.
+      Prepare to click beyond the stars.
+    </p>
+
+    <footer>
+      © <span>Noah.cool</span> · Astral systems initializing…
+    </footer>
+  </main>
+</body>
+</html>
