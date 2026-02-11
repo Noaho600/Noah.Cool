@@ -2,43 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Star Clicker 🌌</title>
+  <title>Star Clicker</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<audio id="music" src="audio/ambient.mp3" loop autoplay></audio>
-<audio id="achievementSound" src="audio/achievement.mp3"></audio>
+<h1>⭐ Star Clicker</h1>
+<p id="stars">0 Stars</p>
 
-<header>
-  <h1>⭐ Star Clicker</h1>
-  <p id="stars">0 Stars</p>
-</header>
+<div id="star-area">
+  ⭐
+</div>
 
-<main>
-  <!-- CLICK AREA -->
-  <div id="star-area">
-    <img id="main-star" src="assets/star.png">
-  </div>
+<div id="orbit-system"></div>
 
-  <!-- PLANETS -->
-  <div id="orbit-system"></div>
+<button id="prestige" disabled>🌠 New Universe</button>
 
-  <!-- UPGRADES -->
-  <section id="upgrades"></section>
-
-  <!-- GALAXY MAP -->
-  <section id="galaxy-map" class="hidden">
-    <h2>🌌 Galaxy Map</h2>
-    <div class="galaxies"></div>
-  </section>
-
-  <!-- PRESTIGE -->
-  <button id="prestige-btn" class="hidden">🌠 New Universe</button>
-</main>
-
-<!-- ACHIEVEMENT POPUP -->
-<div id="achievement-popup"></div>
+<div id="achievement"></div>
 
 <script src="game.js"></script>
 </body>
