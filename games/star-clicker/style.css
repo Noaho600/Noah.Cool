@@ -1,59 +1,45 @@
 body {
-  margin: 0;
   background: radial-gradient(circle at top, #0b0f2b, #000);
   color: white;
   font-family: system-ui;
   text-align: center;
 }
 
-header {
-  padding: 20px;
-}
-
-#main-star {
-  width: 150px;
+#star-area {
+  font-size: 80px;
   cursor: pointer;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.08); }
+  user-select: none;
 }
 
 #orbit-system {
   position: relative;
   height: 300px;
+  margin-top: 30px;
+}
+
+.orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  animation: spin linear infinite;
 }
 
 .planet {
-  position: absolute;
-  width: 50px;
-  animation: orbit linear infinite;
+  font-size: 30px;
 }
 
-@keyframes orbit {
-  from { transform: rotate(0deg) translateX(120px) rotate(0deg); }
-  to   { transform: rotate(360deg) translateX(120px) rotate(-360deg); }
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-#achievement-popup {
+#achievement {
   position: fixed;
   bottom: 20px;
   right: 20px;
   background: #1a1f4a;
-  padding: 15px;
-  border-radius: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
   opacity: 0;
-  transform: translateY(20px);
-  transition: 0.4s;
-}
-
-#achievement-popup.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.hidden {
-  display: none;
+  transition: 0.3s;
 }
