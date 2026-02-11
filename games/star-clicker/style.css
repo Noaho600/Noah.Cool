@@ -1,0 +1,59 @@
+body {
+  margin: 0;
+  background: radial-gradient(circle at top, #0b0f2b, #000);
+  color: white;
+  font-family: system-ui;
+  text-align: center;
+}
+
+header {
+  padding: 20px;
+}
+
+#main-star {
+  width: 150px;
+  cursor: pointer;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+#orbit-system {
+  position: relative;
+  height: 300px;
+}
+
+.planet {
+  position: absolute;
+  width: 50px;
+  animation: orbit linear infinite;
+}
+
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(120px) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(120px) rotate(-360deg); }
+}
+
+#achievement-popup {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #1a1f4a;
+  padding: 15px;
+  border-radius: 10px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: 0.4s;
+}
+
+#achievement-popup.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hidden {
+  display: none;
+}
