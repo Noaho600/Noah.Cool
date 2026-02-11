@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Star Clicker</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --glass: rgba(255,255,255,0.08);
+      --border: rgba(255,255,255,0.15);
+      --glow: 0 0 40px rgba(56,189,248,0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: radial-gradient(circle at top, #1e293b, #020617);
+      color: white;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* BACKGROUND STARS */
+    .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .star {
+      position: absolute;
+      width: 2px; height: 2px;
+      background: white;
+      opacity: 0.6;
+      animation: float 20s linear infinite;
+    }
+    @keyframes float { from { transform: translateY(110vh); } to { transform: translateY(-10vh); } }
+
+    .app { position: relative; z-index: 1; padding-bottom: 100px; }
+
+    header { text-align: center; padding: 24px 16px 8px; }
+    header h1 { font-size: 2.5rem; margin: 0; text-shadow: var(--glow); }
+    #starCount { font-size: 1.6rem; margin-top: 6px; }
+
+    /* CLICK BUTTON */
+    #clickBtn {
+      width: 210px; height: 210px;
+      border-radius: 50%;
+      margin: 24px auto;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; font-weight: 800;
+      background: radial-gradient(circle, #fde047, #f59e0b);
+      border: none; cursor: pointer;
+      box-shadow: 0 0 50px rgba(253,224,71,0.5);
+      transition: transform 0.08s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    #clickBtn:active { transform: scale(0.95); }
+
+    /* CLICK BURST */
+    .burst {
+      position: absolute;
+      width: 6px; height: 6px;
+      background: white;
+      border-radius: 50%;
+      animation: burst 600ms ease-out forwards;
+    }
+    @keyframes burst {
+      to { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; }
+    }
+
+    /* PANELS */
+    .panel {
+      background: var(--glass);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 16px;
+      margin: 12px;
+      box-shadow: var(--glow);
+    }
+    .panel h2 { margin-top: 0; font-size: 1.2rem; }
+
+    button.upgrade {
+      width: 100%;
+      padding: 12px;
+      border-radius: 14px;
+      border: none;
+      margin-top: 10px;
+      font-weight: 600;
+      background: #38bdf8;
+      cursor: pointer;
+    }
+
+    ul { list-style: none; padding: 0; margin: 0; }
+    li { margin: 6px 0; }
+
+    /* NAV */
+    nav {
+      position: fixed; bottom: 0; inset-inline: 0;
+      background: rgba(2,6,23,0.9);
+      display: flex;
+      border-top: 1px solid var(--border);
+    }
+    nav button {
+      flex: 1; padding: 14px;
+      background: none; color: white;
+      border: none; font-weight: 600;
+    }
+
+    .hidden { display: none; }
+
+    /* ACHIEVEMENT POPUP */
+    #achievementPopup {
+      position: fixed;
+      bottom: 80px; left: 50%;
+      transform: translateX(-50%);
+      background: #22c55e; color: black;
+      padding: 12px 20px;
+      border-radius: 999px;
+      font-weight: 700;
+      display: none;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+<div id="achievementPopup"></div>
+
+<div class="app">
+  <header>
+    <h1>⭐ Star Clicker</h1>
+    <div id="starCount">0 Stars</div>
+  </header>
+
+  <button id="clickBtn">✨ TAP ✨</button>
+
+  <section id="shop" class="panel">
+    <h2>Upgrades</h2>
+    <div id="upgrades"></div>
+  </section>
+
+  <section id="achievements" class="panel hidden">
+    <h2>Achievements</h2>
+    <ul id="achievementList"></ul>
+  </section>
+
+  <section id="prestige" class="panel hidden">
+    <h2>Constellations</h2>
+    <p id="prestigeInfo"></p>
+    <button class="upgrade" id="prestigeBtn">Prestige</button>
+  </section>
+</div>
+
+<nav>
+  <button onclick="show('shop')">Shop</button>
+  <button onclick="show('achievements')">Achievements</button>
+  <button onclick="show('prestige')">Prestige</button>
+</nav>
+
+<script>
+/* BACKGROUND STARS */
+const starField = document.getElementById('stars');
+for (let i = 0; i < 100; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  s.style.left = Math.random() * 100 + 'vw';
+  s.style.animationDuration = 10 + Math.random() * 25 + 's';
+  s.style.opacity = Math.random();
+  starField.appendChild(s);
+}
+
+/* STATE */
+let stars = Number(localStorage.getItem('stars')) || 0;
+let perClick = Number(localStorage.getItem('perClick')) || 1;
+let auto = Number(localStorage.getItem('auto')) || 0;
+let prestige = Number(localStorage.getItem('prestige')) || 0;
+let unlockedAchievements = JSON.parse(localStorage.getItem('achievements')) || [];
+
+const upgrades = [
+  { id: 'click1', text: '+1 / Click', cost: 10, unlock: 0, action: () => perClick++ },
+  { id: 'auto1', text: '+1 / Sec', cost: 50, unlock: 0, action: () => auto++ },
+  { id: 'click5', text: '+5 / Click', cost: 100, unlock: 100, action: () => perClick += 5 },
+  { id: 'auto5', text: '+5 / Sec', cost: 500, unlock: 500, action: () => auto += 5 },
+  { id: 'mega', text: 'Mega Star Boost', cost: 2000, unlock: 2000, action: () => perClick *= 2 }
+];
+
+const achievements = [
+  { id: 'first', text: 'First Star', check: () => stars >= 1 },
+  { id: '100', text: '100 Stars', check: () => stars >= 100 },
+  { id: '1k', text: '1,000 Stars', check: () => stars >= 1000 },
+  { id: 'auto', text: 'Automation Online', check: () => auto >= 10 }
+];
+
+const starCount = document.getElementById('starCount');
+const upgradesEl = document.getElementById('upgrades');
+const achList = document.getElementById('achievementList');
+const popup = document.getElementById('achievementPopup');
+const prestigeInfo = document.getElementById('prestigeInfo');
+
+function save() {
+  localStorage.setItem('stars', stars);
+  localStorage.setItem('perClick', perClick);
+  localStorage.setItem('auto', auto);
+  localStorage.setItem('prestige', prestige);
+  localStorage.setItem('achievements', JSON.stringify(unlockedAchievements));
+}
+
+function showPopup(text) {
+  popup.textContent = '🏆 ' + text;
+  popup.style.display = 'block';
+  setTimeout(() => popup.style.display = 'none', 2500);
+}
+
+function renderUpgrades() {
+  upgradesEl.innerHTML = '';
+  upgrades.forEach(u => {
+    if (stars >= u.unlock) {
+      const btn = document.createElement('button');
+      btn.className = 'upgrade';
+      btn.textContent = `${u.text} (${u.cost}⭐)`;
+      btn.onclick = () => {
+        if (stars >= u.cost) {
+          stars -= u.cost;
+          u.action();
+          update();
+        }
+      };
+      upgradesEl.appendChild(btn);
+    }
+  });
+}
+
+function checkAchievements() {
+  achievements.forEach(a => {
+    if (!unlockedAchievements.includes(a.id) && a.check()) {
+      unlockedAchievements.push(a.id);
+      showPopup(a.text);
+    }
+  });
+}
+
+function renderAchievements() {
+  achList.innerHTML = '';
+  achievements.forEach(a => {
+    const li = document.createElement('li');
+    li.textContent = unlockedAchievements.includes(a.id) ? '✅ ' + a.text : '🔒 ' + a.text;
+    achList.appendChild(li);
+  });
+}
+
+function update() {
+  starCount.textContent = Math.floor(stars) + ' Stars';
+  prestigeInfo.textContent = `Constellations: ${prestige} (+${prestige * 10}% bonus)`;
+  renderUpgrades();
+  checkAchievements();
+  renderAchievements();
+  save();
+}
+
+/* CLICK */
+const clickBtn = document.getElementById('clickBtn');
+clickBtn.onclick = e => {
+  stars += perClick * (1 + prestige * 0.1);
+  for (let i = 0; i < 8; i++) {
+    const b = document.createElement('div');
+    b.className = 'burst';
+    b.style.setProperty('--x', (Math.random()*120-60) + 'px');
+    b.style.setProperty('--y', (Math.random()*120-60) + 'px');
+    clickBtn.appendChild(b);
+    setTimeout(() => b.remove(), 600);
+  }
+  update();
+};
+
+/* PRESTIGE */
+document.getElementById('prestigeBtn').onclick = () => {
+  const gain = Math.floor(stars / 10000);
+  if (gain > 0) {
+    prestige += gain;
+    stars = 0; perClick = 1; auto = 0;
+    update();
+  }
+};
+
+setInterval(() => {
+  stars += auto * (1 + prestige * 0.1);
+  update();
+}, 1000);
+
+function show(id) {
+  document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+
+update();
+</script>
+</body>
+</html>
