@@ -1,195 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <link rel="icon" href="assets/list.png" type="image/png" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Noah.Cool — Changelog</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changelog &#8212; Noah.cool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
-      color: #333;
-    }
-
-    /* Header */
-    header {
-      background: white;
-      padding: 20px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #eee;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 22px;
-      color: #222;
-      cursor: pointer;
-    }
-    header button {
-      background: #0078ff;
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.2s ease;
-    }
-    header button:hover {
-      background: #005fcc;
-    }
-
-    /* Main content */
-    main {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
-    h2 {
-      margin-top: 0;
-      font-size: 26px;
-    }
-
-    /* Changelog entries */
-    .changelog-entry {
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-    }
-    .changelog-entry h3 {
-      margin: 0 0 8px;
-      font-size: 18px;
-      color: #0078ff;
-    }
-    .changelog-entry p {
-      margin: 4px 0;
-      color: #555;
-    }
-
-    /* Footer */
-    footer {
-      text-align: center;
-      padding: 25px 20px;
-      color: #666;
-      font-size: 14px;
-      border-top: 1px solid #eee;
-      margin-top: 40px;
-    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#f4efe6;--ink:#18160f;--accent:#e84c2b;--muted:#a09890;--card-bg:#fff;--border:#e0d9ce}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--ink);font-family:"DM Mono",monospace;min-height:100vh}
+    body::after{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+    .page-header{max-width:780px;margin:0 auto;padding:64px 28px 48px;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both}
+    .back{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.1em;color:var(--muted);text-decoration:none;margin-bottom:36px;transition:color .15s}
+    .back:hover{color:var(--ink)}
+    .back-arrow{display:inline-block;transition:transform .15s}
+    .back:hover .back-arrow{transform:translateX(-3px)}
+    .page-title{font-family:"Fraunces",serif;font-size:clamp(36px,7vw,64px);font-weight:700;letter-spacing:-2px;line-height:.95}
+    .page-sub{font-size:12px;color:var(--muted);margin-top:14px;line-height:1.7}
+    .hero-rule{width:32px;height:2px;background:var(--accent);border-radius:99px;margin-top:32px}
+    .wrap{max-width:640px;margin:0 auto;padding:0 28px 96px;animation:fadeUp .6s cubic-bezier(.22,1,.36,1) .05s both}
+    .log{display:flex;flex-direction:column}
+    .log-item{display:grid;grid-template-columns:100px 1fr;gap:20px;padding:24px 0;border-bottom:1px solid var(--border);align-items:start}
+    .log-item:last-child{border-bottom:none}
+    .log-date{font-size:11px;color:var(--muted);padding-top:3px;line-height:1.4}
+    .log-title{font-family:"Fraunces",serif;font-weight:700;font-size:16px;line-height:1.2;margin-bottom:6px;display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+    .log-body{font-size:11.5px;color:var(--muted);line-height:1.7}
+    .badge{display:inline-block;font-size:9px;letter-spacing:.13em;text-transform:uppercase;padding:2px 8px;border-radius:5px;font-family:"DM Mono",monospace}
+    .badge-new{background:#e8f5e9;color:#2e7d32}
+    .badge-fix{background:#fff3e0;color:#e65100}
+    .badge-update{background:#e3f2fd;color:#1565c0}
+    .badge-launch{background:#18160f;color:#f4efe6}
+    @media(max-width:480px){.log-item{grid-template-columns:1fr;gap:6px}}
+    footer{max-width:780px;margin:0 auto;padding:28px 28px 72px;display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center;border-top:1px solid var(--border)}
+    .footer-left{font-size:12px;color:var(--muted)}
+    .footer-left strong{font-family:"Fraunces",serif;font-style:italic;color:var(--ink)}
+    .footer-links{display:flex;gap:22px}
+    .footer-links a{font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:.05em;transition:color .15s}
+    .footer-links a:hover{color:var(--accent)}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <h1 onclick="window.location.href='index.html'">Noah.Cool</h1>
-    <button onclick="window.location.href='random.html'">🎲 Random Game</button>
-  </header>
-
-  <!-- Main content -->
-  <main>
-    <h2>Changelog</h2>
-
-                <div class="changelog-entry">
-      <h3>v0.1.13</h3>
-      <p>Added Star Clicker game button</p>
-      <p>Added Magical 9 Ball</p>
-    </div>
-
-            <div class="changelog-entry">
-      <h3>v0.1.12</h3>
-      <p>Fixed Random Game button not sending you to a game</p>
-      <p>New Fart in Fart Machine</p>
-    </div>
-
-        <div class="changelog-entry">
-      <h3>v0.1.11</h3>
-      <p>New Game Tile was added to homescreen</p>
-      <p>New experiment tiles in Experiments</p>
-      <p>More stuff in Spend Elon Musk's Money+</p>
-    </div>
-
-        <div class="changelog-entry">
-      <h3>v0.1.10</h3>
-      <p>Released Win the Powerball</p>
-    </div>
-    
-    <div class="changelog-entry">
-      <h3>v0.1.9</h3>
-      <p>Coming Soon is gone</p>
-      <p>Added more farts to the Fart Machine</p>
-      <p>added New game coming soon page</p>
-      <p>Updated Spend Bill Gates Money+</p>
-    </div>
-    
-    <div class="changelog-entry">
-      <h3>v0.1.8</h3>
-      <p>Website Official Release |August 18th|</p>
-      <p>Redesigned Fart Machine</p>
-      <p>Redesigned Changelog</p>
-    </div>
-    
-    <div class="changelog-entry">
-      <h3>v0.1.7</h3>
-      <p>Added Fart Machine</p>
-      <p>Redesigned Homepage |This will make it look better with more games|</p>
-    </div>
-    
-    <div class="changelog-entry">
-      <h3>v0.1.6</h3>
-      <p>Domain changed to Noah.Cool</p>
-      <p>Coming Soon will be merged with experiments on August 20th</p>
-    </div>
-    
-    <div class="changelog-entry">
-      <h3>v0.1.5</h3>
-      <p>Experiments Page Revamp</p>
-      <p>Added "This Planet doesnt Exist" 404 Page</p>
-      <p>Added Favicon |Globe with Meridians| </p>
-    </div>
-    
-    <div class="changelog-entry">
-      <h3>v0.1.4</h3>
-      <p>Redesigned homepage</p>
-      <p>Redesigned Feedback</p>
-      <p>Added Love Calculator</p>
-      <p>Removed "Filler Game"</p> 
-      <p>Rocks had a Physics Update adding Walls, Colored Rocks, Improved Physics</p>
-    </div>
-    
-    <div class="changelog-entry">
-      <h3>v0.1.3</h3>
-      <p>✨ Added Feedback and Changelog</p>
-    </div>
-    
-    <div class="changelog-entry">
-      <h3>v0.1.2</h3>
-      <p>Added Draw a Planet</p>
-      <p>🛠️ Added Stamps and Export to Draw a Planet</p>
-      <p>🎮 Removed "Yet Another Filler Game" the 2nd filler game</p>
-    </div>
-
-    <div class="changelog-entry">
-      <h3>v0.1.1</h3>
-      <p>Added and Improved Coming Soon page design</p>
-      <p>Added back button to games</p>
-    </div>
-
-    <div class="changelog-entry">
-      <h3>v0.1</h3>
-      <p>Site launched on July 25th with Rocks game and 2 filler games that did nothing</p>
+  <div class="page-header">
+    <a class="back" href="index.html"><span class="back-arrow">&#8592;</span> noah.cool</a>
+    <h1 class="page-title">Change<span style="color:var(--accent)">-</span><br>log</h1>
+    <p class="page-sub">What's new, what's fixed, what's been quietly broken.</p>
+    <div class="hero-rule"></div>
+  </div>
+  <main class="wrap">
+    <div class="log">
+      <div class="log-item"><div class="log-date">Mar 2026</div><div><div class="log-title">Site redesign <span class="badge badge-new">new</span></div><div class="log-body">Rebuilt everything from scratch. Cleaner, faster, and it actually looks decent now. Three dedicated pages for experiments, feedback, and this very changelog.</div></div></div>
+      <div class="log-item"><div class="log-date">Feb 2026</div><div><div class="log-title">Your Life in Weeks <span class="badge badge-new">new</span></div><div class="log-body">Added the life visualization project. People seem to find it either motivating or deeply depressing. Possibly both at the same time.</div></div></div>
+      <div class="log-item"><div class="log-date">Jan 2026</div><div><div class="log-title">Impossible Quiz fixes <span class="badge badge-fix">fix</span></div><div class="log-body">Question 7 had a bug where all answers were technically wrong. It still might be unsolvable &#8212; but now intentionally.</div></div></div>
+      <div class="log-item"><div class="log-date">Jan 2026</div><div><div class="log-title">Mobile layout <span class="badge badge-update">update</span></div><div class="log-body">Cards now actually stack properly on small screens. No idea how long this was broken. Sorry.</div></div></div>
+      <div class="log-item"><div class="log-date">Dec 2025</div><div><div class="log-title">Experiments section <span class="badge badge-new">new</span></div><div class="log-body">Added a home for half-finished projects so they don't just live on my laptop forever.</div></div></div>
+      <div class="log-item"><div class="log-date">0.1.0</div><div><div class="log-title">Site launched &#x1F389; <span class="badge badge-launch">launch</span></div><div class="log-body">Launched with Rocks & 2 filler games</div></div></div>
     </div>
   </main>
-
-  <!-- Footer -->
   <footer>
-    © 2025 Noah.Cool — All experiments and games made by Noah
+    <div class="footer-left">made by <strong>Noah</strong> &middot; somewhere on the internet</div>
+    <nav class="footer-links"><a href="#">twitter</a><a href="#">github</a><a href="#">contact</a></nav>
   </footer>
 </body>
 </html>
