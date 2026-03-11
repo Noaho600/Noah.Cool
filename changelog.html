@@ -1,164 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Changelog – Noah.Cool</title>
+  <meta charset="UTF-8">
+  <link rel="icon" href="assets/list.png" type="image/png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Noah.Cool — Changelog</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
-
     body {
-      background: linear-gradient(135deg, #0b0c1a 0%, #1a1b2d 100%);
-      color: #ddd;
-      font-family: 'Quicksand', sans-serif;
-      padding: 40px 20px;
-      max-width: 700px;
-      margin: auto;
-      min-height: 100vh;
-    }
-
-    h1 {
-      color: #00eaff;
-      text-align: center;
-      margin-bottom: 40px;
-      font-weight: 700;
-      font-size: 2.8rem;
-      text-shadow: 0 0 12px #00eaff88;
-    }
-
-    .version-section {
-      background: #12152c;
-      border-radius: 20px;
-      padding: 25px 30px;
-      margin-bottom: 30px;
-      box-shadow: 0 10px 30px rgba(0, 234, 255, 0.2);
-      user-select: none;
-    }
-
-    .version-title {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: #00eaff;
-      margin-bottom: 15px;
-      border-bottom: 2px solid #00eaff44;
-      padding-bottom: 6px;
-      letter-spacing: 0.03em;
-    }
-
-    ol {
-      padding-left: 20px;
-      font-size: 1.1rem;
-      color: #aaccee;
-      line-height: 1.5;
       margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #333;
     }
 
-    a.back-btn {
-      display: inline-block;
+    /* Header */
+    header {
+      background: white;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+      color: #222;
+      cursor: pointer;
+    }
+    header button {
+      background: #0078ff;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    header button:hover {
+      background: #005fcc;
+    }
+
+    /* Main content */
+    main {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    h2 {
+      margin-top: 0;
+      font-size: 26px;
+    }
+
+    /* Changelog entries */
+    .changelog-entry {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    .changelog-entry h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      color: #0078ff;
+    }
+    .changelog-entry p {
+      margin: 4px 0;
+      color: #555;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 25px 20px;
+      color: #666;
+      font-size: 14px;
+      border-top: 1px solid #eee;
       margin-top: 40px;
-      color: #00eaff;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 1.1rem;
-      padding: 8px 16px;
-      border: 1.5px solid #00eaff;
-      border-radius: 14px;
-      transition: background-color 0.25s ease, color 0.25s ease;
-      user-select: none;
-    }
-
-    a.back-btn:hover {
-      background-color: #00eaff;
-      color: #0b0c1a;
     }
   </style>
 </head>
 <body>
+  <!-- Header -->
+  <header>
+    <h1 onclick="window.location.href='index.html'">Noah.Cool</h1>
+    <button onclick="window.location.href='random.html'">🎲 Random Game</button>
+  </header>
 
-  <h1>📝 Changelog</h1>
+  <!-- Main content -->
+  <main>
+    <h2>Changelog</h2>
 
-              <section class="version-section">
-    <div class="version-title">v0.1.7</div>
-    <ol>
-      <li>Fart Machine Added</li> 
-      <li>SOON: New Homepage UI</li>  
-    </ol>
-  </section>
+                <div class="changelog-entry">
+      <h3>v0.1.13</h3>
+      <p>Added Star Clicker game button</p>
+      <p>Added Magical 9 Ball</p>
+    </div>
 
-            <section class="version-section">
-    <div class="version-title">v0.1.6</div>
-    <ol>
-      <li>I bought the domain Noah.Cool</li>
-      <li>We became Noah.Cool</li>    
-      <li>Added secret games only access able by URL like Noah.Cool/experiments/draw2</li>  
-      <li>Favicons have been added to all public pages of this site</li>   
-      <li>Coming Soon will merge with Experiments on August 20th</li></li>    
-    </ol>
-  </section>
-  
-          <section class="version-section">
-    <div class="version-title">v0.1.5.1</div>
-    <ol>
-      <li>Experiments page revamp</li>
-      <li>Added "This planet doesnt exist" 404 Page</li>    
-      <li>Added Internet Favicon</li>   
-    </ol>
-  </section>
-  
-        <section class="version-section">
-    <div class="version-title">v0.1.4</div>
-    <ol>
-      <li>Redid homepage</li>
-      <li>Added Spen Bill Gates Money</li>
-      <li>Added Beta Tag</li>    
-      <li>Draw a Planet went into beta</li>   
-      <li>Experiments Page</li> 
-    </ol>
-  </section>
-  
-      <section class="version-section">
-    <div class="version-title">v0.1.4</div>
-    <ol>
-      <li>Redid homepage</li>
-      <li>redid feedback page</li>
-      <li>added love calculator</li>    
-      <li>filler game "Another Game" was removed in homepage revamp</li>    
-      <li>Rocks got a physics revamp adding Walls, Colored rocks, Improved Physics</li>    
-    </ol>
-  </section>
-  
-    <section class="version-section">
-    <div class="version-title">v0.1.3</div>
-    <ol>
-      <li>Added Feedback</li>
-      <li>Added Changelog</li>
-    </ol>
-  </section>
-  
-  <section class="version-section">
-    <div class="version-title">v0.1.2</div>
-    <ol>
-      <li>Added Draw a Planet game</li>
-      <li>Introduced stamps and GIF export to draw a planet game</li>
-      <li>Removed "Yet another Filler game"</li>
-    </ol>
-  </section>
+            <div class="changelog-entry">
+      <h3>v0.1.12</h3>
+      <p>Fixed Random Game button not sending you to a game</p>
+      <p>New Fart in Fart Machine</p>
+    </div>
 
-  <section class="version-section">
-    <div class="version-title">v0.1.1</div>
-    <ol>
-      <li>Added and Improved Coming Soon page design</li>
-      <li>Added back button to games</li>
-    </ol>
-  </section>
+        <div class="changelog-entry">
+      <h3>v0.1.11</h3>
+      <p>New Game Tile was added to homescreen</p>
+      <p>New experiment tiles in Experiments</p>
+      <p>More stuff in Spend Elon Musk's Money+</p>
+    </div>
 
-  <section class="version-section">
-    <div class="version-title">v0.1.0</div>
-    <ol>
-      <li>Site launched with Rocks game and 2 filler games that did nothing</li>
-    </ol>
-  </section>
+        <div class="changelog-entry">
+      <h3>v0.1.10</h3>
+      <p>Released Win the Powerball</p>
+    </div>
+    
+    <div class="changelog-entry">
+      <h3>v0.1.9</h3>
+      <p>Coming Soon is gone</p>
+      <p>Added more farts to the Fart Machine</p>
+      <p>added New game coming soon page</p>
+      <p>Updated Spend Bill Gates Money+</p>
+    </div>
+    
+    <div class="changelog-entry">
+      <h3>v0.1.8</h3>
+      <p>Website Official Release |August 18th|</p>
+      <p>Redesigned Fart Machine</p>
+      <p>Redesigned Changelog</p>
+    </div>
+    
+    <div class="changelog-entry">
+      <h3>v0.1.7</h3>
+      <p>Added Fart Machine</p>
+      <p>Redesigned Homepage |This will make it look better with more games|</p>
+    </div>
+    
+    <div class="changelog-entry">
+      <h3>v0.1.6</h3>
+      <p>Domain changed to Noah.Cool</p>
+      <p>Coming Soon will be merged with experiments on August 20th</p>
+    </div>
+    
+    <div class="changelog-entry">
+      <h3>v0.1.5</h3>
+      <p>Experiments Page Revamp</p>
+      <p>Added "This Planet doesnt Exist" 404 Page</p>
+      <p>Added Favicon |Globe with Meridians| </p>
+    </div>
+    
+    <div class="changelog-entry">
+      <h3>v0.1.4</h3>
+      <p>Redesigned homepage</p>
+      <p>Redesigned Feedback</p>
+      <p>Added Love Calculator</p>
+      <p>Removed "Filler Game"</p> 
+      <p>Rocks had a Physics Update adding Walls, Colored Rocks, Improved Physics</p>
+    </div>
+    
+    <div class="changelog-entry">
+      <h3>v0.1.3</h3>
+      <p>✨ Added Feedback and Changelog</p>
+    </div>
+    
+    <div class="changelog-entry">
+      <h3>v0.1.2</h3>
+      <p>Added Draw a Planet</p>
+      <p>🛠️ Added Stamps and Export to Draw a Planet</p>
+      <p>🎮 Removed "Yet Another Filler Game" the 2nd filler game</p>
+    </div>
 
-  <a href="index.html" class="back-btn">← Back to Home</a>
+    <div class="changelog-entry">
+      <h3>v0.1.1</h3>
+      <p>Added and Improved Coming Soon page design</p>
+      <p>Added back button to games</p>
+    </div>
 
+    <div class="changelog-entry">
+      <h3>v0.1</h3>
+      <p>Site launched on July 25th with Rocks game and 2 filler games that did nothing</p>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 Noah.Cool — All experiments and games made by Noah
+  </footer>
 </body>
 </html>
