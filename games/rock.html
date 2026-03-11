@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rocks — Noah.cool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;1,9..144,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #d4c9b4;
+      --sky: #e8dfd0;
+      --ink: #2a221a;
+      --muted: #7a6e60;
+      --accent: #e84c2b;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: var(--sky);
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    #canvas {
+      display: block;
+      position: absolute;
+      inset: 0;
+      cursor: grab;
+    }
+
+    #canvas:active { cursor: grabbing; }
+
+    /* UI overlay */
+    .ui-top {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      padding: 20px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .back-btn {
+      pointer-events: all;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(0,0,0,0.08);
+      padding: 7px 14px;
+      border-radius: 20px;
+      transition: color 0.15s, background 0.15s;
+    }
+
+    .back-btn:hover { color: var(--ink); background: rgba(255,255,255,0.8); }
+
+    .title-pill {
+      font-family: 'Fraunces', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(0,0,0,0.08);
+      padding: 7px 18px;
+      border-radius: 20px;
+      letter-spacing: -0.3px;
+    }
+
+    .controls {
+      pointer-events: all;
+      display: flex;
+      gap: 8px;
+    }
+
+    .ctrl-btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(0,0,0,0.08);
+      padding: 7px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: color 0.15s, background 0.15s;
+    }
+
+    .ctrl-btn:hover { color: var(--ink); background: rgba(255,255,255,0.8); }
+
+    /* hint */
+    .hint {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(0,0,0,0.06);
+      padding: 8px 18px;
+      border-radius: 20px;
+      letter-spacing: 0.04em;
+      pointer-events: none;
+      transition: opacity 0.6s;
+      z-index: 10;
+    }
+
+    /* stack counter */
+    .stack-count {
+      position: fixed;
+      bottom: 32px;
+      right: 28px;
+      font-family: 'Fraunces', serif;
+      font-size: 13px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(0,0,0,0.06);
+      padding: 7px 14px;
+      border-radius: 20px;
+      pointer-events: none;
+      z-index: 10;
+      transition: transform 0.2s cubic-bezier(.22,.68,0,1.5);
+    }
+
+    .stack-count.pop { transform: scale(1.25); }
+  </style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<div class="ui-top">
+  <a class="back-btn" href="index.html">← noah.cool</a>
+  <div class="title-pill">🪨 Rocks</div>
+  <div class="controls">
+    <button class="ctrl-btn" onclick="addRock()">+ Rock</button>
+    <button class="ctrl-btn" onclick="resetRocks()">Reset</button>
+  </div>
+</div>
+
+<div class="hint" id="hint">drag rocks · stack them · find your zen</div>
+<div class="stack-count" id="stackCount">height: 0</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+<script>
+(function() {
+
+  const { Engine, Render, Runner, Bodies, Body, Body: BodyUtil, World, Mouse, MouseConstraint,
+          Events, Composite, Vector, Common } = Matter;
+
+  // ── Canvas sizing ──
+  const canvas = document.getElementById('canvas');
+  let W = window.innerWidth;
+  let H = window.innerHeight;
+  canvas.width  = W;
+  canvas.height = H;
+
+  // ── Engine ──
+  const engine = Engine.create({ gravity: { y: 1.6 } });
+  const world  = engine.world;
+
+  // ── Renderer (custom canvas, not Matter's built-in) ──
+  // We'll draw manually for full aesthetic control
+
+  const ctx = canvas.getContext('2d');
+
+  // ── Runner ──
+  const runner = Runner.create();
+  Runner.run(runner, engine);
+
+  // ── Walls & Ground ──
+  const GROUND_Y = H - 60;
+  const WALL_T   = 60;
+
+  let ground, wallL, wallR;
+
+  function createBoundaries() {
+    if (ground) { World.remove(world, [ground, wallL, wallR]); }
+    ground = Bodies.rectangle(W / 2, H - 30, W * 2, WALL_T, { isStatic: true, label: 'ground', friction: 0.8, restitution: 0.1 });
+    wallL  = Bodies.rectangle(-25,  H / 2, 50, H * 3, { isStatic: true, label: 'wall' });
+    wallR  = Bodies.rectangle(W + 25, H / 2, 50, H * 3, { isStatic: true, label: 'wall' });
+    World.add(world, [ground, wallL, wallR]);
+  }
+
+  createBoundaries();
+
+  // ── Rock colors (earthy palette) ──
+  const ROCK_PALETTES = [
+    { fill: '#b5a898', stroke: '#8a7e72', shadow: '#6e6458' }, // warm grey
+    { fill: '#9eaa95', stroke: '#788a6e', shadow: '#5c6e52' }, // mossy green
+    { fill: '#c4a882', stroke: '#9e8258', shadow: '#7a6240' }, // sandstone
+    { fill: '#8c9baa', stroke: '#607282', shadow: '#445a6a' }, // slate blue
+    { fill: '#b8a0a0', stroke: '#947878', shadow: '#725858' }, // rose quartz
+    { fill: '#aab4a0', stroke: '#849078', shadow: '#627060' }, // lichen
+    { fill: '#c0b49a', stroke: '#988672', shadow: '#766450' }, // limestone
+  ];
+
+  // ── Rock shapes ── (compound polygon vertices for irregular rocks)
+  function makeRockVerts(r, sides, roughness) {
+    const verts = [];
+    for (let i = 0; i < sides; i++) {
+      const angle = (i / sides) * Math.PI * 2 - Math.PI / 2;
+      const jitter = 1 - roughness + Math.random() * roughness;
+      verts.push({ x: Math.cos(angle) * r * jitter, y: Math.sin(angle) * r * jitter });
+    }
+    return verts;
+  }
+
+  // Rock data store
+  const rockBodies = [];
+  const rockMeta   = [];   // palette, size, verts for rendering
+
+  function createRock(x, y, size) {
+    size = size || (32 + Math.random() * 38);
+    const sides    = 7 + Math.floor(Math.random() * 5);
+    const roughness= 0.28 + Math.random() * 0.28;
+    const verts    = makeRockVerts(size, sides, roughness);
+    const palette  = ROCK_PALETTES[Math.floor(Math.random() * ROCK_PALETTES.length)];
+
+    // Flatten verts slightly for more "rock" look
+    const flatVerts = verts.map(v => ({ x: v.x * (0.7 + Math.random() * 0.3), y: v.y * (0.55 + Math.random() * 0.25) }));
+
+    let body;
+    try {
+      body = Bodies.fromVertices(x, y, flatVerts, {
+        friction:    0.75,
+        restitution: 0.08,
+        density:     0.003,
+        frictionAir: 0.008,
+        label: 'rock'
+      }, true);
+    } catch(e) {
+      // fallback to circle if vertices fail
+      body = Bodies.circle(x, y, size * 0.7, {
+        friction: 0.75, restitution: 0.08, density: 0.003, frictionAir: 0.008, label: 'rock'
+      });
+    }
+
+    // Bake draw verts relative to body centroid
+    const bakeVerts = flatVerts.map(v => ({ x: v.x, y: v.y }));
+
+    World.add(world, body);
+    rockBodies.push(body);
+    rockMeta.push({ palette, size, verts: bakeVerts, sides });
+    return body;
+  }
+
+  // ── Spawn initial rocks ──
+  const ROCK_COUNT = 6;
+  function spawnInitialRocks() {
+    for (let i = 0; i < ROCK_COUNT; i++) {
+      const x = W * 0.2 + Math.random() * W * 0.6;
+      const y = GROUND_Y - 200 - Math.random() * 300;
+      createRock(x, y);
+    }
+  }
+  spawnInitialRocks();
+
+  // ── Mouse constraint ──
+  const mouse = Mouse.create(canvas);
+  const mouseConstraint = MouseConstraint.create(engine, {
+    mouse,
+    constraint: { stiffness: 0.08, damping: 0.1, render: { visible: false } }
+  });
+  World.add(world, mouseConstraint);
+
+  // ── Audio (Web Audio API tones on collision) ──
+  let audioCtx;
+  function getAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return audioCtx;
+  }
+
+  function playThud(intensity) {
+    try {
+      const ac  = getAudio();
+      const buf = ac.createBuffer(1, ac.sampleRate * 0.18, ac.sampleRate);
+      const data= buf.getChannelData(0);
+      for (let i = 0; i < data.length; i++) {
+        const t = i / ac.sampleRate;
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-t * 28) * Math.min(intensity * 0.012, 0.9);
+      }
+      const src = ac.createBufferSource();
+      src.buffer = buf;
+      const gain = ac.createGain();
+      gain.gain.value = Math.min(0.35, intensity * 0.008);
+      const filt = ac.createBiquadFilter();
+      filt.type = 'lowpass';
+      filt.frequency.value = 220 + Math.random() * 160;
+      src.connect(filt);
+      filt.connect(gain);
+      gain.connect(ac.destination);
+      src.start();
+    } catch(e) {}
+  }
+
+  // Collision sounds
+  Events.on(engine, 'collisionStart', e => {
+    e.pairs.forEach(pair => {
+      const speed = Vector.magnitude(pair.collision.supports[0] ?
+        { x: pair.bodyA.velocity.x - pair.bodyB.velocity.x,
+          y: pair.bodyA.velocity.y - pair.bodyB.velocity.y } :
+        pair.bodyA.velocity);
+      if (speed > 0.8 &&
+          (pair.bodyA.label === 'rock' || pair.bodyB.label === 'rock')) {
+        playThud(speed);
+      }
+    });
+  });
+
+  // ── Stack height tracker ──
+  const stackCountEl = document.getElementById('stackCount');
+  let lastHeight = 0;
+
+  function updateStackHeight() {
+    if (rockBodies.length === 0) return;
+    let minY = GROUND_Y;
+    rockBodies.forEach(b => { if (b.position.y < minY) minY = b.position.y; });
+    const px = Math.max(0, Math.round(GROUND_Y - minY));
+    const cm = Math.round(px / 4);
+    if (cm !== lastHeight) {
+      lastHeight = cm;
+      stackCountEl.textContent = `height: ${cm} cm`;
+      stackCountEl.classList.add('pop');
+      setTimeout(() => stackCountEl.classList.remove('pop'), 200);
+    }
+  }
+
+  // ── Hint fade ──
+  const hintEl = document.getElementById('hint');
+  setTimeout(() => { hintEl.style.opacity = '0'; }, 4000);
+
+  // ── Drawing ──
+  // Sky gradient stops
+  const skyGrad = ctx.createLinearGradient(0, 0, 0, H);
+  skyGrad.addColorStop(0,   '#ddd5c4');
+  skyGrad.addColorStop(0.6, '#e8dfd0');
+  skyGrad.addColorStop(1,   '#cfc4b0');
+
+  function drawBackground() {
+    ctx.fillStyle = skyGrad;
+    ctx.fillRect(0, 0, W, H);
+
+    // subtle horizon haze
+    const haze = ctx.createLinearGradient(0, GROUND_Y - 80, 0, GROUND_Y);
+    haze.addColorStop(0, 'rgba(200,185,160,0)');
+    haze.addColorStop(1, 'rgba(180,165,140,0.35)');
+    ctx.fillStyle = haze;
+    ctx.fillRect(0, GROUND_Y - 80, W, 80);
+  }
+
+  function drawGround() {
+    // Sandy ground
+    const gx = ctx.createLinearGradient(0, GROUND_Y, 0, H);
+    gx.addColorStop(0, '#c8b99a');
+    gx.addColorStop(0.3, '#b8a888');
+    gx.addColorStop(1,   '#a89878');
+    ctx.fillStyle = gx;
+    ctx.fillRect(0, GROUND_Y, W, H - GROUND_Y);
+
+    // ground line
+    ctx.beginPath();
+    ctx.moveTo(0, GROUND_Y);
+    ctx.lineTo(W, GROUND_Y);
+    ctx.strokeStyle = 'rgba(100,85,65,0.18)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // pebble scatter
+    ctx.save();
+    for (let i = 0; i < 60; i++) {
+      const px = (i * 137.5) % W;
+      const py = GROUND_Y + 8 + (i * 53.3) % 22;
+      const pr = 2 + (i * 29.7) % 5;
+      ctx.beginPath();
+      ctx.ellipse(px, py, pr, pr * 0.6, (i * 0.4) % Math.PI, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(140,120,95,${0.15 + (i % 5) * 0.05})`;
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function drawRock(body, meta) {
+    const pos = body.position;
+    const angle = body.angle;
+    const { palette, verts } = meta;
+
+    ctx.save();
+    ctx.translate(pos.x, pos.y);
+    ctx.rotate(angle);
+
+    const parts = body.parts && body.parts.length > 1 ? body.parts.slice(1) : [body];
+
+    parts.forEach(part => {
+      const localVerts = part.vertices.map(v => ({
+        x: (v.x - pos.x) * Math.cos(-angle) - (v.y - pos.y) * Math.sin(-angle),
+        y: (v.x - pos.x) * Math.sin(-angle) + (v.y - pos.y) * Math.cos(-angle)
+      }));
+
+      if (localVerts.length < 3) return;
+
+      // Shadow
+      ctx.save();
+      ctx.translate(4, 6);
+      ctx.beginPath();
+      ctx.moveTo(localVerts[0].x, localVerts[0].y);
+      localVerts.slice(1).forEach(v => ctx.lineTo(v.x, v.y));
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(40,28,18,0.18)';
+      ctx.fill();
+      ctx.restore();
+
+      // Body
+      ctx.beginPath();
+      ctx.moveTo(localVerts[0].x, localVerts[0].y);
+      localVerts.slice(1).forEach(v => ctx.lineTo(v.x, v.y));
+      ctx.closePath();
+
+      // Rock gradient
+      const minX = Math.min(...localVerts.map(v => v.x));
+      const minY = Math.min(...localVerts.map(v => v.y));
+      const maxX = Math.max(...localVerts.map(v => v.x));
+      const maxY = Math.max(...localVerts.map(v => v.y));
+      const rg = ctx.createLinearGradient(minX, minY, maxX * 0.4, maxY);
+      rg.addColorStop(0,   lightenColor(palette.fill, 18));
+      rg.addColorStop(0.4, palette.fill);
+      rg.addColorStop(1,   palette.shadow);
+      ctx.fillStyle = rg;
+      ctx.fill();
+
+      // Stroke
+      ctx.strokeStyle = palette.stroke;
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+
+      // Highlight glint
+      ctx.save();
+      ctx.clip();
+      const glint = ctx.createRadialGradient(minX + (maxX - minX) * 0.3, minY + (maxY - minY) * 0.2, 0, minX + (maxX - minX) * 0.3, minY + (maxY - minY) * 0.2, (maxX - minX) * 0.5);
+      glint.addColorStop(0, 'rgba(255,255,255,0.22)');
+      glint.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = glint;
+      ctx.fill();
+      ctx.restore();
+    });
+
+    ctx.restore();
+  }
+
+  function lightenColor(hex, amt) {
+    const r = Math.min(255, parseInt(hex.slice(1,3), 16) + amt);
+    const g = Math.min(255, parseInt(hex.slice(3,5), 16) + amt);
+    const b = Math.min(255, parseInt(hex.slice(5,7), 16) + amt);
+    return `rgb(${r},${g},${b})`;
+  }
+
+  // Dragging highlight
+  function drawDragHighlight(body) {
+    const pos = body.position;
+    const angle = body.angle;
+    const parts = body.parts && body.parts.length > 1 ? body.parts.slice(1) : [body];
+
+    ctx.save();
+    ctx.translate(pos.x, pos.y);
+    ctx.rotate(angle);
+
+    parts.forEach(part => {
+      const localVerts = part.vertices.map(v => ({
+        x: (v.x - pos.x) * Math.cos(-angle) - (v.y - pos.y) * Math.sin(-angle),
+        y: (v.x - pos.x) * Math.sin(-angle) + (v.y - pos.y) * Math.cos(-angle)
+      }));
+      if (localVerts.length < 3) return;
+      ctx.beginPath();
+      ctx.moveTo(localVerts[0].x, localVerts[0].y);
+      localVerts.slice(1).forEach(v => ctx.lineTo(v.x, v.y));
+      ctx.closePath();
+      ctx.strokeStyle = 'rgba(232,76,43,0.5)';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
+
+  // ── Main loop ──
+  function loop() {
+    requestAnimationFrame(loop);
+
+    drawBackground();
+    drawGround();
+
+    const dragged = mouseConstraint.body;
+
+    // Draw rocks
+    rockBodies.forEach((body, i) => {
+      drawRock(body, rockMeta[i]);
+      if (body === dragged) drawDragHighlight(body);
+    });
+
+    updateStackHeight();
+  }
+
+  loop();
+
+  // ── Public actions ──
+  window.addRock = function() {
+    const x = W * 0.3 + Math.random() * W * 0.4;
+    const y = 80 + Math.random() * 100;
+    createRock(x, y);
+  };
+
+  window.resetRocks = function() {
+    rockBodies.forEach(b => World.remove(world, b));
+    rockBodies.length = 0;
+    rockMeta.length   = 0;
+    spawnInitialRocks();
+  };
+
+  // ── Resize ──
+  window.addEventListener('resize', () => {
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width  = W;
+    canvas.height = H;
+    createBoundaries();
+
+    // Rebuild sky gradient
+    const sg = ctx.createLinearGradient(0, 0, 0, H);
+    sg.addColorStop(0,   '#ddd5c4');
+    sg.addColorStop(0.6, '#e8dfd0');
+    sg.addColorStop(1,   '#cfc4b0');
+    Object.assign(skyGrad, sg); // reference swap won't work, use closure var
+  });
+
+})();
+</script>
+</body>
+</html>
