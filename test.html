@@ -1,173 +1,458 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Noah.Cool</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Noah.cool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f4efe6;
+      --ink: #18150f;
+      --accent: #e84c2b;
+      --muted: #9e9488;
+      --card-bg: #ffffff;
+      --border: #e0d9cc;
+      --tag: #ede8de;
+      --shadow: 0 2px 12px rgba(0,0,0,0.06);
+      --shadow-hover: 0 12px 36px rgba(0,0,0,0.11);
+    }
+    html { scroll-behavior: smooth; }
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #fff;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'DM Mono', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+    }
+    .hero {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 88px 28px 44px;
       text-align: center;
+      animation: fadeUp 0.55s cubic-bezier(.22,.68,0,1.2) both;
     }
-
-    header {
-      padding: 40px 20px 10px;
+    .hero-eyebrow {
+      font-size: 10.5px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 22px;
     }
-
-    header h1 {
-      font-size: 48px;
-      margin: 0;
+    .hero-name {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(58px, 11vw, 96px);
+      font-weight: 700;
+      line-height: 0.92;
+      letter-spacing: -3px;
+      color: var(--ink);
     }
-
-    header p {
-      font-size: 16px;
-      color: #666;
-      margin: 8px 0 20px;
+    .hero-name .dot { color: var(--accent); }
+    .hero-sub {
+      margin-top: 20px;
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.7;
     }
-
+    .divider {
+      width: 36px;
+      height: 2px;
+      background: var(--accent);
+      margin: 36px auto;
+      border-radius: 2px;
+    }
+    .section {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 24px 72px;
+      animation: fadeUp 0.6s cubic-bezier(.22,.68,0,1.2) both;
+    }
+    .section:nth-child(2) { animation-delay: 0.08s; }
+    .section:nth-child(3) { animation-delay: 0.14s; }
+    .section-label {
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    /* PROJECT CARDS */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 14px;
+    }
+    .project-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 20px 18px;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: transform 0.2s cubic-bezier(.22,.68,0,1.2), box-shadow 0.2s ease, border-color 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .project-card:hover {
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--accent);
+    }
+    .project-card:active { transform: translateY(-1px) scale(1); }
+    .card-shine {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 80% 10%, rgba(232,76,43,0.06) 0%, transparent 65%);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .project-card:hover .card-shine { opacity: 1; }
+    .card-emoji { font-size: 30px; display: block; margin-bottom: 12px; line-height: 1; }
+    .card-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 16.5px;
+      line-height: 1.2;
+      margin-bottom: 7px;
+    }
+    .card-desc { font-size: 11px; color: var(--muted); line-height: 1.6; }
+    .card-footer {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-tag {
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      background: var(--tag);
+      color: var(--muted);
+      padding: 3px 8px;
+      border-radius: 5px;
+    }
+    .card-arrow {
+      font-size: 13px;
+      color: var(--border);
+      transition: color 0.15s, transform 0.15s;
+    }
+    .project-card:hover .card-arrow { color: var(--accent); transform: translateX(3px); }
+    .card-new {
+      position: absolute;
+      top: 14px; right: 14px;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: var(--accent);
+      color: white;
+      padding: 3px 7px;
+      border-radius: 5px;
+    }
+    /* META TILES */
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    @media (max-width: 580px) { .meta-grid { grid-template-columns: 1fr; } }
+    .meta-tile {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 26px 22px 22px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s cubic-bezier(.22,.68,0,1.2), box-shadow 0.2s ease, border-color 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .meta-tile:hover {
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: var(--shadow-hover);
+    }
+    .meta-tile:active { transform: translateY(-1px) scale(1); }
+    .meta-tile::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 14px 14px 0 0;
+      transition: opacity 0.2s;
+    }
+    .meta-tile.experiments { border-color: rgba(124,111,247,0.25); }
+    .meta-tile.experiments::before { background: #7c6ff7; }
+    .meta-tile.experiments:hover { border-color: #7c6ff7; }
+    .meta-tile.feedback { border-color: rgba(39,174,96,0.25); }
+    .meta-tile.feedback::before { background: #27ae60; }
+    .meta-tile.feedback:hover { border-color: #27ae60; }
+    .meta-tile.changelog { border-color: rgba(230,126,34,0.25); }
+    .meta-tile.changelog::before { background: #e67e22; }
+    .meta-tile.changelog:hover { border-color: #e67e22; }
+    .meta-tile-icon { font-size: 26px; line-height: 1; }
+    .meta-tile-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.3px;
+    }
+    .meta-tile-desc { font-size: 11px; color: var(--muted); line-height: 1.65; flex: 1; }
+    .meta-tile-cta {
+      font-size: 10.5px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 4px;
+      transition: color 0.15s;
+    }
+    .meta-tile:hover .meta-tile-cta { color: var(--ink); }
+    .meta-tile-cta .arr { display: inline-block; transition: transform 0.15s; }
+    .meta-tile:hover .meta-tile-cta .arr { transform: translateX(3px); }
+    /* FOOTER */
+    .footer {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 28px 24px 60px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+    }
+    .footer-left { font-size: 12px; color: var(--muted); }
+    .footer-left strong { font-family: 'Fraunces', serif; font-style: italic; color: var(--ink); }
+    .footer-links { display: flex; gap: 22px; }
+    .footer-links a {
+      font-size: 11px; color: var(--muted);
+      text-decoration: none; letter-spacing: 0.06em;
+      transition: color 0.15s;
+    }
+    .footer-links a:hover { color: var(--accent); }
+    /* RANDOM BUTTON */
     .random-btn {
-      background: #222;
-      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 28px;
+      background: var(--ink);
+      color: white;
       border: none;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-size: 16px;
+      border-radius: 40px;
+      padding: 12px 22px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.06em;
       cursor: pointer;
-      margin-bottom: 40px;
-      transition: background 0.2s;
+      text-decoration: none;
+      transition: background 0.15s, transform 0.18s cubic-bezier(.22,.68,0,1.2), box-shadow 0.18s;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.12);
     }
     .random-btn:hover {
-      background: #444;
+      background: var(--accent);
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(232,76,43,0.25);
     }
-
-    .game-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      max-width: 1100px;
-      margin: 0 auto 60px;
-      padding: 0 20px;
+    .random-btn:active { transform: scale(0.97); }
+    .random-btn .dice {
+      font-size: 16px;
+      display: inline-block;
+      transition: transform 0.3s cubic-bezier(.22,.68,0,1.5);
     }
+    .random-btn:hover .dice { transform: rotate(180deg) scale(1.2); }
 
-    .game-tile {
-      background: #f2f2f2;
-      border-radius: 12px;
-      padding: 40px 20px;
-      font-size: 20px;
-      font-weight: bold;
-      color: #222;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
+    /* FLASH OVERLAY */
+    .flash {
+      position: fixed;
+      inset: 0;
+      background: var(--ink);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 10000;
+      transition: opacity 0.15s ease;
     }
+    .flash.go { opacity: 1; }
 
-    .game-tile:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
-    }
-
-    .tile {
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  padding: 20px;
-  text-align: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  transition: transform 0.2s ease;
-  cursor: pointer;
-}
-
-.tile:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-}
-
-    footer {
-      background: #fafafa;
-      padding: 40px 20px;
-      border-top: 1px solid #ddd;
-      text-align: left;
-    }
-
-    footer {
-  text-align: center;
-  padding: 30px 20px;
-  color: #555;
-  font-size: 14px;
-  border-top: 1px solid #ddd;
-  margin-top: 40px;
-}
-
-    footer h2 {
-      margin-top: 0;
-    }
-
-    .footer-sections {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 30px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .footer-box {
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      padding: 20px;
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Noah.Cool</h1>
-    <p>games and experiments by Noah</p>
-    <button class="random-btn" onclick="randomGame()">🎲 Random Game</button>
+
+  <header class="hero">
+    <p class="hero-eyebrow">a little corner of the internet</p>
+    <h1 class="hero-name">Noah<span class="dot">.</span>cool</h1>
+    <p class="hero-sub">games, toys, and weird little things by Noah</p>
+    <button class="random-btn" onclick="goRandom()">
+      <span class="dice">🎲</span> random game
+    </button>
+    <div class="divider"></div>
   </header>
 
-  <main class="game-grid">
-    <div class="game-tile" onclick="goTo('rocks.html')">🪨 Rocks</div>
-    <div class="game-tile" onclick="goTo('planets.html')">🪐 Draw a Planet</div>
-    <div class="game-tile" onclick="goTo('aquarium.html')">🐟 Digital Aquarium</div>
-    <div class="game-tile" onclick="goTo('fart-machine.html')">💨 Fart Machine</div>
-    <!-- Add more tiles here -->
-  </main>
+  <div class="flash" id="flash"></div>
 
-  <footer>
-    <div class="footer-sections">
-<div class="tile" onclick="window.location.href='experiments.html'">
-  <h2>Experiments</h2>
-  <p>Try out new ideas and prototypes.</p>
-</div>
+  <section class="section">
+    <div class="section-label">projects</div>
+    <div class="project-grid">
 
-<div class="tile" onclick="window.location.href='feedback.html'">
-  <h2>Feedback</h2>
-  <p>Share your thoughts and suggestions.</p>
-</div>
+      <a class="project-card" href="#">
+        <div class="card-shine"></div>
+        <span class="card-new">new</span>
+        <span class="card-emoji">🌊</span>
+        <div class="card-title">How Deep Is the Ocean?</div>
+        <div class="card-desc">Scroll to the bottom of the sea.</div>
+        <div class="card-footer"><span class="card-tag">interactive</span><span class="card-arrow">→</span></div>
+      </a>
 
-<div class="tile" onclick="window.location.href='changelog.html'">
-  <h2>Changelog</h2>
-  <p>See what’s new and updated.</p>
-</div>
+      <a class="project-card" href="#">
+        <div class="card-shine"></div>
+        <span class="card-emoji">🎲</span>
+        <div class="card-title">Make a Decision</div>
+        <div class="card-desc">A coin flip for people who can't commit.</div>
+        <div class="card-footer"><span class="card-tag">tool</span><span class="card-arrow">→</span></div>
+      </a>
+
+      <a class="project-card" href="#">
+        <div class="card-shine"></div>
+        <span class="card-emoji">🧠</span>
+        <div class="card-title">Impossible Quiz</div>
+        <div class="card-desc">You won't get past question 3.</div>
+        <div class="card-footer"><span class="card-tag">game</span><span class="card-arrow">→</span></div>
+      </a>
+
+      <a class="project-card" href="#">
+        <div class="card-shine"></div>
+        <span class="card-emoji">💸</span>
+        <div class="card-title">Spend Noah's Budget</div>
+        <div class="card-desc">Not Bill Gates money, but still.</div>
+        <div class="card-footer"><span class="card-tag">toy</span><span class="card-arrow">→</span></div>
+      </a>
+
+      <a class="project-card" href="#">
+        <div class="card-shine"></div>
+        <span class="card-emoji">⏳</span>
+        <div class="card-title">Your Life in Weeks</div>
+        <div class="card-desc">A slightly unsettling visualization.</div>
+        <div class="card-footer"><span class="card-tag">interactive</span><span class="card-arrow">→</span></div>
+      </a>
+
+      <a class="project-card" href="#">
+        <div class="card-shine"></div>
+        <span class="card-emoji">🎵</span>
+        <div class="card-title">Guess the Song</div>
+        <div class="card-desc">From just the first two seconds.</div>
+        <div class="card-footer"><span class="card-tag">game</span><span class="card-arrow">→</span></div>
+      </a>
+
     </div>
-  <p>© 2025 Noah.Cool — All experiments and games made by Noah</p>
+  </section>
+
+  <section class="section">
+    <div class="section-label">more</div>
+    <div class="meta-grid">
+
+      <a class="meta-tile experiments" href="experiments.html">
+        <div class="meta-tile-icon">🔬</div>
+        <div class="meta-tile-title">Experiments</div>
+        <div class="meta-tile-desc">Half-finished ideas, generative toys, and things that almost work.</div>
+        <div class="meta-tile-cta">Browse <span class="arr">→</span></div>
+      </a>
+
+      <a class="meta-tile feedback" href="feedback.html">
+        <div class="meta-tile-icon">💬</div>
+        <div class="meta-tile-title">Feedback</div>
+        <div class="meta-tile-desc">Found a bug? Have an idea? Just want to say hi? I actually read these.</div>
+        <div class="meta-tile-cta">Leave a note <span class="arr">→</span></div>
+      </a>
+
+      <a class="meta-tile changelog" href="changelog.html">
+        <div class="meta-tile-icon">📋</div>
+        <div class="meta-tile-title">Changelog</div>
+        <div class="meta-tile-desc">What's new, what broke, and what got quietly fixed at 2am.</div>
+        <div class="meta-tile-cta">See updates <span class="arr">→</span></div>
+      </a>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-left">made by <strong>Noah</strong> · somewhere on the internet</div>
+    <nav class="footer-links">
+      <a href="#">twitter</a>
+      <a href="#">github</a>
+      <a href="#">contact</a>
+    </nav>
   </footer>
 
   <script>
-    function goTo(page) {
-      window.location.href = page;
+    const games = [
+      { title: 'How Deep Is the Ocean?', href: '#' },
+      { title: 'Make a Decision',         href: '#' },
+      { title: 'Impossible Quiz',          href: '#' },
+      { title: "Spend Noah's Budget",      href: '#' },
+      { title: 'Your Life in Weeks',       href: '#' },
+      { title: 'Guess the Song',           href: '#' },
+    ];
+
+    function goRandom() {
+      const pick = games[Math.floor(Math.random() * games.length)];
+      const flash = document.getElementById('flash');
+
+      // Flash in
+      flash.classList.add('go');
+
+      setTimeout(() => {
+        // In a real site this would be: window.location.href = pick.href;
+        // For demo, we just highlight the card instead
+        flash.classList.remove('go');
+        highlightCard(pick.title);
+      }, 280);
     }
 
-    function randomGame() {
-      const games = [
-        "rocks.html",
-        "planets.html",
-        "aquarium.html",
-        "fart-machine.html"
-      ];
-      const pick = games[Math.floor(Math.random() * games.length)];
-      window.location.href = pick;
+    function highlightCard(title) {
+      const cards = document.querySelectorAll('.project-card');
+      cards.forEach(card => {
+        const cardTitle = card.querySelector('.card-title').textContent.trim();
+        if (cardTitle === title) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          card.style.transition = 'box-shadow 0.1s, border-color 0.1s, transform 0.1s';
+          card.style.borderColor = 'var(--accent)';
+          card.style.boxShadow = '0 0 0 3px rgba(232,76,43,0.25), 0 12px 36px rgba(0,0,0,0.11)';
+          card.style.transform = 'scale(1.03)';
+          setTimeout(() => {
+            card.style.borderColor = '';
+            card.style.boxShadow = '';
+            card.style.transform = '';
+            card.style.transition = '';
+          }, 1400);
+        }
+      });
     }
   </script>
 </body>
