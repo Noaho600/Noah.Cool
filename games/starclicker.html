@@ -1,302 +1,945 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Star Clicker</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>Star Clicker — Noah.cool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
-    :root {
-      --glass: rgba(255,255,255,0.08);
-      --border: rgba(255,255,255,0.15);
-      --glow: 0 0 40px rgba(56,189,248,0.35);
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --bg:      #02010e;
+      --panel:   #080620;
+      --panel2:  #0d0a2a;
+      --border:  #1e1850;
+      --purple:  #7c3aed;
+      --purple2: #a855f7;
+      --violet:  #c084fc;
+      --teal:    #0d9488;
+      --gold:    #f5c842;
+      --gold2:   #fde68a;
+      --cyan:    #22d3ee;
+      --muted:   #5a5280;
+      --text2:   #b8aee0;
+      --white:   #f0eeff;
+      --green:   #34d399;
+      --red:     #f87171;
+    }
+    html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--white);font-family:'DM Sans',sans-serif;}
+
+    /* ── star canvas bg ── */
+    #bgCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+
+    /* ── layout ── */
+    .layout{
+      position:relative;z-index:10;
+      display:grid;
+      grid-template-columns:220px 1fr 260px;
+      grid-template-rows:auto 1fr;
+      height:100vh;
+      width:100vw;
+      overflow:hidden;
     }
 
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: 'Inter', system-ui, sans-serif;
-      background: radial-gradient(circle at top, #1e293b, #020617);
-      color: white;
-      min-height: 100vh;
-      overflow-x: hidden;
+    /* topbar spans full width */
+    .topbar{
+      grid-column:1/-1;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:10px 18px;
+      background:rgba(8,6,32,0.85);
+      border-bottom:1px solid var(--border);
+      backdrop-filter:blur(8px);
+      z-index:30;
     }
 
-    /* BACKGROUND STARS */
-    .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
-    .star {
-      position: absolute;
-      width: 2px; height: 2px;
-      background: white;
-      opacity: 0.6;
-      animation: float 20s linear infinite;
+    .back-btn{
+      display:inline-flex;align-items:center;gap:5px;
+      font-size:11px;color:var(--muted);text-decoration:none;
+      background:rgba(255,255,255,0.04);border:1px solid var(--border);
+      padding:5px 12px;border-radius:16px;
+      transition:color 0.15s,background 0.15s;
     }
-    @keyframes float { from { transform: translateY(110vh); } to { transform: translateY(-10vh); } }
+    .back-btn:hover{color:var(--violet);background:rgba(124,58,237,0.12);}
 
-    .app { position: relative; z-index: 1; padding-bottom: 100px; }
-
-    header { text-align: center; padding: 24px 16px 8px; }
-    header h1 { font-size: 2.5rem; margin: 0; text-shadow: var(--glow); }
-    #starCount { font-size: 1.6rem; margin-top: 6px; }
-
-    /* CLICK BUTTON */
-    #clickBtn {
-      width: 210px; height: 210px;
-      border-radius: 50%;
-      margin: 24px auto;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.5rem; font-weight: 800;
-      background: radial-gradient(circle, #fde047, #f59e0b);
-      border: none; cursor: pointer;
-      box-shadow: 0 0 50px rgba(253,224,71,0.5);
-      transition: transform 0.08s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    #clickBtn:active { transform: scale(0.95); }
-
-    /* CLICK BURST */
-    .burst {
-      position: absolute;
-      width: 6px; height: 6px;
-      background: white;
-      border-radius: 50%;
-      animation: burst 600ms ease-out forwards;
-    }
-    @keyframes burst {
-      to { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; }
+    .game-title{
+      font-family:'Cinzel Decorative',serif;
+      font-size:16px;font-weight:700;
+      background:linear-gradient(90deg,var(--gold),var(--violet),var(--cyan));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+      letter-spacing:0.05em;
     }
 
-    /* PANELS */
-    .panel {
-      background: var(--glass);
-      backdrop-filter: blur(14px);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 16px;
-      margin: 12px;
-      box-shadow: var(--glow);
+    .save-row{display:flex;gap:8px;align-items:center;}
+    .save-btn{
+      font-size:10px;color:var(--muted);
+      background:rgba(255,255,255,0.04);border:1px solid var(--border);
+      padding:4px 10px;border-radius:12px;cursor:pointer;
+      transition:color 0.15s,background 0.15s;
+      font-family:'DM Sans',sans-serif;
     }
-    .panel h2 { margin-top: 0; font-size: 1.2rem; }
+    .save-btn:hover{color:var(--gold);border-color:rgba(245,200,66,0.3);}
 
-    button.upgrade {
-      width: 100%;
-      padding: 12px;
-      border-radius: 14px;
-      border: none;
-      margin-top: 10px;
-      font-weight: 600;
-      background: #38bdf8;
-      cursor: pointer;
+    /* ── left panel: stats + upgrades ── */
+    .left-panel{
+      background:rgba(8,6,32,0.9);
+      border-right:1px solid var(--border);
+      display:flex;flex-direction:column;
+      overflow:hidden;
+      backdrop-filter:blur(6px);
     }
 
-    ul { list-style: none; padding: 0; margin: 0; }
-    li { margin: 6px 0; }
-
-    /* NAV */
-    nav {
-      position: fixed; bottom: 0; inset-inline: 0;
-      background: rgba(2,6,23,0.9);
-      display: flex;
-      border-top: 1px solid var(--border);
-    }
-    nav button {
-      flex: 1; padding: 14px;
-      background: none; color: white;
-      border: none; font-weight: 600;
+    .stars-display{
+      padding:16px 14px 12px;
+      border-bottom:1px solid var(--border);
+      text-align:center;
     }
 
-    .hidden { display: none; }
+    .stars-count{
+      font-family:'Cinzel',serif;
+      font-size:22px;font-weight:700;
+      color:var(--gold);
+      text-shadow:0 0 20px rgba(245,200,66,0.4);
+      line-height:1.1;
+      display:block;
+    }
 
-    /* ACHIEVEMENT POPUP */
-    #achievementPopup {
-      position: fixed;
-      bottom: 80px; left: 50%;
-      transform: translateX(-50%);
-      background: #22c55e; color: black;
-      padding: 12px 20px;
-      border-radius: 999px;
-      font-weight: 700;
-      display: none;
-      z-index: 10;
+    .stars-label{font-size:9px;color:var(--muted);letter-spacing:0.18em;text-transform:uppercase;margin-top:2px;}
+
+    .sps-row{
+      display:flex;justify-content:space-between;
+      padding:8px 14px;
+      border-bottom:1px solid var(--border);
+      font-size:10px;color:var(--muted);
+    }
+    .sps-val{color:var(--cyan);font-weight:600;}
+
+    /* upgrades */
+    .upgrades-label{
+      padding:8px 14px 6px;
+      font-size:9px;letter-spacing:0.2em;text-transform:uppercase;
+      color:var(--muted);font-weight:600;
+      border-bottom:1px solid var(--border);
+    }
+
+    .upgrades-list{
+      flex:1;overflow-y:auto;padding:8px;
+      display:flex;flex-wrap:wrap;gap:5px;
+      align-content:flex-start;
+    }
+
+    .upgrades-list::-webkit-scrollbar{width:3px;}
+    .upgrades-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+    .upgrade-item{
+      width:44px;height:44px;border-radius:10px;
+      border:1.5px solid var(--border);
+      background:rgba(255,255,255,0.04);
+      display:flex;align-items:center;justify-content:center;
+      font-size:22px;cursor:pointer;
+      transition:transform 0.15s,border-color 0.15s,background 0.15s;
+      position:relative;
+      flex-shrink:0;
+    }
+
+    .upgrade-item:hover{transform:scale(1.12);border-color:var(--gold);background:rgba(245,200,66,0.08);}
+    .upgrade-item.locked{opacity:0.3;cursor:default;filter:grayscale(1);}
+    .upgrade-item.locked:hover{transform:none;border-color:var(--border);background:rgba(255,255,255,0.04);}
+    .upgrade-item.owned{border-color:var(--purple2);background:rgba(124,58,237,0.15);}
+    .upgrade-item.owned::after{content:'✓';position:absolute;bottom:1px;right:3px;font-size:8px;color:var(--purple2);}
+
+    /* achievements strip */
+    .achievements-strip{
+      padding:6px 10px;
+      border-top:1px solid var(--border);
+      display:flex;gap:4px;flex-wrap:wrap;
+    }
+
+    .achv-dot{
+      width:16px;height:16px;border-radius:4px;
+      background:rgba(255,255,255,0.05);border:1px solid var(--border);
+      font-size:9px;display:flex;align-items:center;justify-content:center;
+      transition:background 0.3s;
+    }
+    .achv-dot.earned{background:rgba(245,200,66,0.2);border-color:var(--gold);}
+
+    /* ── center: big star ── */
+    .center-panel{
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      position:relative;overflow:hidden;
+    }
+
+    /* floating +1 popups */
+    .float-popup{
+      position:absolute;
+      font-family:'Cinzel',serif;
+      font-size:16px;font-weight:700;
+      color:var(--gold);
+      text-shadow:0 0 10px rgba(245,200,66,0.6);
+      pointer-events:none;
+      animation:floatUp 1.2s ease-out forwards;
+      z-index:50;
+      white-space:nowrap;
+    }
+
+    @keyframes floatUp{
+      0%  {opacity:1;transform:translateY(0) scale(1);}
+      100%{opacity:0;transform:translateY(-80px) scale(0.7);}
+    }
+
+    /* golden shower effect */
+    .star-particle{
+      position:absolute;
+      pointer-events:none;
+      font-size:12px;
+      animation:starFloat 1.5s ease-out forwards;
+    }
+
+    @keyframes starFloat{
+      0%  {opacity:1;transform:translate(0,0) rotate(0deg);}
+      100%{opacity:0;transform:translate(var(--tx),var(--ty)) rotate(var(--tr));}
+    }
+
+    /* big star */
+    .star-btn{
+      width:200px;height:200px;
+      border-radius:50%;
+      background:
+        radial-gradient(circle at 38% 32%,rgba(253,230,138,0.25) 0%,transparent 50%),
+        radial-gradient(circle at 60% 60%,rgba(124,58,237,0.3) 0%,transparent 60%),
+        radial-gradient(circle,#1a1040 0%,#06030f 100%);
+      border:2px solid rgba(245,200,66,0.25);
+      cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      font-size:90px;
+      position:relative;
+      box-shadow:
+        0 0 40px rgba(245,200,66,0.15),
+        0 0 80px rgba(124,58,237,0.12),
+        0 20px 60px rgba(0,0,0,0.6);
+      transition:transform 0.08s ease,box-shadow 0.15s;
+      animation:starPulse 3s ease-in-out infinite;
+      user-select:none;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    @keyframes starPulse{
+      0%,100%{box-shadow:0 0 40px rgba(245,200,66,0.15),0 0 80px rgba(124,58,237,0.12),0 20px 60px rgba(0,0,0,0.6);}
+      50%    {box-shadow:0 0 70px rgba(245,200,66,0.28),0 0 120px rgba(124,58,237,0.2),0 20px 60px rgba(0,0,0,0.6);}
+    }
+
+    .star-btn:active{transform:scale(0.92);}
+    .star-btn:hover{transform:scale(1.04);}
+
+    .star-glow-ring{
+      position:absolute;inset:-16px;border-radius:50%;
+      border:1px solid rgba(245,200,66,0.12);
+      animation:ringPulse 3s ease-in-out infinite;
+      pointer-events:none;
+    }
+
+    .star-glow-ring2{
+      position:absolute;inset:-32px;border-radius:50%;
+      border:1px solid rgba(124,58,237,0.08);
+      animation:ringPulse 3s ease-in-out infinite 0.5s;
+      pointer-events:none;
+    }
+
+    @keyframes ringPulse{
+      0%,100%{opacity:0.4;transform:scale(1);}
+      50%    {opacity:1;  transform:scale(1.04);}
+    }
+
+    .cps-badge{
+      margin-top:20px;
+      font-size:11px;color:var(--muted);
+      background:rgba(255,255,255,0.04);
+      border:1px solid var(--border);
+      padding:5px 14px;border-radius:16px;
+      letter-spacing:0.05em;
+    }
+
+    .cps-badge span{color:var(--cyan);font-weight:600;}
+
+    /* milestones ribbon */
+    .milestone-toast{
+      position:absolute;
+      top:20px;left:50%;transform:translateX(-50%);
+      background:rgba(13,10,40,0.95);
+      border:1px solid var(--gold);
+      border-radius:12px;
+      padding:10px 20px;
+      font-family:'Cinzel',serif;
+      font-size:13px;color:var(--gold);
+      text-align:center;
+      white-space:nowrap;
+      box-shadow:0 0 20px var(--gold-glow,rgba(245,200,66,0.3));
+      animation:toastIn 0.4s cubic-bezier(.22,.68,0,1.2) forwards;
+      z-index:60;
+      pointer-events:none;
+    }
+
+    @keyframes toastIn{
+      from{opacity:0;transform:translateX(-50%) translateY(-16px) scale(0.9);}
+      to  {opacity:1;transform:translateX(-50%) translateY(0)       scale(1);}
+    }
+
+    /* ── right panel: buildings ── */
+    .right-panel{
+      background:rgba(8,6,32,0.9);
+      border-left:1px solid var(--border);
+      display:flex;flex-direction:column;
+      overflow:hidden;
+      backdrop-filter:blur(6px);
+    }
+
+    .buildings-title{
+      padding:10px 14px 8px;
+      font-size:9px;letter-spacing:0.22em;text-transform:uppercase;
+      color:var(--muted);font-weight:600;
+      border-bottom:1px solid var(--border);
+      display:flex;justify-content:space-between;
+    }
+
+    .buildings-list{
+      flex:1;overflow-y:auto;
+    }
+
+    .buildings-list::-webkit-scrollbar{width:3px;}
+    .buildings-list::-webkit-scrollbar-thumb{background:var(--border);}
+
+    .building-row{
+      display:flex;align-items:center;gap:10px;
+      padding:9px 12px;
+      border-bottom:1px solid rgba(30,24,80,0.6);
+      cursor:pointer;
+      transition:background 0.15s;
+      position:relative;
+    }
+
+    .building-row:hover{background:rgba(124,58,237,0.08);}
+    .building-row.cant-afford{opacity:0.4;}
+    .building-row.cant-afford:hover{background:transparent;}
+
+    .building-emoji{font-size:22px;flex-shrink:0;width:30px;text-align:center;}
+
+    .building-info{flex:1;min-width:0;}
+    .building-name{font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .building-desc{font-size:9.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+    .building-right{text-align:right;flex-shrink:0;}
+    .building-cost{font-size:11px;font-weight:700;color:var(--gold);}
+    .building-count{
+      font-family:'Cinzel',serif;
+      font-size:14px;font-weight:700;
+      color:var(--purple2);
+      display:block;
+      line-height:1;
+    }
+
+    .building-sps{font-size:9px;color:var(--muted);}
+
+    /* prestige */
+    .prestige-section{
+      padding:10px 12px;
+      border-top:1px solid var(--border);
+    }
+
+    .prestige-btn{
+      width:100%;
+      font-family:'Cinzel',serif;
+      font-size:11px;letter-spacing:0.08em;
+      color:var(--bg);
+      background:linear-gradient(135deg,var(--purple),var(--purple2));
+      border:none;border-radius:10px;
+      padding:9px;cursor:pointer;
+      opacity:0.4;
+      transition:opacity 0.2s,transform 0.15s,box-shadow 0.15s;
+    }
+
+    .prestige-btn.ready{
+      opacity:1;
+      box-shadow:0 4px 20px rgba(124,58,237,0.4);
+    }
+
+    .prestige-btn.ready:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(124,58,237,0.6);}
+
+    /* news ticker */
+    .ticker{
+      grid-column:1/-1;
+      background:rgba(13,10,40,0.9);
+      border-top:1px solid var(--border);
+      padding:5px 14px;
+      font-size:11px;color:var(--muted);
+      overflow:hidden;
+      white-space:nowrap;
+    }
+
+    .ticker-inner{
+      display:inline-block;
+      animation:tickerScroll 25s linear infinite;
+    }
+
+    @keyframes tickerScroll{
+      from{transform:translateX(100vw);}
+      to  {transform:translateX(-100%);}
+    }
+
+    /* tooltip */
+    .tooltip{
+      position:fixed;
+      background:rgba(13,10,42,0.97);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:10px 14px;
+      font-size:11px;color:var(--text2);
+      max-width:200px;
+      pointer-events:none;
+      z-index:200;
+      display:none;
+      line-height:1.5;
+    }
+
+    .tooltip-title{font-family:'Cinzel',serif;font-size:12px;color:var(--gold);margin-bottom:4px;}
+    .tooltip-cost{color:var(--gold);font-weight:600;}
+    .tooltip-sps{color:var(--cyan);}
+
+    /* responsive */
+    @media(max-width:700px){
+      .layout{grid-template-columns:0 1fr 200px;}
+      .left-panel{display:none;}
+    }
+    @media(max-width:500px){
+      .layout{grid-template-columns:1fr;}
+      .right-panel{display:none;}
+      .center-panel{grid-column:1;}
     }
   </style>
 </head>
 <body>
 
-<div class="stars" id="stars"></div>
-<div id="achievementPopup"></div>
+<canvas id="bgCanvas"></canvas>
 
-<div class="app">
-  <header>
-    <h1>⭐ Star Clicker</h1>
-    <div id="starCount">0 Stars</div>
-  </header>
+<div class="layout">
+  <!-- topbar -->
+  <div class="topbar">
+    <a class="back-btn" href="index.html">← noah.cool</a>
+    <div class="game-title">✦ Star Clicker ✦</div>
+    <div class="save-row">
+      <button class="save-btn" onclick="saveGame()">💾 Save</button>
+      <button class="save-btn" onclick="resetGame()">↺ Reset</button>
+    </div>
+  </div>
 
-  <button id="clickBtn">✨ TAP ✨</button>
+  <!-- left panel -->
+  <div class="left-panel">
+    <div class="stars-display">
+      <span class="stars-count" id="starsCount">0</span>
+      <div class="stars-label">⭐ stellar dust</div>
+    </div>
+    <div class="sps-row">
+      <span>total earned</span>
+      <span class="sps-val" id="totalEarned">0</span>
+    </div>
+    <div class="sps-row">
+      <span>per click</span>
+      <span class="sps-val" id="perClickDisplay">1</span>
+    </div>
+    <div class="sps-row">
+      <span>prestige ×</span>
+      <span class="sps-val" id="prestigeDisplay">1</span>
+    </div>
 
-  <section id="shop" class="panel">
-    <h2>Upgrades</h2>
-    <div id="upgrades"></div>
-  </section>
+    <div class="upgrades-label">✦ Upgrades</div>
+    <div class="upgrades-list" id="upgradesList"></div>
 
-  <section id="achievements" class="panel hidden">
-    <h2>Achievements</h2>
-    <ul id="achievementList"></ul>
-  </section>
+    <div class="achievements-strip" id="achievementsStrip"></div>
+  </div>
 
-  <section id="prestige" class="panel hidden">
-    <h2>Constellations</h2>
-    <p id="prestigeInfo"></p>
-    <button class="upgrade" id="prestigeBtn">Prestige</button>
-  </section>
+  <!-- center panel -->
+  <div class="center-panel" id="centerPanel">
+    <div style="position:relative;display:inline-block;">
+      <div class="star-glow-ring2"></div>
+      <div class="star-glow-ring"></div>
+      <button class="star-btn" id="starBtn" onclick="clickStar(event)">⭐</button>
+    </div>
+    <div class="cps-badge">
+      <span id="spsDisplay">0</span> stars / sec
+    </div>
+  </div>
+
+  <!-- right panel -->
+  <div class="right-panel">
+    <div class="buildings-title">
+      <span>✦ Cosmic Structures</span>
+      <span id="totalBuildings" style="color:var(--purple2)">0</span>
+    </div>
+    <div class="buildings-list" id="buildingsList"></div>
+    <div class="prestige-section">
+      <div style="font-size:9px;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px;">
+        prestige — reset for <span style="color:var(--purple2)" id="prestigeBonus">×1.0</span> multiplier
+      </div>
+      <button class="prestige-btn" id="prestigeBtn" onclick="prestige()">✦ Ascend the Cosmos ✦</button>
+    </div>
+  </div>
+
+  <!-- ticker -->
+  <div class="ticker">
+    <span class="ticker-inner" id="tickerText">✦ Welcome to Star Clicker — click the star to begin your cosmic journey ✦ The universe started with a single star... ✦</span>
+  </div>
 </div>
 
-<nav>
-  <button onclick="show('shop')">Shop</button>
-  <button onclick="show('achievements')">Achievements</button>
-  <button onclick="show('prestige')">Prestige</button>
-</nav>
+<!-- tooltip -->
+<div class="tooltip" id="tooltip">
+  <div class="tooltip-title" id="ttTitle"></div>
+  <div id="ttDesc"></div>
+  <div class="tooltip-cost" id="ttCost"></div>
+  <div class="tooltip-sps" id="ttSps"></div>
+</div>
 
 <script>
-/* BACKGROUND STARS */
-const starField = document.getElementById('stars');
-for (let i = 0; i < 100; i++) {
-  const s = document.createElement('div');
-  s.className = 'star';
-  s.style.left = Math.random() * 100 + 'vw';
-  s.style.animationDuration = 10 + Math.random() * 25 + 's';
-  s.style.opacity = Math.random();
-  starField.appendChild(s);
-}
+// ═══════════════════════════════════════════
+//  STAR FIELD BG
+// ═══════════════════════════════════════════
+(function(){
+  const c=document.getElementById('bgCanvas');
+  const ctx=c.getContext('2d');
+  function resize(){c.width=window.innerWidth;c.height=window.innerHeight;}
+  resize();
+  window.addEventListener('resize',resize);
 
-/* STATE */
-let stars = Number(localStorage.getItem('stars')) || 0;
-let perClick = Number(localStorage.getItem('perClick')) || 1;
-let auto = Number(localStorage.getItem('auto')) || 0;
-let prestige = Number(localStorage.getItem('prestige')) || 0;
-let unlockedAchievements = JSON.parse(localStorage.getItem('achievements')) || [];
+  const stars=[];
+  for(let i=0;i<350;i++){
+    stars.push({
+      x:Math.random(),y:Math.random(),
+      r:0.2+Math.random()*1.4,
+      a:0.2+Math.random()*0.8,
+      speed:0.0005+Math.random()*0.002,
+      phase:Math.random()*Math.PI*2,
+      color:Math.random()>0.92?'rgba(192,132,252,':'rgba(255,255,255,'
+    });
+  }
+  // shooting stars
+  const shoots=[];
+  function maybeShoot(){
+    if(Math.random()<0.003){
+      shoots.push({x:Math.random()*c.width,y:Math.random()*c.height*0.5,vx:5+Math.random()*8,vy:2+Math.random()*4,life:1});
+    }
+  }
 
-const upgrades = [
-  { id: 'click1', text: '+1 / Click', cost: 10, unlock: 0, action: () => perClick++ },
-  { id: 'auto1', text: '+1 / Sec', cost: 50, unlock: 0, action: () => auto++ },
-  { id: 'click5', text: '+5 / Click', cost: 100, unlock: 100, action: () => perClick += 5 },
-  { id: 'auto5', text: '+5 / Sec', cost: 500, unlock: 500, action: () => auto += 5 },
-  { id: 'mega', text: 'Mega Star Boost', cost: 2000, unlock: 2000, action: () => perClick *= 2 }
+  let t=0;
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    t+=0.01;
+    stars.forEach(s=>{
+      const a=s.a*(0.4+0.6*Math.sin(t*s.speed*100+s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x*c.width,s.y*c.height,s.r,0,Math.PI*2);
+      ctx.fillStyle=s.color+a+')';
+      ctx.fill();
+    });
+    maybeShoot();
+    shoots.forEach((s,i)=>{
+      ctx.beginPath();
+      ctx.moveTo(s.x,s.y);
+      ctx.lineTo(s.x-s.vx*8,s.y-s.vy*8);
+      const g=ctx.createLinearGradient(s.x,s.y,s.x-s.vx*8,s.y-s.vy*8);
+      g.addColorStop(0,'rgba(255,255,255,'+s.life+')');
+      g.addColorStop(1,'rgba(255,255,255,0)');
+      ctx.strokeStyle=g;ctx.lineWidth=1.5;ctx.stroke();
+      s.x+=s.vx;s.y+=s.vy;s.life-=0.04;
+    });
+    shoots.forEach((s,i)=>{if(s.life<=0)shoots.splice(i,1);});
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ═══════════════════════════════════════════
+//  GAME DATA
+// ═══════════════════════════════════════════
+const BUILDINGS = [
+  { id:'comet',      name:'Comet',           emoji:'☄️',  baseCost:15,    baseSps:0.1,  desc:'A wandering comet trailing stardust.' },
+  { id:'asteroid',   name:'Asteroid Belt',   emoji:'🪨',  baseCost:100,   baseSps:0.5,  desc:'Rocks grinding into cosmic powder.' },
+  { id:'nebula',     name:'Nebula',           emoji:'🌌',  baseCost:500,   baseSps:4,    desc:'A stellar nursery, birthing stars.' },
+  { id:'blackhole',  name:'Black Hole',       emoji:'🕳️', baseCost:2000,  baseSps:10,   desc:'Even stars bend to its gravity.' },
+  { id:'pulsar',     name:'Pulsar',           emoji:'💫',  baseCost:8000,  baseSps:40,   desc:'A spinning neutron star, radiating energy.' },
+  { id:'quasar',     name:'Quasar',           emoji:'🔭',  baseCost:25000, baseSps:100,  desc:'Blazing light from the early universe.' },
+  { id:'galaxy',     name:'Galaxy',           emoji:'🌀',  baseCost:80000, baseSps:400,  desc:'Billions of stars spiraling together.' },
+  { id:'universe',   name:'Pocket Universe',  emoji:'🌐',  baseCost:300000,baseSps:2000, desc:'You\'ve created a universe of your own.' },
 ];
 
-const achievements = [
-  { id: 'first', text: 'First Star', check: () => stars >= 1 },
-  { id: '100', text: '100 Stars', check: () => stars >= 100 },
-  { id: '1k', text: '1,000 Stars', check: () => stars >= 1000 },
-  { id: 'auto', text: 'Automation Online', check: () => auto >= 10 }
+const UPGRADES = [
+  { id:'u0',  name:'Polished Lens',     emoji:'🔍', cost:100,    req:()=>true,                    mult:2,  target:'click', desc:'2× stars per click.' },
+  { id:'u1',  name:'Solar Winds',       emoji:'🌬️',cost:500,    req:()=>G.buildings.comet>=5,    mult:2,  target:'comet',  desc:'Comets produce 2× more.' },
+  { id:'u2',  name:'Asteroid Mining',   emoji:'⛏️', cost:1000,   req:()=>G.buildings.asteroid>=5, mult:2,  target:'asteroid',desc:'Asteroid Belts produce 2×.' },
+  { id:'u3',  name:'Diamond Hands',     emoji:'💎', cost:2000,   req:()=>G.totalEarned>=1000,     mult:3,  target:'click', desc:'3× stars per click.' },
+  { id:'u4',  name:'Nebula Forge',      emoji:'🔥', cost:5000,   req:()=>G.buildings.nebula>=5,   mult:2,  target:'nebula', desc:'Nebulae produce 2×.' },
+  { id:'u5',  name:'Event Horizon',     emoji:'🌑', cost:10000,  req:()=>G.buildings.blackhole>=5,mult:2,  target:'blackhole',desc:'Black holes produce 2×.' },
+  { id:'u6',  name:'Golden Stardust',   emoji:'✨', cost:15000,  req:()=>G.totalEarned>=10000,    mult:5,  target:'click', desc:'5× stars per click.' },
+  { id:'u7',  name:'Pulsar Resonance',  emoji:'📡', cost:40000,  req:()=>G.buildings.pulsar>=5,   mult:2,  target:'pulsar', desc:'Pulsars produce 2×.' },
+  { id:'u8',  name:'Quasar Beam',       emoji:'💥', cost:100000, req:()=>G.buildings.quasar>=5,   mult:2,  target:'quasar', desc:'Quasars produce 2×.' },
+  { id:'u9',  name:'Galactic Core',     emoji:'🌠', cost:250000, req:()=>G.buildings.galaxy>=5,   mult:2,  target:'galaxy', desc:'Galaxies produce 2×.' },
+  { id:'u10', name:'Cosmic Inflation',  emoji:'🚀', cost:500000, req:()=>G.totalEarned>=100000,   mult:10, target:'click', desc:'10× stars per click.' },
+  { id:'u11', name:'Universal Law',     emoji:'⚖️', cost:1000000,req:()=>G.buildings.universe>=5, mult:2,  target:'universe',desc:'Pocket Universes produce 2×.' },
 ];
 
-const starCount = document.getElementById('starCount');
-const upgradesEl = document.getElementById('upgrades');
-const achList = document.getElementById('achievementList');
-const popup = document.getElementById('achievementPopup');
-const prestigeInfo = document.getElementById('prestigeInfo');
+const ACHIEVEMENTS = [
+  { id:'a0',  name:'First Light',    emoji:'⭐', req:()=>G.totalEarned>=1       },
+  { id:'a1',  name:'Stargazer',      emoji:'🔭', req:()=>G.totalEarned>=100     },
+  { id:'a2',  name:'Comet Chaser',   emoji:'☄️', req:()=>G.buildings.comet>=1  },
+  { id:'a3',  name:'Astronomer',     emoji:'🌌', req:()=>G.totalEarned>=1000    },
+  { id:'a4',  name:'Star Farmer',    emoji:'🌟', req:()=>G.sps>=10              },
+  { id:'a5',  name:'Nebula Born',    emoji:'💫', req:()=>G.buildings.nebula>=1  },
+  { id:'a6',  name:'Gravity Well',   emoji:'🕳️', req:()=>G.buildings.blackhole>=1},
+  { id:'a7',  name:'Light Speed',    emoji:'⚡', req:()=>G.sps>=100             },
+  { id:'a8',  name:'Galactic',       emoji:'🌀', req:()=>G.buildings.galaxy>=1  },
+  { id:'a9',  name:'Big Bang',       emoji:'💥', req:()=>G.totalEarned>=1000000 },
+  { id:'a10', name:'Ascended',       emoji:'🌐', req:()=>G.prestigeCount>=1     },
+  { id:'a11', name:'Omniscient',     emoji:'👁️',req:()=>G.totalEarned>=1e8     },
+];
 
-function save() {
-  localStorage.setItem('stars', stars);
-  localStorage.setItem('perClick', perClick);
-  localStorage.setItem('auto', auto);
-  localStorage.setItem('prestige', prestige);
-  localStorage.setItem('achievements', JSON.stringify(unlockedAchievements));
+const TICKER_MSGS = [
+  '✦ Local star farmer harvests record-breaking 1000 stellar dust ✦',
+  '✦ Scientists baffled by mysterious pocket universe discovered in basement ✦',
+  '✦ Black hole opens deli on 5th Avenue ✦',
+  '✦ Quasar voted Most Likely To Succeed in universe yearbook ✦',
+  '✦ Galaxy reports record profits despite dark matter shortage ✦',
+  '✦ Pulsar wins 14th consecutive "Most Reliable Rotation" award ✦',
+  '✦ Astronomers discover star that\'s "literally just clicking itself" ✦',
+  '✦ Comet asks if it can crash on your couch for a few millennia ✦',
+  '✦ Nebula gives birth to triplets; universe exhausted ✦',
+  '✦ Asteroid Belt described as "basically a parking lot" by leading scientists ✦',
+];
+
+// ── Game state ──
+const defaultState = () => ({
+  stars: 0,
+  totalEarned: 0,
+  perClick: 1,
+  sps: 0,
+  buildings: Object.fromEntries(BUILDINGS.map(b=>[b.id,0])),
+  upgrades: [],
+  achievements: [],
+  prestigeCount: 0,
+  prestigeMult: 1,
+  clickCount: 0,
+});
+
+let G = defaultState();
+
+// Load save
+try {
+  const saved = localStorage.getItem('starclicker_v2');
+  if(saved) G = {...defaultState(), ...JSON.parse(saved)};
+} catch(e){}
+
+// ── Cost formula ──
+function buildingCost(b) {
+  return Math.floor(b.baseCost * Math.pow(1.15, G.buildings[b.id]));
 }
 
-function showPopup(text) {
-  popup.textContent = '🏆 ' + text;
-  popup.style.display = 'block';
-  setTimeout(() => popup.style.display = 'none', 2500);
+function calcSps() {
+  let total = 0;
+  BUILDINGS.forEach(b => {
+    let bSps = b.baseSps * G.buildings[b.id];
+    // apply upgrades
+    UPGRADES.forEach(u => {
+      if(G.upgrades.includes(u.id) && u.target === b.id) bSps *= u.mult;
+    });
+    total += bSps;
+  });
+  return total * G.prestigeMult;
+}
+
+function calcPerClick() {
+  let pc = 1;
+  UPGRADES.forEach(u => {
+    if(G.upgrades.includes(u.id) && u.target === 'click') pc *= u.mult;
+  });
+  pc += calcSps() * 0.01; // 1% of sps added to click
+  return Math.max(1, Math.floor(pc * G.prestigeMult));
+}
+
+// ── Render ──
+function fmt(n) {
+  if(n>=1e12) return (n/1e12).toFixed(2)+'T';
+  if(n>=1e9)  return (n/1e9).toFixed(2)+'B';
+  if(n>=1e6)  return (n/1e6).toFixed(2)+'M';
+  if(n>=1e3)  return (n/1e3).toFixed(1)+'K';
+  return Math.floor(n).toLocaleString();
+}
+
+function renderStats() {
+  document.getElementById('starsCount').textContent = fmt(G.stars);
+  document.getElementById('totalEarned').textContent = fmt(G.totalEarned);
+  document.getElementById('spsDisplay').textContent = fmt(G.sps);
+  document.getElementById('perClickDisplay').textContent = fmt(G.perClick);
+  document.getElementById('prestigeDisplay').textContent = '×'+G.prestigeMult.toFixed(1);
+}
+
+function renderBuildings() {
+  const list = document.getElementById('buildingsList');
+  let total = 0;
+  BUILDINGS.forEach(b => {
+    total += G.buildings[b.id];
+    const cost = buildingCost(b);
+    const canAfford = G.stars >= cost;
+    let row = document.getElementById('brow-'+b.id);
+    if(!row) {
+      row = document.createElement('div');
+      row.className = 'building-row';
+      row.id = 'brow-'+b.id;
+      row.innerHTML = `
+        <div class="building-emoji">${b.emoji}</div>
+        <div class="building-info">
+          <div class="building-name">${b.name}</div>
+          <div class="building-desc">${b.desc}</div>
+        </div>
+        <div class="building-right">
+          <span class="building-count" id="bcount-${b.id}">0</span>
+          <div class="building-cost" id="bcost-${b.id}"></div>
+          <div class="building-sps" id="bsps-${b.id}"></div>
+        </div>`;
+      row.onclick = () => buyBuilding(b);
+      row.addEventListener('mouseenter', e => showTooltip(e, b.name, b.desc, '⭐ '+fmt(cost), '+'+fmt(b.baseSps)+' ⭐/s'));
+      row.addEventListener('mouseleave', hideTooltip);
+      list.appendChild(row);
+    }
+    row.className = 'building-row' + (canAfford?'':' cant-afford');
+    document.getElementById('bcount-'+b.id).textContent = G.buildings[b.id];
+    document.getElementById('bcost-'+b.id).textContent = '⭐ '+fmt(cost);
+    document.getElementById('bsps-'+b.id).textContent = fmt(b.baseSps)+'/s';
+  });
+  document.getElementById('totalBuildings').textContent = total;
 }
 
 function renderUpgrades() {
-  upgradesEl.innerHTML = '';
-  upgrades.forEach(u => {
-    if (stars >= u.unlock) {
-      const btn = document.createElement('button');
-      btn.className = 'upgrade';
-      btn.textContent = `${u.text} (${u.cost}⭐)`;
-      btn.onclick = () => {
-        if (stars >= u.cost) {
-          stars -= u.cost;
-          u.action();
-          update();
-        }
-      };
-      upgradesEl.appendChild(btn);
+  const list = document.getElementById('upgradesList');
+  list.innerHTML = '';
+  UPGRADES.forEach(u => {
+    if(!u.req() && !G.upgrades.includes(u.id)) return;
+    const item = document.createElement('div');
+    const owned = G.upgrades.includes(u.id);
+    const canAfford = G.stars >= u.cost;
+    item.className = 'upgrade-item' + (owned?' owned':(canAfford?'':' locked'));
+    item.textContent = u.emoji;
+    item.title = u.name;
+    if(!owned) {
+      item.onclick = () => buyUpgrade(u);
+      item.addEventListener('mouseenter', e => showTooltip(e, u.name, u.desc, owned?'Owned':'⭐ '+fmt(u.cost)));
+      item.addEventListener('mouseleave', hideTooltip);
     }
-  });
-}
-
-function checkAchievements() {
-  achievements.forEach(a => {
-    if (!unlockedAchievements.includes(a.id) && a.check()) {
-      unlockedAchievements.push(a.id);
-      showPopup(a.text);
-    }
+    list.appendChild(item);
   });
 }
 
 function renderAchievements() {
-  achList.innerHTML = '';
-  achievements.forEach(a => {
-    const li = document.createElement('li');
-    li.textContent = unlockedAchievements.includes(a.id) ? '✅ ' + a.text : '🔒 ' + a.text;
-    achList.appendChild(li);
+  const strip = document.getElementById('achievementsStrip');
+  strip.innerHTML = '';
+  ACHIEVEMENTS.forEach(a => {
+    const dot = document.createElement('div');
+    const earned = G.achievements.includes(a.id);
+    dot.className = 'achv-dot' + (earned?' earned':'');
+    dot.textContent = earned ? a.emoji : '';
+    dot.title = a.name;
+    strip.appendChild(dot);
   });
 }
 
-function update() {
-  starCount.textContent = Math.floor(stars) + ' Stars';
-  prestigeInfo.textContent = `Constellations: ${prestige} (+${prestige * 10}% bonus)`;
-  renderUpgrades();
+// ── Actions ──
+function clickStar(e) {
+  G.perClick = calcPerClick();
+  const gain = G.perClick;
+  G.stars += gain;
+  G.totalEarned += gain;
+  G.clickCount++;
+  spawnFloatPopup(e.clientX, e.clientY, '+'+fmt(gain));
+  spawnStarParticles(e.clientX, e.clientY);
   checkAchievements();
+  renderStats();
+}
+
+function buyBuilding(b) {
+  const cost = buildingCost(b);
+  if(G.stars < cost) return;
+  G.stars -= cost;
+  G.buildings[b.id]++;
+  G.sps = calcSps();
+  G.perClick = calcPerClick();
+  checkAchievements();
+  renderBuildings();
+  renderStats();
+}
+
+function buyUpgrade(u) {
+  if(G.upgrades.includes(u.id)) return;
+  if(G.stars < u.cost) return;
+  G.stars -= u.cost;
+  G.upgrades.push(u.id);
+  G.sps = calcSps();
+  G.perClick = calcPerClick();
+  showToast('✦ Upgrade: '+u.name+' ✦');
+  renderUpgrades();
+  renderStats();
+}
+
+function prestige() {
+  if(G.totalEarned < 1000000) return;
+  G.prestigeCount++;
+  G.prestigeMult = 1 + G.prestigeCount * 0.5;
+  const old = {...G};
+  G = defaultState();
+  G.prestigeCount = old.prestigeCount;
+  G.prestigeMult  = old.prestigeMult;
+  showToast('✦ You have Ascended! Multiplier: ×'+G.prestigeMult.toFixed(1)+' ✦');
+  document.getElementById('buildingsList').innerHTML='';
+  renderAll();
+}
+
+// ── Achievements ──
+function checkAchievements() {
+  ACHIEVEMENTS.forEach(a => {
+    if(!G.achievements.includes(a.id) && a.req()) {
+      G.achievements.push(a.id);
+      showToast('🏆 Achievement: '+a.name+' '+a.emoji);
+      renderAchievements();
+    }
+  });
+
+  const presBtn = document.getElementById('prestigeBtn');
+  const ready = G.totalEarned >= 1000000;
+  presBtn.classList.toggle('ready', ready);
+  const bonus = '×'+(1+(G.prestigeCount+1)*0.5).toFixed(1);
+  document.getElementById('prestigeBonus').textContent = bonus;
+}
+
+// ── Floating popup ──
+function spawnFloatPopup(x, y, text) {
+  const el = document.createElement('div');
+  el.className = 'float-popup';
+  el.textContent = text;
+  el.style.left = (x - 20 + (Math.random()-0.5)*40) + 'px';
+  el.style.top  = (y - 20) + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1200);
+}
+
+// ── Star particles on click ──
+function spawnStarParticles(x, y) {
+  const count = 4 + Math.floor(Math.random()*4);
+  for(let i=0;i<count;i++){
+    const el = document.createElement('div');
+    el.className = 'star-particle';
+    el.textContent = ['✦','⭐','★','✧','·'][Math.floor(Math.random()*5)];
+    const tx = (Math.random()-0.5)*100;
+    const ty = -(30+Math.random()*80);
+    const tr = (Math.random()-0.5)*360+'deg';
+    el.style.cssText = `left:${x}px;top:${y}px;--tx:${tx}px;--ty:${ty}px;--tr:${tr};color:${Math.random()>0.5?'var(--gold)':'var(--violet)'};`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),1500);
+  }
+}
+
+// ── Toast ──
+let toastTimer;
+function showToast(msg) {
+  const old = document.querySelector('.milestone-toast');
+  if(old) old.remove();
+  const el = document.createElement('div');
+  el.className = 'milestone-toast';
+  el.textContent = msg;
+  document.getElementById('centerPanel').appendChild(el);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{
+    el.style.transition='opacity 0.5s';
+    el.style.opacity='0';
+    setTimeout(()=>el.remove(),500);
+  },3000);
+}
+
+// ── Tooltip ──
+const ttEl = document.getElementById('tooltip');
+function showTooltip(e, title, desc, cost, sps='') {
+  document.getElementById('ttTitle').textContent = title;
+  document.getElementById('ttDesc').textContent  = desc;
+  document.getElementById('ttCost').textContent  = cost ? '⭐ Cost: '+cost : '';
+  document.getElementById('ttSps').textContent   = sps ? sps : '';
+  ttEl.style.display = 'block';
+  moveTT(e);
+}
+
+function moveTT(e) {
+  let x = e.clientX + 14, y = e.clientY - 10;
+  if(x + 210 > window.innerWidth) x = e.clientX - 220;
+  if(y + 80  > window.innerHeight) y = window.innerHeight - 90;
+  ttEl.style.left = x + 'px';
+  ttEl.style.top  = y + 'px';
+}
+
+function hideTooltip() { ttEl.style.display='none'; }
+document.addEventListener('mousemove', e => { if(ttEl.style.display==='block') moveTT(e); });
+
+// ── Ticker ──
+let tickerIdx = 0;
+function rotateTicker() {
+  tickerIdx = (tickerIdx+1) % TICKER_MSGS.length;
+  document.getElementById('tickerText').textContent = TICKER_MSGS[tickerIdx];
+}
+setInterval(rotateTicker, 25000);
+
+// ── Save / load ──
+function saveGame() {
+  try {
+    localStorage.setItem('starclicker_v2', JSON.stringify(G));
+    showToast('✦ Game saved ✦');
+  } catch(e) {}
+}
+
+function resetGame() {
+  if(!confirm('Reset your entire cosmic empire?')) return;
+  localStorage.removeItem('starclicker_v2');
+  G = defaultState();
+  document.getElementById('buildingsList').innerHTML='';
+  renderAll();
+  showToast('✦ The Big Bang restarts ✦');
+}
+
+// ── Game loop ──
+let last = performance.now();
+
+function renderAll() {
+  renderStats();
+  renderBuildings();
+  renderUpgrades();
   renderAchievements();
-  save();
 }
 
-/* CLICK */
-const clickBtn = document.getElementById('clickBtn');
-clickBtn.onclick = e => {
-  stars += perClick * (1 + prestige * 0.1);
-  for (let i = 0; i < 8; i++) {
-    const b = document.createElement('div');
-    b.className = 'burst';
-    b.style.setProperty('--x', (Math.random()*120-60) + 'px');
-    b.style.setProperty('--y', (Math.random()*120-60) + 'px');
-    clickBtn.appendChild(b);
-    setTimeout(() => b.remove(), 600);
+function gameLoop(now) {
+  const dt = (now - last) / 1000;
+  last = now;
+
+  G.sps = calcSps();
+  const gain = G.sps * dt;
+  if(gain > 0) {
+    G.stars += gain;
+    G.totalEarned += gain;
   }
-  update();
-};
 
-/* PRESTIGE */
-document.getElementById('prestigeBtn').onclick = () => {
-  const gain = Math.floor(stars / 10000);
-  if (gain > 0) {
-    prestige += gain;
-    stars = 0; perClick = 1; auto = 0;
-    update();
-  }
-};
+  renderStats();
+  renderBuildings();
 
-setInterval(() => {
-  stars += auto * (1 + prestige * 0.1);
-  update();
-}, 1000);
-
-function show(id) {
-  document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-  document.getElementById(id).classList.remove('hidden');
+  // upgrade visibility can change, re-render every 2s
+  requestAnimationFrame(gameLoop);
 }
 
-update();
+// upgrade re-render on interval to catch unlock conditions
+setInterval(renderUpgrades, 2000);
+setInterval(checkAchievements, 2000);
+setInterval(saveGame, 60000); // auto-save every minute
+
+renderAll();
+requestAnimationFrame(t => { last = t; gameLoop(t); });
 </script>
 </body>
 </html>
