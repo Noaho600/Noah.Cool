@@ -1,183 +1,384 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script defer data-domain="noah.cool" src="https://plausible.io/js/script.js"></script>
-  <link rel="icon" href="assets/favicon.png" type="image/png" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Noah.cool – Fun Projects, Games, and Experiments</title>
-<meta name="description" content="Explore fun games, interactive experiments, and creative web tools made by Noah.">
-<meta name="keywords" content="Noah, Noah.cool, experiments, games, interactive, fun, creative coding">
-<meta name="author" content="Noah O">
-  <link rel="icon" href="favicon.ico" />
+  <title>Noah.cool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;1,9..144,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f4efe6;
+      --ink: #18150f;
+      --accent: #e84c2b;
+      --muted: #7a7060;
+      --card-bg: #eee9df;
+      --card-hover: #e8e2d7;
+      --border: #d8d1c4;
+      --meta-bg: #eceae4;
+      --shadow: 0 2px 8px rgba(0,0,0,0.055);
+      --shadow-hover: 0 8px 28px rgba(0,0,0,0.10);
+    }
+
+    html { scroll-behavior: smooth; }
+
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #fff;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* grain */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999;
+    }
+
+    /* ── HERO ── */
+    .hero {
       text-align: center;
+      padding: 52px 24px 44px;
+      animation: fadeUp 0.5s ease both;
     }
 
-    header {
-      padding: 40px 20px 10px;
+    .hero-name {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(42px, 8vw, 58px);
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1;
+      color: var(--ink);
     }
 
-    header h1 {
-      font-size: 48px;
-      margin: 0;
+    .hero-name .dot { color: var(--accent); }
+
+    .hero-sub {
+      margin-top: 8px;
+      font-size: 15px;
+      color: var(--muted);
+      font-weight: 400;
     }
 
-    header p {
-      font-size: 16px;
-      color: #666;
-      margin: 8px 0 20px;
-    }
-
+    /* ── RANDOM BUTTON ── */
     .random-btn {
-      background: #222;
-      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-top: 24px;
+      background: var(--ink);
+      color: white;
       border: none;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-size: 16px;
+      border-radius: 10px;
+      padding: 13px 26px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
       cursor: pointer;
-      margin-bottom: 40px;
-      transition: background 0.2s;
-    }
-    .random-btn:hover {
-      background: #444;
+      transition: background 0.15s, transform 0.18s cubic-bezier(.22,.68,0,1.2), box-shadow 0.18s;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.14);
+      letter-spacing: 0.01em;
     }
 
+    .random-btn:hover {
+      background: #2a2520;
+      transform: scale(1.04);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+    }
+
+    .random-btn:active { transform: scale(0.97); }
+
+    .random-btn .dice {
+      font-size: 18px;
+      display: inline-block;
+      transition: transform 0.35s cubic-bezier(.22,.68,0,1.5);
+    }
+
+    .random-btn:hover .dice { transform: rotate(180deg) scale(1.15); }
+
+    /* ── MAIN CONTENT ── */
+    .main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 24px 0;
+    }
+
+    /* ── GAME GRID ── */
     .game-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      max-width: 1100px;
-      margin: 0 auto 60px;
-      padding: 0 20px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 0;
     }
 
-    .game-tile {
-      background: #f2f2f2;
-      border-radius: 12px;
-      padding: 40px 20px;
-      font-size: 20px;
-      font-weight: bold;
-      color: #222;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
+    @media (max-width: 640px) { .game-grid { grid-template-columns: 1fr; } }
+    @media (min-width: 641px) and (max-width: 820px) { .game-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .game-card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 32px 20px;
+      text-decoration: none;
+      color: var(--ink);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 6px;
+      min-height: 110px;
+      transition: background 0.15s, transform 0.2s cubic-bezier(.22,.68,0,1.2), box-shadow 0.2s;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
     }
 
-    .game-tile:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+    .game-card:hover {
+      background: var(--card-hover);
+      transform: translateY(-3px) scale(1.01);
+      box-shadow: var(--shadow-hover);
     }
 
-    .tile {
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  padding: 20px;
-  text-align: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  transition: transform 0.2s ease;
-  cursor: pointer;
-}
+    .game-card:active { transform: scale(0.98); }
 
-.tile:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-}
-
-    footer {
-      background: #fafafa;
-      padding: 40px 20px;
-      border-top: 1px solid #ddd;
-      text-align: left;
+    .game-card.soon {
+      opacity: 0.55;
+      cursor: default;
     }
 
-    footer {
-  text-align: center;
-  padding: 30px 20px;
-  color: #555;
-  font-size: 14px;
-  border-top: 1px solid #ddd;
-  margin-top: 40px;
-}
-
-    footer h2 {
-      margin-top: 0;
+    .game-card.soon:hover {
+      transform: none;
+      box-shadow: var(--shadow);
     }
 
-    .footer-sections {
+    .game-emoji {
+      font-size: 26px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .game-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.25;
+    }
+
+    .soon-badge {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: rgba(0,0,0,0.06);
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-top: 2px;
+    }
+
+    /* ── BOTTOM SECTION ── */
+    .bottom {
+      background: var(--meta-bg);
+      border-top: 1px solid var(--border);
+      margin-top: 64px;
+      padding: 40px 24px 32px;
+    }
+
+    .meta-grid {
+      max-width: 900px;
+      margin: 0 auto 28px;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 30px;
-      max-width: 1100px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 580px) { .meta-grid { grid-template-columns: 1fr; } }
+
+    .meta-tile {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px 20px;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      text-align: center;
+      transition: transform 0.18s cubic-bezier(.22,.68,0,1.2), box-shadow 0.18s, border-color 0.15s;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .meta-tile::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .meta-tile.experiments::before { background: #7c6ff7; }
+    .meta-tile.feedback::before    { background: #27ae60; }
+    .meta-tile.changelog::before   { background: #e67e22; }
+
+    .meta-tile:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .meta-tile.experiments:hover { border-color: #7c6ff7; }
+    .meta-tile.feedback:hover    { border-color: #27ae60; }
+    .meta-tile.changelog:hover   { border-color: #e67e22; }
+
+    .meta-tile-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    .meta-tile-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .footer-copy {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      max-width: 900px;
       margin: 0 auto;
     }
 
-    .footer-box {
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      padding: 20px;
+    /* ── FLASH ── */
+    .flash {
+      position: fixed; inset: 0;
+      background: var(--ink);
+      opacity: 0; pointer-events: none;
+      z-index: 10000;
+      transition: opacity 0.15s;
     }
+    .flash.go { opacity: 1; }
+
+    /* ── HIGHLIGHT PULSE ── */
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(232,76,43,0.5); }
+      60%  { box-shadow: 0 0 0 10px rgba(232,76,43,0); }
+      100% { box-shadow: 0 0 0 0 rgba(232,76,43,0); }
+    }
+
+    .game-card.highlight {
+      animation: pulse 0.7s ease 2;
+      border: 2px solid var(--accent);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .main { animation: fadeUp 0.55s ease both; animation-delay: 0.05s; }
+    .bottom { animation: fadeUp 0.55s ease both; animation-delay: 0.1s; }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Noah.Cool</h1>
-    <p>Games and Experiments by Noah</p>
-    <button class="random-btn" onclick="randomGame()">🎲 Random Game</button>
+
+  <!-- HERO -->
+  <header class="hero">
+    <h1 class="hero-name">Noah<span class="dot">.</span>Cool</h1>
+    <p class="hero-sub">Games and Experiments by Noah</p>
+    <button class="random-btn" onclick="goRandom()">
+      <span class="dice">🎲</span> Random Game
+    </button>
   </header>
 
-  <main class="game-grid">
-    <div class="game-tile" onclick="goTo('games/rocks.html')">🪨 Rocks</div>
-    <div class="game-tile" onclick="goTo('universe.html')">Star Clicker - Soon</div>
-    <div class="game-tile" onclick="goTo('games/love-calculator.html')"><3 Love Calculator</div>
-    <div class="game-tile" onclick="goTo('games/farts.html')">💨 Fart Machine</div>
-    <div class="game-tile" onclick="goTo('games/spend-elon-musks.html')">Spend Elon Musk Money</div>
-    <div class="game-tile" onclick="goTo('games/powerball.html')">Win the Powerball</div>
-    <div class="game-tile" onclick="goTo('games/magic9ball.html')">Magical 9 Ball</div>
-    <!-- Add more tiles here -->
+  <!-- GAMES -->
+  <main class="main">
+    <div class="game-grid">
+
+      <a class="game-card" href="#" data-title="Rocks">
+        <div class="game-emoji">🪨</div>
+        <div class="game-title">Rocks</div>
+      </a>
+
+      <a class="game-card soon" href="games/starclicker.html" data-title="Star Clicker">
+        <div class="game-emoji">⭐</div>
+        <div class="game-title">Star Clicker</div>
+        <span class="soon-badge">Soon</span>
+      </a>
+
+      <a class="game-card" href="#" data-title="Love Calculator">
+        <div class="game-emoji">❤️</div>
+        <div class="game-title">&lt;3 Love Calculator</div>
+      </a>
+
+      <a class="game-card" href="#" data-title="Fart Machine">
+        <div class="game-emoji">💨</div>
+        <div class="game-title">Fart Machine</div>
+      </a>
+
+      <a class="game-card" href="#" data-title="Spend Elon Musk Money">
+        <div class="game-emoji">💸</div>
+        <div class="game-title">Spend Elon Musk Money</div>
+      </a>
+
+      <a class="game-card" href="#" data-title="Win the Powerball">
+        <div class="game-emoji">🎱</div>
+        <div class="game-title">Win the Powerball</div>
+      </a>
+
+      <a class="game-card" href="#" data-title="Magical 9 Ball">
+        <div class="game-emoji">🔮</div>
+        <div class="game-title">Magical 9 Ball</div>
+      </a>
+
+    </div>
   </main>
 
-  <footer>
-    <div class="footer-sections">
-<div class="tile" onclick="window.location.href='experiments.html'">
-  <h2>Experiments</h2>
-  <p>Try out new ideas and prototypes.</p>
-</div>
+  <!-- BOTTOM META + FOOTER -->
+  <div class="bottom">
+    <div class="meta-grid">
 
-<div class="tile" onclick="window.location.href='feedback.html'">
-  <h2>Feedback</h2>
-  <p>Share your thoughts and suggestions.</p>
-</div>
+      <a class="meta-tile experiments" href="experiments.html">
+        <div class="meta-tile-title">Experiments</div>
+        <div class="meta-tile-desc">Try out new ideas and prototypes.</div>
+      </a>
 
-<div class="tile" onclick="window.location.href='changelog2.html'">
-  <h2>Changelog</h2>
-  <p>See what’s new and updated.</p>
-</div>
+      <a class="meta-tile feedback" href="feedback.html">
+        <div class="meta-tile-title">Feedback</div>
+        <div class="meta-tile-desc">Share your thoughts and suggestions.</div>
+      </a>
+
+      <a class="meta-tile changelog" href="changelog.html">
+        <div class="meta-tile-title">Changelog</div>
+        <div class="meta-tile-desc">See what's new and updated.</div>
+      </a>
+
     </div>
-  <p>© 2026 Noah.Cool — Inspired by Neal.fun</p>
-  </footer>
+    <div class="footer-copy">© 2026 Noah.Cool — Inspired by Neal.fun</div>
+  </div>
+
+  <div class="flash" id="flash"></div>
 
   <script>
-    function goTo(page) {
-      window.location.href = page;
-    }
+    // Only pick cards that aren't "soon"
+    function goRandom() {
+      const cards = [...document.querySelectorAll('.game-card:not(.soon)')];
+      const pick  = cards[Math.floor(Math.random() * cards.length)];
+      const flash = document.getElementById('flash');
 
-    function randomGame() {
-      const games = [
-        "games/rocks.html",
-        "games/spend-elon-musks.html",
-        "games/love-calculator.html",
-        "games/farts.html",
-        "games/powerball.html"
-      ];
-      const pick = games[Math.floor(Math.random() * games.length)];
-      window.location.href = pick;
+      flash.classList.add('go');
+      setTimeout(() => {
+        flash.classList.remove('go');
+        pick.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        pick.classList.add('highlight');
+        setTimeout(() => pick.classList.remove('highlight'), 1500);
+      }, 250);
     }
   </script>
+
 </body>
 </html>
