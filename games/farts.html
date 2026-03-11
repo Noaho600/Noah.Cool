@@ -1,108 +1,653 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Fart Machine - Noah.Cool</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fart Machine — Noah.cool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f7fa;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #fdf8f0;
+      --bg2:      #f5eed8;
+      --yellow:   #f5c842;
+      --green:    #8fbe44;
+      --green2:   #6da832;
+      --stink:    #b8d436;
+      --brown:    #7a4a22;
+      --brown2:   #5c3318;
+      --ink:      #2a1f0e;
+      --muted:    #8a7355;
+      --border:   #ddd0b0;
+      --red:      #e84c2b;
+      --cloud:    rgba(160,200,20,0.18);
     }
 
-    header {
-      padding: 20px;
-      font-size: 24px;
-      font-weight: bold;
-      color: #333;
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
     }
 
-    .container {
-      max-width: 800px;
-      width: 90%;
-      background: white;
+    /* grain */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999;
+    }
+
+    /* ── gas cloud particles ── */
+    #cloudCanvas {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 2;
+    }
+
+    /* ── topbar ── */
+    .topbar {
+      position: relative; z-index: 10;
+      padding: 18px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--muted);
+      text-decoration: none; letter-spacing: 0.06em;
+      background: rgba(255,255,255,0.75);
+      border: 1px solid var(--border);
+      padding: 7px 14px; border-radius: 20px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .back-btn:hover { color: var(--ink); background: white; }
+
+    /* ── score badge ── */
+    .score-badge {
+      font-family: 'Fredoka One', cursive;
+      font-size: 15px;
+      color: var(--brown);
+      background: var(--yellow);
+      border: 2px solid var(--brown);
       border-radius: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      padding: 30px;
-      margin: 20px;
+      padding: 5px 16px;
+      letter-spacing: 0.03em;
+      box-shadow: 2px 3px 0 var(--brown2);
+      transition: transform 0.15s cubic-bezier(.22,.68,0,1.5);
+    }
+    .score-badge.pop { transform: scale(1.2) rotate(-3deg); }
+
+    /* ── page layout ── */
+    .page {
+      position: relative; z-index: 5;
+      display: flex; flex-direction: column;
+      align-items: center;
+      padding: 10px 20px 60px;
+      gap: 28px;
+    }
+
+    /* ── hero title ── */
+    .hero {
+      text-align: center;
+      padding: 8px 0 0;
+    }
+
+    .hero-emoji {
+      font-size: 52px;
+      display: block;
+      animation: wobble 2.5s ease-in-out infinite;
+      line-height: 1;
+      margin-bottom: 6px;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.12));
+    }
+
+    @keyframes wobble {
+      0%,100% { transform: rotate(-4deg) scale(1);   }
+      25%      { transform: rotate(5deg)  scale(1.06); }
+      50%      { transform: rotate(-3deg) scale(0.97); }
+      75%      { transform: rotate(4deg)  scale(1.04); }
+    }
+
+    .hero-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(38px, 8vw, 60px);
+      color: var(--brown);
+      letter-spacing: 1px;
+      line-height: 1;
+      text-shadow: 3px 4px 0 var(--yellow), 5px 6px 0 rgba(0,0,0,0.08);
+    }
+
+    .hero-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 6px;
+      font-weight: 300;
+    }
+
+    /* ── big fart button ── */
+    .big-btn-wrap {
+      position: relative;
+    }
+
+    .big-btn {
+      font-family: 'Fredoka One', cursive;
+      font-size: 26px;
+      color: white;
+      background: linear-gradient(160deg, var(--green) 0%, var(--green2) 100%);
+      border: 3px solid var(--brown);
+      border-radius: 50%;
+      width: 160px; height: 160px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; flex-direction: column;
+      gap: 4px;
+      box-shadow: 4px 6px 0 var(--brown2), 0 12px 32px rgba(100,160,30,0.25);
+      transition: transform 0.1s cubic-bezier(.22,.68,0,1.5), box-shadow 0.1s;
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.5px;
+      text-shadow: 1px 2px 0 rgba(0,0,0,0.2);
+    }
+
+    .big-btn::before {
+      content: '';
+      position: absolute;
+      top: 12%; left: 15%;
+      width: 30%; height: 20%;
+      background: rgba(255,255,255,0.25);
+      border-radius: 50%;
+      transform: rotate(-20deg);
+    }
+
+    .big-btn:hover {
+      transform: translateY(-3px) scale(1.04);
+      box-shadow: 6px 9px 0 var(--brown2), 0 16px 40px rgba(100,160,30,0.3);
+    }
+
+    .big-btn:active {
+      transform: translateY(3px) scale(0.95);
+      box-shadow: 1px 2px 0 var(--brown2);
+    }
+
+    .big-btn-sub { font-size: 13px; opacity: 0.85; font-family: 'DM Sans', sans-serif; font-weight: 500; }
+
+    /* ── fart type grid ── */
+    .types-label {
+      font-family: 'Fredoka One', cursive;
+      font-size: 16px;
+      color: var(--muted);
+      letter-spacing: 0.5px;
       text-align: center;
     }
 
-    h1 {
-      margin-bottom: 20px;
-      color: #444;
-    }
-
-    .fart-grid {
+    .types-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 15px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      width: 100%;
+      max-width: 480px;
     }
 
-    .fart-button {
-      background: #4cafef;
-      border: none;
-      border-radius: 15px;
-      padding: 20px;
-      font-size: 16px;
-      color: white;
+    @media (max-width: 400px) { .types-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .type-btn {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 10px 12px;
       cursor: pointer;
-      transition: transform 0.15s, background 0.15s;
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
+      font-family: 'DM Sans', sans-serif;
+      box-shadow: 2px 3px 0 var(--border);
+      transition: transform 0.12s cubic-bezier(.22,.68,0,1.5), box-shadow 0.12s, border-color 0.12s, background 0.12s;
+      user-select: none;
+      position: relative;
     }
 
-    .fart-button:hover {
-      background: #2f8ad8;
-      transform: scale(1.05);
+    .type-btn:hover {
+      border-color: var(--green);
+      background: #f8fde8;
+      transform: translateY(-2px);
+      box-shadow: 2px 5px 0 var(--green2);
     }
 
-    footer {
-      margin: 40px 0 20px;
+    .type-btn:active {
+      transform: translateY(2px) scale(0.96);
+      box-shadow: 0 1px 0 var(--border);
+    }
+
+    .type-btn.active-flash {
+      background: #edfaba;
+      border-color: var(--stink);
+    }
+
+    .type-emoji { font-size: 26px; line-height: 1; }
+
+    .type-name {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--brown);
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+
+    .type-count {
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    /* ── streak display ── */
+    .streak-bar {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Fredoka One', cursive;
       font-size: 14px;
-      color: #777;
+      color: var(--muted);
+    }
+
+    .streak-pills { display: flex; gap: 4px; }
+    .streak-pill {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: background 0.2s, transform 0.2s;
+    }
+    .streak-pill.lit {
+      background: var(--yellow);
+      border: 1.5px solid var(--brown);
+      transform: scale(1.1);
+      box-shadow: 0 1px 4px rgba(200,150,0,0.3);
+    }
+
+    /* ── last fart label ── */
+    .last-fart {
+      font-family: 'Fredoka One', cursive;
+      font-size: 15px;
+      color: var(--brown2);
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 7px 20px;
+      letter-spacing: 0.3px;
+      min-height: 36px;
+      text-align: center;
+      min-width: 220px;
+      transition: opacity 0.3s;
+    }
+
+    /* ── gas cloud ripple on big btn ── */
+    @keyframes ripple {
+      0%   { transform: scale(0.3); opacity: 0.7; }
+      100% { transform: scale(2.8); opacity: 0; }
+    }
+
+    .ripple-ring {
+      position: absolute;
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      border: 3px solid var(--stink);
+      pointer-events: none;
+      animation: ripple 0.7s ease-out forwards;
+      top: 0; left: 0;
     }
   </style>
 </head>
 <body>
-  <header>Noah.Cool</header>
 
-  <div class="container">
-    <h1>💨 The Fart Machine</h1>
-    <p>Press a button below to unleash the comedy power!</p>
+<canvas id="cloudCanvas"></canvas>
 
-    <div class="fart-grid">
-      <button class="fart-button" onclick="playFart(0)">Classic</button>
-      <button class="fart-button" onclick="playFart(1)">Long</button>
-      <button class="fart-button" onclick="playFart(2)">Wet</button>
-      <button class="fart-button" onclick="playFart(3)">Explosion</button>
-      <button class="fart-button" onclick="playFart(4)">Proud</button>
-      <button class="fart-button" onclick="playFart(5)">Burp</button>
-      <button class="fart-button" onclick="playfart(6)">Spooky Dookie</button>
-    </div>
+<div class="topbar">
+  <a class="back-btn" href="index.html">← noah.cool</a>
+  <div class="score-badge" id="scoreBadge">💨 0 farts</div>
+</div>
+
+<div class="page">
+  <div class="hero">
+    <span class="hero-emoji">💨</span>
+    <h1 class="hero-title">Fart Machine</h1>
+    <p class="hero-sub">100% scientifically accurate</p>
   </div>
 
-  <footer>
-    © 2025 Noah.Cool · <a href="../index.html">Back to Home</a>
-  </footer>
+  <div class="last-fart" id="lastFart">tap a button to rip one</div>
 
-  <script>
-    const farts = [
-      "fart1.mp3",
-      "fart2.mp3",
-      "wet.mp3",
-      "proud.mp3",
-      "burp.mp3",
-      "wet.mp3"
-    ];
+  <div class="big-btn-wrap" id="bigBtnWrap">
+    <button class="big-btn" id="bigBtn" onclick="rip('random')">
+      <span style="font-size:38px">💨</span>
+      <span>RIIIP</span>
+      <span class="big-btn-sub">random fart</span>
+    </button>
+  </div>
 
-    function playFart(index) {
-      const audio = new Audio(farts[index]);
-      audio.play();
+  <div class="streak-bar">
+    <span>streak</span>
+    <div class="streak-pills" id="streakPills"></div>
+    <span id="streakLabel">0</span>
+  </div>
+
+  <div class="types-label">— choose your weapon —</div>
+
+  <div class="types-grid" id="typesGrid"></div>
+</div>
+
+<script>
+// ── Fart definitions ──
+const FARTS = [
+  { id: 'squeaky',  name: 'The Squeaky',   emoji: '🐭', desc: 'tiny but proud',        color: '#ffe066', freq: 680, duration: 0.18, type: 'squeak'   },
+  { id: 'classic',  name: 'The Classic',   emoji: '💩', desc: 'never gets old',         color: '#c8a060', freq: 120, duration: 0.55, type: 'classic'  },
+  { id: 'thunder',  name: 'The Thunder',   emoji: '⚡', desc: 'rattle the windows',     color: '#8080ff', freq: 55,  duration: 1.1,  type: 'thunder'  },
+  { id: 'silentdead', name: 'Silent & Deadly', emoji: '☠️', desc: 'you\'ll smell it',  color: '#b8d436', freq: 90,  duration: 0.08, type: 'silent'   },
+  { id: 'bubbles',  name: 'The Bubbles',   emoji: '🫧', desc: 'wet n wiggly',           color: '#60c8f0', freq: 200, duration: 0.7,  type: 'bubbles'  },
+  { id: 'trumpet',  name: 'The Trumpet',   emoji: '🎺', desc: 'musical genius',         color: '#f5c842', freq: 160, duration: 0.9,  type: 'trumpet'  },
+];
+
+const counts = {};
+FARTS.forEach(f => counts[f.id] = 0);
+
+let totalFarts = 0;
+let streak     = 0;
+const MAX_STREAK = 7;
+
+// ── Build type buttons ──
+const grid = document.getElementById('typesGrid');
+FARTS.forEach(f => {
+  const btn = document.createElement('button');
+  btn.className  = 'type-btn';
+  btn.id         = 'btn-' + f.id;
+  btn.innerHTML  = `
+    <span class="type-emoji">${f.emoji}</span>
+    <span class="type-name">${f.name}</span>
+    <span class="type-count" id="count-${f.id}">0×</span>
+  `;
+  btn.onclick = () => rip(f.id);
+  grid.appendChild(btn);
+});
+
+// ── Build streak pills ──
+const pillsEl = document.getElementById('streakPills');
+for (let i = 0; i < MAX_STREAK; i++) {
+  const p = document.createElement('div');
+  p.className = 'streak-pill';
+  p.id = 'pill-' + i;
+  pillsEl.appendChild(p);
+}
+
+// ── Audio engine ──
+let audioCtx;
+function ac() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playFart(type, freq, duration) {
+  const ctx = ac();
+  const now = ctx.currentTime;
+
+  const masterGain = ctx.createGain();
+  masterGain.gain.setValueAtTime(0.45, now);
+  masterGain.connect(ctx.destination);
+
+  if (type === 'squeak') {
+    const osc = ctx.createOscillator();
+    const g   = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(freq, now);
+    osc.frequency.linearRampToValueAtTime(freq * 1.8, now + duration * 0.3);
+    osc.frequency.linearRampToValueAtTime(freq * 0.6, now + duration);
+    g.gain.setValueAtTime(0.3, now);
+    g.gain.linearRampToValueAtTime(0, now + duration);
+    const filt = ctx.createBiquadFilter();
+    filt.type = 'bandpass'; filt.frequency.value = freq * 1.2; filt.Q.value = 3;
+    osc.connect(filt); filt.connect(g); g.connect(masterGain);
+    osc.start(now); osc.stop(now + duration);
+
+  } else if (type === 'classic') {
+    const buf  = ctx.createBuffer(1, ctx.sampleRate * duration, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) {
+      const t = i / ctx.sampleRate;
+      const env = Math.sin(Math.PI * t / duration) * Math.exp(-t * 2.5);
+      data[i] = (Math.random() * 2 - 1) * env * 0.9;
     }
-  </script>
+    const src  = ctx.createBufferSource();
+    src.buffer = buf;
+    const filt = ctx.createBiquadFilter();
+    filt.type = 'lowpass'; filt.frequency.value = freq * 1.5;
+    src.connect(filt); filt.connect(masterGain);
+    src.start(now);
+
+  } else if (type === 'thunder') {
+    // layered noise + low oscillator
+    const buf  = ctx.createBuffer(1, ctx.sampleRate * duration, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) {
+      const t   = i / ctx.sampleRate;
+      const env = Math.pow(1 - t / duration, 1.5);
+      data[i]   = (Math.random() * 2 - 1) * env;
+    }
+    const src  = ctx.createBufferSource(); src.buffer = buf;
+    const filt = ctx.createBiquadFilter();
+    filt.type = 'lowpass'; filt.frequency.value = 180;
+    const g    = ctx.createGain(); g.gain.value = 0.8;
+    src.connect(filt); filt.connect(g); g.connect(masterGain);
+    src.start(now);
+
+    // deep rumble osc
+    const osc = ctx.createOscillator();
+    const og  = ctx.createGain();
+    osc.type = 'sine'; osc.frequency.value = freq;
+    og.gain.setValueAtTime(0.6, now);
+    og.gain.linearRampToValueAtTime(0, now + duration);
+    osc.connect(og); og.connect(masterGain);
+    osc.start(now); osc.stop(now + duration);
+
+  } else if (type === 'silent') {
+    // almost nothing — just a tiny puff
+    const osc = ctx.createOscillator();
+    const g   = ctx.createGain();
+    osc.type = 'sine'; osc.frequency.value = 80;
+    g.gain.setValueAtTime(0.05, now);
+    g.gain.linearRampToValueAtTime(0, now + 0.12);
+    osc.connect(g); g.connect(masterGain);
+    osc.start(now); osc.stop(now + 0.12);
+
+  } else if (type === 'bubbles') {
+    // rapid pitch wobble
+    const numBubbles = 5 + Math.floor(Math.random() * 4);
+    for (let b = 0; b < numBubbles; b++) {
+      const delay = b * (duration / numBubbles) * 0.9;
+      const osc   = ctx.createOscillator();
+      const g     = ctx.createGain();
+      const bd    = 0.06 + Math.random() * 0.06;
+      const bf    = freq * (0.8 + Math.random() * 0.8);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(bf, now + delay);
+      osc.frequency.linearRampToValueAtTime(bf * 0.5, now + delay + bd);
+      g.gain.setValueAtTime(0, now + delay);
+      g.gain.linearRampToValueAtTime(0.25, now + delay + 0.01);
+      g.gain.linearRampToValueAtTime(0, now + delay + bd);
+      osc.connect(g); g.connect(masterGain);
+      osc.start(now + delay); osc.stop(now + delay + bd + 0.02);
+    }
+
+  } else if (type === 'trumpet') {
+    // melodic fart — hits a little musical phrase
+    const notes = [freq, freq * 1.12, freq * 0.9, freq * 1.25, freq * 0.75];
+    const noteLen = duration / notes.length;
+    notes.forEach((nf, i) => {
+      const osc = ctx.createOscillator();
+      const g   = ctx.createGain();
+      osc.type = 'sawtooth'; osc.frequency.value = nf;
+      const t0 = now + i * noteLen;
+      g.gain.setValueAtTime(0, t0);
+      g.gain.linearRampToValueAtTime(0.28, t0 + 0.02);
+      g.gain.linearRampToValueAtTime(0.2, t0 + noteLen * 0.7);
+      g.gain.linearRampToValueAtTime(0, t0 + noteLen);
+      const filt = ctx.createBiquadFilter();
+      filt.type = 'bandpass'; filt.frequency.value = nf * 1.5; filt.Q.value = 2;
+      osc.connect(filt); filt.connect(g); g.connect(masterGain);
+      osc.start(t0); osc.stop(t0 + noteLen + 0.05);
+    });
+  }
+}
+
+// ── Gas cloud particles ──
+const cloudCanvas = document.getElementById('cloudCanvas');
+const cctx        = cloudCanvas.getContext('2d');
+cloudCanvas.width  = window.innerWidth;
+cloudCanvas.height = window.innerHeight;
+window.addEventListener('resize', () => {
+  cloudCanvas.width  = window.innerWidth;
+  cloudCanvas.height = window.innerHeight;
+});
+
+let particles = [];
+
+function spawnCloud(x, y, intensity) {
+  const count = 6 + Math.floor(intensity * 10);
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x, y,
+      vx: (Math.random() - 0.5) * 3.5 * intensity,
+      vy: -(1.5 + Math.random() * 3) * intensity,
+      r:  20 + Math.random() * 30,
+      life: 1,
+      decay: 0.008 + Math.random() * 0.008,
+      hue:  80 + Math.floor(Math.random() * 40),
+      sat:  60 + Math.floor(Math.random() * 30),
+    });
+  }
+}
+
+function drawClouds() {
+  cctx.clearRect(0, 0, cloudCanvas.width, cloudCanvas.height);
+  particles = particles.filter(p => p.life > 0);
+  particles.forEach(p => {
+    p.x    += p.vx;
+    p.y    += p.vy;
+    p.vy   *= 0.98;
+    p.vx   *= 0.98;
+    p.r    *= 1.015;
+    p.life -= p.decay;
+
+    const alpha = p.life * 0.35;
+    cctx.beginPath();
+    cctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    cctx.fillStyle = `hsla(${p.hue}, ${p.sat}%, 55%, ${alpha})`;
+    cctx.fill();
+  });
+  requestAnimationFrame(drawClouds);
+}
+drawClouds();
+
+// ── Ripple on big button ──
+function addRipple() {
+  const wrap = document.getElementById('bigBtnWrap');
+  const ring = document.createElement('div');
+  ring.className = 'ripple-ring';
+  wrap.appendChild(ring);
+  setTimeout(() => ring.remove(), 720);
+}
+
+// ── Last fart messages ──
+const descriptions = {
+  squeaky:   ['That was... dainty.', 'Tiny but brave.', 'Like a mouse sneezed.', 'High-pitched heroism.'],
+  classic:   ['A timeless classic.', 'Chef\'s kiss. Literally.', 'Shakespeare would be proud.', 'Pure poetry.'],
+  thunder:   ['SEISMIC ACTIVITY DETECTED.', 'Evacuation advised.', 'That registered on the Richter scale.', 'Godlike.'],
+  silentdead:['...', '(the room gets quieter)', 'No sound. Pure chaos.', 'Everyone knows. No one speaks.'],
+  bubbles:   ['Effervescent.', 'Like a Jacuzzi, but worse.', 'Bubbly with notes of regret.', 'Aquatic.'],
+  trumpet:   ['A symphony of the soul.', 'Carnegie Hall WHEN?', 'Melodious. Haunting.', 'Standing ovation.'],
+};
+
+function getRandDesc(id) {
+  const arr = descriptions[id];
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// ── Main rip function ──
+function rip(id) {
+  let fart;
+  if (id === 'random') {
+    fart = FARTS[Math.floor(Math.random() * FARTS.length)];
+  } else {
+    fart = FARTS.find(f => f.id === id);
+  }
+  if (!fart) return;
+
+  // Play sound
+  playFart(fart.type, fart.freq, fart.duration);
+
+  // Cloud burst from big button
+  const btn = document.getElementById('bigBtn');
+  const rect = btn.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const intensity = fart.type === 'thunder' ? 1.8 : fart.type === 'silent' ? 0.3 : 1;
+  spawnCloud(cx, cy, intensity);
+
+  // Ripple
+  if (id === 'random' || id) addRipple();
+
+  // Flash type button
+  const typeBtn = document.getElementById('btn-' + fart.id);
+  if (typeBtn) {
+    typeBtn.classList.add('active-flash');
+    setTimeout(() => typeBtn.classList.remove('active-flash'), 280);
+  }
+
+  // Update counts
+  counts[fart.id]++;
+  totalFarts++;
+  streak = Math.min(streak + 1, MAX_STREAK);
+
+  // Update count label
+  const countEl = document.getElementById('count-' + fart.id);
+  if (countEl) countEl.textContent = counts[fart.id] + '×';
+
+  // Score badge
+  const badge = document.getElementById('scoreBadge');
+  badge.textContent = `💨 ${totalFarts} fart${totalFarts !== 1 ? 's' : ''}`;
+  badge.classList.add('pop');
+  setTimeout(() => badge.classList.remove('pop'), 220);
+
+  // Streak pills
+  for (let i = 0; i < MAX_STREAK; i++) {
+    const pill = document.getElementById('pill-' + i);
+    pill.classList.toggle('lit', i < streak);
+  }
+  document.getElementById('streakLabel').textContent = streak;
+
+  // Reset streak after pause
+  clearTimeout(window._streakTimer);
+  window._streakTimer = setTimeout(() => {
+    streak = 0;
+    for (let i = 0; i < MAX_STREAK; i++)
+      document.getElementById('pill-' + i).classList.remove('lit');
+    document.getElementById('streakLabel').textContent = 0;
+  }, 4000);
+
+  // Last fart label
+  const lf = document.getElementById('lastFart');
+  lf.textContent = `${fart.emoji} ${fart.name} — ${getRandDesc(fart.id)}`;
+  lf.style.opacity = '0';
+  requestAnimationFrame(() => {
+    lf.style.transition = 'none';
+    lf.style.opacity = '0';
+    requestAnimationFrame(() => {
+      lf.style.transition = 'opacity 0.25s';
+      lf.style.opacity = '1';
+    });
+  });
+}
+
+// keyboard: spacebar = random fart
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space' && e.target.tagName !== 'BUTTON') {
+    e.preventDefault();
+    rip('random');
+  }
+});
+</script>
 </body>
 </html>
