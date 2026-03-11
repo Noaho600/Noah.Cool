@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Love Calculator — Noah.cool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #fdf5f0;
+      --bg2:       #faeae3;
+      --rose:      #e8604a;
+      --rose-lt:   #f2907e;
+      --rose-pale: #fcd5cb;
+      --cream:     #fdf0e8;
+      --ink:       #2d1a14;
+      --muted:     #a07060;
+      --border:    #f0d0c4;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── grain ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.028'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999;
+    }
+
+    /* ── floating hearts bg ── */
+    .hearts-bg {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .heart-float {
+      position: absolute;
+      bottom: -60px;
+      font-size: 18px;
+      opacity: 0;
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+      0%   { opacity: 0;    transform: translateY(0)   rotate(0deg); }
+      8%   { opacity: 0.35; }
+      85%  { opacity: 0.18; }
+      100% { opacity: 0;    transform: translateY(-110vh) rotate(40deg); }
+    }
+
+    /* ── top bar ── */
+    .topbar {
+      position: relative; z-index: 10;
+      padding: 20px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--muted);
+      text-decoration: none; letter-spacing: 0.06em;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(6px);
+      border: 1px solid var(--border);
+      padding: 7px 14px; border-radius: 20px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .back-btn:hover { color: var(--ink); background: white; }
+
+    .site-tag {
+      font-family: 'Playfair Display', serif;
+      font-size: 14px; font-style: italic;
+      color: var(--muted);
+    }
+
+    /* ── main card ── */
+    .page {
+      position: relative; z-index: 5;
+      min-height: calc(100vh - 72px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 20px 60px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 52px 48px 48px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow:
+        0 2px 0 var(--border),
+        0 8px 40px rgba(200,80,60,0.08),
+        0 2px 8px rgba(0,0,0,0.04);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* decorative top arch */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 6px;
+      background: linear-gradient(90deg, var(--rose-pale), var(--rose-lt), var(--rose), var(--rose-lt), var(--rose-pale));
+    }
+
+    /* ── header ── */
+    .card-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .card-icon {
+      font-size: 40px;
+      display: block;
+      margin-bottom: 12px;
+      animation: heartbeat 1.8s ease-in-out infinite;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      14%       { transform: scale(1.15); }
+      28%       { transform: scale(1); }
+      42%       { transform: scale(1.1); }
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+      color: var(--ink);
+    }
+
+    .card-title span { color: var(--rose); }
+
+    .card-subtitle {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 300;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── form ── */
+    .form { display: flex; flex-direction: column; gap: 16px; }
+
+    .field-wrap {
+      position: relative;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 7px;
+      font-weight: 500;
+    }
+
+    .field {
+      width: 100%;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px 14px 44px;
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+
+    .field:focus {
+      border-color: var(--rose-lt);
+      background: white;
+      box-shadow: 0 0 0 4px rgba(232,96,74,0.1);
+    }
+
+    .field::placeholder {
+      color: var(--rose-pale);
+      font-style: italic;
+    }
+
+    .field-icon {
+      position: absolute;
+      left: 14px;
+      bottom: 14px;
+      font-size: 18px;
+      pointer-events: none;
+    }
+
+    .connector {
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 13px;
+      font-style: italic;
+      color: var(--rose-lt);
+      margin: -4px 0;
+    }
+
+    .calc-btn {
+      margin-top: 8px;
+      width: 100%;
+      background: var(--rose);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-style: italic;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.15s cubic-bezier(.22,.68,0,1.5), box-shadow 0.15s;
+      box-shadow: 0 4px 16px rgba(232,96,74,0.3);
+      letter-spacing: 0.01em;
+    }
+
+    .calc-btn:hover {
+      background: #d44f3a;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(232,96,74,0.35);
+    }
+
+    .calc-btn:active { transform: scale(0.97) translateY(0); }
+
+    /* ── result ── */
+    .result {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 6px;
+    }
+
+    .result.show { display: flex; }
+
+    .result-names {
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .result-names strong { color: var(--rose); font-style: normal; }
+
+    /* big percentage ring */
+    .ring-wrap {
+      position: relative;
+      width: 180px; height: 180px;
+      margin: 8px 0 4px;
+    }
+
+    .ring-svg {
+      width: 180px; height: 180px;
+      transform: rotate(-90deg);
+    }
+
+    .ring-track {
+      fill: none;
+      stroke: var(--rose-pale);
+      stroke-width: 12;
+    }
+
+    .ring-fill {
+      fill: none;
+      stroke: var(--rose);
+      stroke-width: 12;
+      stroke-linecap: round;
+      stroke-dasharray: 502;
+      stroke-dashoffset: 502;
+      transition: stroke-dashoffset 1.4s cubic-bezier(.22,.68,0,1.1);
+    }
+
+    .ring-fill.glow {
+      filter: drop-shadow(0 0 6px rgba(232,96,74,0.5));
+    }
+
+    .ring-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pct-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 52px;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--rose);
+      letter-spacing: -2px;
+    }
+
+    .pct-sym {
+      font-size: 22px;
+      color: var(--rose-lt);
+      font-family: 'Playfair Display', serif;
+    }
+
+    .result-verdict {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-top: 8px;
+      line-height: 1.2;
+    }
+
+    .result-message {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 340px;
+      font-weight: 300;
+    }
+
+    .result-hearts {
+      font-size: 22px;
+      letter-spacing: 4px;
+      margin: 4px 0;
+    }
+
+    .try-again {
+      margin-top: 20px;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 11px 28px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+      letter-spacing: 0.04em;
+    }
+
+    .try-again:hover {
+      border-color: var(--rose-lt);
+      color: var(--rose);
+      background: var(--bg);
+    }
+
+    /* ── confetti burst ── */
+    .confetti-canvas {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* ── responsive ── */
+    @media (max-width: 560px) {
+      .card { padding: 40px 24px 36px; border-radius: 20px; }
+      .card-title { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- floating hearts bg -->
+  <div class="hearts-bg" id="heartsBg"></div>
+
+  <!-- confetti canvas -->
+  <canvas class="confetti-canvas" id="confettiCanvas"></canvas>
+
+  <!-- topbar -->
+  <div class="topbar">
+    <a class="back-btn" href="index.html">← noah.cool</a>
+    <span class="site-tag">noah.cool</span>
+  </div>
+
+  <!-- main -->
+  <div class="page">
+    <div class="card">
+
+      <!-- form view -->
+      <div id="formView">
+        <div class="card-header">
+          <span class="card-icon">❤️</span>
+          <h1 class="card-title">Love <span>Calculator</span></h1>
+          <p class="card-subtitle">the universe already knows — let's find out</p>
+        </div>
+
+        <div class="form">
+          <div>
+            <label class="field-label">your name</label>
+            <div class="field-wrap">
+              <span class="field-icon">🌸</span>
+              <input class="field" id="name1" type="text" placeholder="e.g. Romeo" autocomplete="off" spellcheck="false"/>
+            </div>
+          </div>
+
+          <div class="connector">& forever &</div>
+
+          <div>
+            <label class="field-label">their name</label>
+            <div class="field-wrap">
+              <span class="field-icon">💫</span>
+              <input class="field" id="name2" type="text" placeholder="e.g. Juliet" autocomplete="off" spellcheck="false"/>
+            </div>
+          </div>
+
+          <button class="calc-btn" onclick="calculate()">Calculate our love ❤</button>
+        </div>
+      </div>
+
+      <!-- result view -->
+      <div class="result" id="resultView">
+        <div class="result-names" id="resultNames"></div>
+
+        <div class="ring-wrap">
+          <svg class="ring-svg" viewBox="0 0 180 180">
+            <circle class="ring-track" cx="90" cy="90" r="80"/>
+            <circle class="ring-fill" id="ringFill" cx="90" cy="90" r="80"/>
+          </svg>
+          <div class="ring-center">
+            <span class="pct-num" id="pctNum">0</span>
+            <span class="pct-sym">%</span>
+          </div>
+        </div>
+
+        <div class="result-hearts" id="resultHearts"></div>
+        <div class="result-verdict" id="resultVerdict"></div>
+        <div class="result-message" id="resultMessage"></div>
+
+        <button class="try-again" onclick="tryAgain()">try again ↩</button>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+// ── Floating hearts ──
+(function() {
+  const container = document.getElementById('heartsBg');
+  const emojis = ['❤️','🌸','💕','✨','🌷','💗','🌺'];
+  for (let i = 0; i < 18; i++) {
+    const h = document.createElement('span');
+    h.className = 'heart-float';
+    h.textContent = emojis[i % emojis.length];
+    h.style.left     = (Math.random() * 100) + '%';
+    h.style.fontSize = (12 + Math.random() * 16) + 'px';
+    h.style.animationDuration  = (14 + Math.random() * 18) + 's';
+    h.style.animationDelay     = -(Math.random() * 30) + 's';
+    h.style.opacity = '0';
+    container.appendChild(h);
+  }
+})();
+
+// ── Score algorithm ──
+function loveScore(a, b) {
+  // Deterministic but "magical" feeling
+  const combined = (a + b).toLowerCase().replace(/\s+/g, '');
+  let hash = 0;
+  for (let i = 0; i < combined.length; i++) {
+    hash = ((hash << 5) - hash + combined.charCodeAt(i)) | 0;
+  }
+  // Map hash to 1–100, bias toward sweet spot 55–95
+  const raw = Math.abs(hash) % 100;
+  return Math.max(1, Math.round(10 + raw * 0.88));
+}
+
+// ── Result copy ──
+const tiers = [
+  { min: 1,  max: 30,  verdict: 'Not quite written in the stars',   hearts: '💔',         message: 'The cosmos might have other plans for both of you. That said, stranger things have happened — like reality TV.' },
+  { min: 31, max: 50,  verdict: 'A slow burn, maybe',               hearts: '🤍🤍',        message: 'Not exactly fireworks, but some of the best stories start quietly. Worth a coffee at least.' },
+  { min: 51, max: 65,  verdict: 'Promising sparks',                 hearts: '❤️❤️',        message: 'There\'s something there. A little effort, a little luck, and this could be a whole thing.' },
+  { min: 66, max: 78,  verdict: 'This could be beautiful',          hearts: '❤️❤️❤️',      message: 'The stars are clearly rooting for you two. Don\'t overthink it — just go for it.' },
+  { min: 79, max: 89,  verdict: 'Deeply, wonderfully compatible',   hearts: '❤️❤️❤️❤️',    message: 'Almost like you were made for each other. The math doesn\'t lie. Neither does the feeling in your chest.' },
+  { min: 90, max: 100, verdict: 'A love for the ages ✨',            hearts: '❤️❤️❤️❤️❤️',  message: 'Romeo and Juliet. Except, you know, hopefully without all of that. This is the real deal.' },
+];
+
+function getTier(score) {
+  return tiers.find(t => score >= t.min && score <= t.max) || tiers[0];
+}
+
+// ── Confetti ──
+let confettiParticles = [];
+const confCanvas  = document.getElementById('confettiCanvas');
+const confCtx     = confCanvas.getContext('2d');
+confCanvas.width  = window.innerWidth;
+confCanvas.height = window.innerHeight;
+window.addEventListener('resize', () => {
+  confCanvas.width  = window.innerWidth;
+  confCanvas.height = window.innerHeight;
+});
+
+const COLORS = ['#e8604a','#f2907e','#fcd5cb','#f7b8ae','#d44f3a','#fdf0e8'];
+
+function spawnConfetti(count) {
+  for (let i = 0; i < count; i++) {
+    confettiParticles.push({
+      x: window.innerWidth * (0.3 + Math.random() * 0.4),
+      y: window.innerHeight * 0.35,
+      vx: (Math.random() - 0.5) * 8,
+      vy: -6 - Math.random() * 8,
+      size: 5 + Math.random() * 6,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      rot: Math.random() * Math.PI * 2,
+      rotV: (Math.random() - 0.5) * 0.2,
+      life: 1,
+      decay: 0.012 + Math.random() * 0.01,
+      isHeart: Math.random() > 0.5
+    });
+  }
+}
+
+let confRunning = false;
+function runConfetti() {
+  confCtx.clearRect(0, 0, confCanvas.width, confCanvas.height);
+  confettiParticles = confettiParticles.filter(p => p.life > 0);
+
+  confettiParticles.forEach(p => {
+    p.x  += p.vx;
+    p.y  += p.vy;
+    p.vy += 0.28;
+    p.vx *= 0.99;
+    p.rot += p.rotV;
+    p.life -= p.decay;
+
+    confCtx.save();
+    confCtx.globalAlpha = Math.max(0, p.life);
+    confCtx.translate(p.x, p.y);
+    confCtx.rotate(p.rot);
+    confCtx.fillStyle = p.color;
+
+    if (p.isHeart) {
+      confCtx.font = `${p.size * 2}px serif`;
+      confCtx.fillText('♥', -p.size * 0.5, p.size * 0.5);
+    } else {
+      confCtx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+    }
+    confCtx.restore();
+  });
+
+  if (confettiParticles.length > 0) requestAnimationFrame(runConfetti);
+  else confRunning = false;
+}
+
+// ── Main calculate ──
+function calculate() {
+  const n1 = document.getElementById('name1').value.trim();
+  const n2 = document.getElementById('name2').value.trim();
+  if (!n1 || !n2) {
+    [(!n1 ? 'name1' : 'name2')].forEach(id => {
+      const el = document.getElementById(id);
+      el.style.borderColor = 'var(--rose)';
+      el.focus();
+      setTimeout(() => el.style.borderColor = '', 900);
+    });
+    return;
+  }
+
+  const score = loveScore(n1, n2);
+  const tier  = getTier(score);
+
+  // Populate result
+  document.getElementById('resultNames').innerHTML =
+    `<strong>${n1}</strong> &amp; <strong>${n2}</strong>`;
+  document.getElementById('resultHearts').textContent  = tier.hearts;
+  document.getElementById('resultVerdict').textContent = tier.verdict;
+  document.getElementById('resultMessage').textContent = tier.message;
+
+  // Swap views
+  document.getElementById('formView').style.display   = 'none';
+  const rv = document.getElementById('resultView');
+  rv.classList.add('show');
+
+  // Animate ring
+  const circumference = 2 * Math.PI * 80; // r=80
+  const fill = document.getElementById('ringFill');
+  fill.style.strokeDashoffset = circumference;
+  fill.classList.remove('glow');
+
+  // Stroke color by score
+  const hue = score < 50 ? '#c0a0a0' : score < 75 ? '#f2907e' : '#e8604a';
+  fill.style.stroke = hue;
+
+  setTimeout(() => {
+    fill.style.strokeDashoffset = circumference * (1 - score / 100);
+    fill.classList.add('glow');
+  }, 80);
+
+  // Count up number
+  let current = 0;
+  const pctEl = document.getElementById('pctNum');
+  const step  = Math.ceil(score / 55);
+  const ticker = setInterval(() => {
+    current = Math.min(current + step, score);
+    pctEl.textContent = current;
+    if (current >= score) clearInterval(ticker);
+  }, 22);
+
+  // Confetti for high scores
+  if (score >= 75) {
+    setTimeout(() => {
+      spawnConfetti(score >= 90 ? 100 : 60);
+      if (!confRunning) { confRunning = true; runConfetti(); }
+    }, 700);
+  }
+}
+
+function tryAgain() {
+  document.getElementById('resultView').classList.remove('show');
+  document.getElementById('formView').style.display = 'block';
+  document.getElementById('name1').value = '';
+  document.getElementById('name2').value = '';
+  document.getElementById('name1').focus();
+  confettiParticles = [];
+}
+
+// Enter key support
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    if (document.getElementById('formView').style.display !== 'none') calculate();
+  }
+});
+</script>
+
+</body>
+</html>
