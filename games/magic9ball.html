@@ -1,186 +1,800 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Magical 9 Ball</title>
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Use Inter font -->
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0d0d0d; /* Very dark background */
-        }
-        
-        /* Custom Keyframes for a fun shake effect */
-        @keyframes shake {
-            0%, 100% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            30% { transform: translate(3px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            60% { transform: translate(-3px, 1px) rotate(0deg); }
-            70% { transform: translate(3px, 1px) rotate(-1deg); }
-            80% { transform: translate(-1px, -1px) rotate(1deg); }
-            90% { transform: translate(1px, 2px) rotate(0deg); }
-        }
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Magic 9 Ball — Noah.cool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 
-        .animate-shake {
-            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-        }
+    :root{
+      --bg:        #03020d;
+      --bg2:       #07051a;
+      --deep:      #0a0720;
+      --purple:    #6b21e8;
+      --purple2:   #9b59f5;
+      --violet:    #c084fc;
+      --indigo:    #4338ca;
+      --teal:      #0d9488;
+      --gold:      #f5c842;
+      --gold2:     #e8a800;
+      --muted:     #6860a0;
+      --text2:     #c4b8e8;
+      --border:    #2a2050;
+      --glow:      rgba(107,33,232,0.4);
+      --gold-glow: rgba(245,200,66,0.35);
+    }
 
-        /* Basic styling for the 8 Ball */
-        .eight-ball {
-            background: radial-gradient(circle at 30% 30%, #303030, #1a1a1a);
-        }
+    html,body{
+      width:100%;min-height:100%;
+      background:var(--bg);
+      color:white;
+      font-family:'DM Sans',sans-serif;
+      overflow-x:hidden;
+    }
 
-        /* Styling for the answer screen */
-        .answer-screen {
-            background-color: #3b82f6; /* Blue for contrast */
-            box-shadow: 0 0 40px rgba(59, 130, 246, 0.5); /* Glowing effect */
-            border: 4px solid #1e40af;
-            color: white;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-            font-weight: 700;
-        }
-    </style>
+    /* ── star field ── */
+    #starCanvas{
+      position:fixed;inset:0;
+      pointer-events:none;z-index:0;
+    }
+
+    /* ── nebula bg ── */
+    .nebula{
+      position:fixed;inset:0;
+      pointer-events:none;z-index:0;
+      background:
+        radial-gradient(ellipse 60% 40% at 20% 30%, rgba(107,33,232,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 80% 70%, rgba(13,148,136,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 60% 20%, rgba(155,89,245,0.07) 0%, transparent 70%);
+    }
+
+    /* ── topbar ── */
+    .topbar{
+      position:relative;z-index:20;
+      padding:18px 24px;
+      display:flex;align-items:center;justify-content:space-between;
+    }
+
+    .back-btn{
+      display:inline-flex;align-items:center;gap:6px;
+      font-size:12px;color:var(--muted);
+      text-decoration:none;letter-spacing:0.08em;
+      background:rgba(255,255,255,0.04);
+      border:1px solid var(--border);
+      padding:7px 14px;border-radius:20px;
+      transition:color 0.15s,background 0.15s;
+    }
+    .back-btn:hover{color:var(--violet);background:rgba(107,33,232,0.1);}
+
+    .astral-tag{
+      font-family:'Cinzel',serif;
+      font-size:12px;
+      color:var(--muted);
+      letter-spacing:0.2em;
+      text-transform:uppercase;
+    }
+
+    /* ── page ── */
+    .page{
+      position:relative;z-index:10;
+      display:flex;flex-direction:column;
+      align-items:center;
+      padding:0 20px 60px;
+      gap:0;
+    }
+
+    /* ── title ── */
+    .hero{
+      text-align:center;
+      padding:12px 0 32px;
+    }
+
+    .hero-title{
+      font-family:'Cinzel Decorative',serif;
+      font-size:clamp(20px,4vw,32px);
+      font-weight:700;
+      letter-spacing:0.08em;
+      background:linear-gradient(135deg,#fff 0%,var(--violet) 50%,var(--gold) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+      filter:drop-shadow(0 0 20px rgba(155,89,245,0.5));
+      line-height:1.2;
+    }
+
+    .hero-sub{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:8px;
+      letter-spacing:0.15em;
+      text-transform:uppercase;
+      font-weight:300;
+    }
+
+    /* ── ball container ── */
+    .ball-scene{
+      position:relative;
+      width:300px;height:300px;
+      cursor:pointer;
+      margin:0 auto;
+      flex-shrink:0;
+    }
+
+    @media(max-width:400px){
+      .ball-scene{width:260px;height:260px;}
+    }
+
+    /* outer glow ring */
+    .ball-glow{
+      position:absolute;
+      inset:-20px;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(107,33,232,0.25) 0%,transparent 70%);
+      animation:pulseGlow 3s ease-in-out infinite;
+      pointer-events:none;
+    }
+
+    @keyframes pulseGlow{
+      0%,100%{opacity:0.6;transform:scale(1);}
+      50%    {opacity:1;  transform:scale(1.06);}
+    }
+
+    /* constellation ring */
+    .constellation-ring{
+      position:absolute;
+      inset:-40px;
+      border-radius:50%;
+      pointer-events:none;
+      animation:spinSlow 40s linear infinite;
+    }
+
+    @keyframes spinSlow{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+    /* the actual ball */
+    .ball{
+      position:absolute;
+      inset:0;
+      border-radius:50%;
+      background:radial-gradient(circle at 35% 28%,#2a1a5e 0%,#0d0820 50%,#000008 100%);
+      box-shadow:
+        inset -8px -8px 30px rgba(0,0,0,0.9),
+        inset 6px 6px 20px rgba(107,33,232,0.2),
+        0 0 40px rgba(107,33,232,0.3),
+        0 0 80px rgba(107,33,232,0.12),
+        0 20px 60px rgba(0,0,0,0.7);
+      transition:transform 0.15s ease, box-shadow 0.3s ease;
+      overflow:hidden;
+    }
+
+    .ball:hover{
+      box-shadow:
+        inset -8px -8px 30px rgba(0,0,0,0.9),
+        inset 6px 6px 20px rgba(107,33,232,0.3),
+        0 0 60px rgba(107,33,232,0.5),
+        0 0 120px rgba(107,33,232,0.2),
+        0 20px 60px rgba(0,0,0,0.7);
+    }
+
+    /* swirling nebula inside ball */
+    .ball-nebula{
+      position:absolute;inset:0;border-radius:50%;
+      background:
+        radial-gradient(ellipse 80% 60% at 40% 50%,rgba(107,33,232,0.4) 0%,transparent 60%),
+        radial-gradient(ellipse 60% 80% at 70% 40%,rgba(13,148,136,0.2) 0%,transparent 60%),
+        radial-gradient(ellipse 50% 50% at 30% 70%,rgba(192,132,252,0.15) 0%,transparent 60%);
+      animation:nebulaSwirl 8s ease-in-out infinite;
+      pointer-events:none;
+    }
+
+    @keyframes nebulaSwirl{
+      0%  {transform:rotate(0deg)  scale(1);   opacity:0.7;}
+      33% {transform:rotate(120deg) scale(1.05);opacity:0.9;}
+      66% {transform:rotate(240deg) scale(0.95);opacity:0.75;}
+      100%{transform:rotate(360deg) scale(1);   opacity:0.7;}
+    }
+
+    /* number 9 on ball */
+    .ball-nine{
+      position:absolute;
+      inset:0;
+      display:flex;align-items:center;justify-content:center;
+      font-family:'Cinzel Decorative',serif;
+      font-size:72px;
+      font-weight:700;
+      color:rgba(155,89,245,0.9);
+      text-shadow:0 0 20px rgba(155,89,245,0.8),0 0 40px rgba(107,33,232,0.6);
+      pointer-events:none;
+      transition:opacity 0.4s;
+      user-select:none;
+    }
+
+    /* glint */
+    .ball-glint{
+      position:absolute;
+      top:10%;left:15%;
+      width:28%;height:18%;
+      background:radial-gradient(ellipse,rgba(255,255,255,0.18) 0%,transparent 70%);
+      border-radius:50%;
+      transform:rotate(-30deg);
+      pointer-events:none;
+    }
+
+    /* answer window */
+    .answer-window{
+      position:absolute;
+      top:50%;left:50%;
+      transform:translate(-50%,-50%);
+      width:58%;
+      aspect-ratio:1;
+      border-radius:50%;
+      background:radial-gradient(circle,#120830 0%,#050215 100%);
+      border:1.5px solid rgba(155,89,245,0.25);
+      display:flex;align-items:center;justify-content:center;
+      padding:14px;
+      pointer-events:none;
+      overflow:hidden;
+    }
+
+    .answer-text{
+      font-family:'Cinzel',serif;
+      font-size:11px;
+      font-weight:600;
+      color:var(--violet);
+      text-align:center;
+      line-height:1.4;
+      letter-spacing:0.04em;
+      text-shadow:0 0 10px rgba(192,132,252,0.7);
+      opacity:0;
+      transform:scale(0.6);
+      transition:opacity 0.7s ease,transform 0.7s cubic-bezier(.22,.68,0,1.2);
+    }
+
+    .answer-text.visible{
+      opacity:1;
+      transform:scale(1);
+    }
+
+    /* answer window glow */
+    .window-glow{
+      position:absolute;
+      inset:-2px;
+      border-radius:50%;
+      background:transparent;
+      box-shadow:0 0 0 0 rgba(155,89,245,0);
+      transition:box-shadow 0.5s ease;
+      pointer-events:none;
+    }
+
+    .window-glow.lit{
+      box-shadow:0 0 20px 4px rgba(155,89,245,0.5),inset 0 0 20px rgba(107,33,232,0.3);
+    }
+
+    /* shake animation */
+    @keyframes shake{
+      0%  {transform:translate(0,0) rotate(0deg);}
+      10% {transform:translate(-8px,4px) rotate(-3deg);}
+      20% {transform:translate(8px,-6px) rotate(3deg);}
+      30% {transform:translate(-6px,8px) rotate(-2deg);}
+      40% {transform:translate(10px,4px) rotate(4deg);}
+      50% {transform:translate(-8px,-4px) rotate(-3deg);}
+      60% {transform:translate(6px,8px) rotate(2deg);}
+      70% {transform:translate(-10px,-2px) rotate(-4deg);}
+      80% {transform:translate(8px,6px) rotate(3deg);}
+      90% {transform:translate(-4px,-8px) rotate(-1deg);}
+      100%{transform:translate(0,0) rotate(0deg);}
+    }
+
+    .ball-scene.shaking .ball{
+      animation:shake 0.7s cubic-bezier(.22,.68,0,1.2);
+    }
+
+    /* ── question input ── */
+    .ask-section{
+      width:100%;max-width:460px;
+      display:flex;flex-direction:column;
+      align-items:center;
+      gap:14px;
+      margin-top:28px;
+    }
+
+    .ask-label{
+      font-family:'Cinzel',serif;
+      font-size:11px;
+      letter-spacing:0.22em;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+
+    .ask-row{
+      display:flex;width:100%;gap:10px;
+    }
+
+    .ask-input{
+      flex:1;
+      background:rgba(255,255,255,0.04);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px 18px;
+      font-family:'Cinzel',serif;
+      font-size:13px;
+      color:white;
+      outline:none;
+      transition:border-color 0.2s,box-shadow 0.2s;
+      letter-spacing:0.04em;
+    }
+
+    .ask-input::placeholder{
+      color:var(--muted);
+      font-style:italic;
+    }
+
+    .ask-input:focus{
+      border-color:var(--purple2);
+      box-shadow:0 0 0 3px rgba(107,33,232,0.2);
+    }
+
+    .ask-btn{
+      font-family:'Cinzel',serif;
+      font-size:13px;
+      font-weight:600;
+      letter-spacing:0.1em;
+      color:var(--bg);
+      background:linear-gradient(135deg,var(--purple2),var(--purple));
+      border:none;
+      border-radius:14px;
+      padding:14px 22px;
+      cursor:pointer;
+      box-shadow:0 4px 20px var(--glow);
+      transition:transform 0.15s cubic-bezier(.22,.68,0,1.5),box-shadow 0.15s;
+      white-space:nowrap;
+    }
+
+    .ask-btn:hover{
+      transform:translateY(-2px) scale(1.03);
+      box-shadow:0 8px 30px rgba(107,33,232,0.6);
+    }
+
+    .ask-btn:active{transform:scale(0.96);}
+
+    .hint-text{
+      font-size:12px;
+      color:var(--muted);
+      text-align:center;
+      letter-spacing:0.05em;
+    }
+
+    /* ── answer type badge ── */
+    .answer-badge{
+      display:none;
+      align-items:center;gap:8px;
+      font-family:'Cinzel',serif;
+      font-size:11px;
+      letter-spacing:0.1em;
+      text-transform:uppercase;
+      padding:6px 14px;
+      border-radius:20px;
+      border:1px solid;
+    }
+
+    .answer-badge.yes  {color:#22c55e;border-color:rgba(34,197,94,0.3);background:rgba(34,197,94,0.08);}
+    .answer-badge.maybe{color:var(--gold);border-color:rgba(245,200,66,0.3);background:rgba(245,200,66,0.08);}
+    .answer-badge.no   {color:#f87171;border-color:rgba(248,113,113,0.3);background:rgba(248,113,113,0.08);}
+    .answer-badge.show {display:inline-flex;}
+
+    /* ── history scroll ── */
+    .history-section{
+      width:100%;max-width:460px;
+      margin-top:8px;
+    }
+
+    .history-label{
+      font-family:'Cinzel',serif;
+      font-size:10px;
+      letter-spacing:0.2em;
+      text-transform:uppercase;
+      color:var(--muted);
+      margin-bottom:10px;
+    }
+
+    .history-list{
+      display:flex;flex-direction:column;gap:8px;
+      max-height:220px;overflow-y:auto;
+    }
+
+    .history-list::-webkit-scrollbar{width:4px;}
+    .history-list::-webkit-scrollbar-track{background:transparent;}
+    .history-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+    .history-item{
+      background:rgba(255,255,255,0.03);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:10px 14px;
+      display:flex;align-items:flex-start;gap:10px;
+      animation:fadeUp 0.3s ease both;
+    }
+
+    .hi-dot{
+      width:8px;height:8px;border-radius:50%;
+      flex-shrink:0;margin-top:4px;
+    }
+    .hi-dot.yes  {background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,0.5);}
+    .hi-dot.maybe{background:var(--gold);box-shadow:0 0 6px var(--gold-glow);}
+    .hi-dot.no   {background:#f87171;box-shadow:0 0 6px rgba(248,113,113,0.5);}
+
+    .hi-content{flex:1;min-width:0;}
+    .hi-q{font-size:11px;color:var(--muted);font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .hi-a{font-family:'Cinzel',serif;font-size:12px;color:var(--text2);margin-top:2px;}
+
+    @keyframes fadeUp{
+      from{opacity:0;transform:translateY(8px);}
+      to  {opacity:1;transform:translateY(0);}
+    }
+
+    /* ── particle canvas ── */
+    #particleCanvas{
+      position:fixed;inset:0;
+      pointer-events:none;z-index:5;
+    }
+  </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4">
+<body>
 
-    <div class="flex flex-col items-center space-y-8 w-full max-w-lg">
-        
-        <h1 class="text-4xl font-bold text-white mb-6 text-center">Ask The Magic Orb</h1>
+<canvas id="starCanvas"></canvas>
+<div class="nebula"></div>
+<canvas id="particleCanvas"></canvas>
 
-        <!-- Magic 8 Ball Container -->
-        <div id="magicBall" 
-             class="eight-ball w-64 h-64 sm:w-80 sm:h-80 rounded-full flex items-center justify-center relative 
-                    shadow-2xl transition-all duration-300">
-            
-            <!-- Inner Answer Screen -->
-            <div id="answerScreen" 
-                 class="answer-screen w-32 h-32 sm:w-40 sm:h-40 rounded-full flex items-center justify-center text-center p-3 
-                        text-sm sm:text-lg uppercase transition-all duration-300 transform scale-0 opacity-0">
-                
-                <span id="answerText" class="text-center leading-tight"></span>
-            </div>
+<div class="topbar">
+  <a class="back-btn" href="index.html">← noah.cool</a>
+  <span class="astral-tag">✦ oracle ✦</span>
+</div>
 
-            <!-- Initial Prompt (Hidden when answer is showing) -->
-            <div id="initialPrompt" 
-                 class="absolute answer-screen w-32 h-32 sm:w-40 sm:h-40 rounded-full flex items-center justify-center text-center p-3 
-                        text-sm sm:text-lg uppercase text-white transition-opacity duration-500 bg-gray-600 shadow-none border-0">
-                <span class="text-white text-base opacity-70">Ask me anything!</span>
-            </div>
-        </div>
+<div class="page">
 
-        <!-- Input and Button Area -->
-        <div class="w-full space-y-4">
-            <input type="text" id="questionInput" placeholder="Enter your yes or no question..."
-                   class="w-full p-4 rounded-xl border border-gray-700 bg-gray-800 text-white placeholder-gray-500 
-                          focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 shadow-lg">
-            
-            <button id="shakeButton"
-                    class="w-full py-4 bg-blue-600 text-white font-bold text-xl rounded-xl shadow-lg 
-                           hover:bg-blue-700 transition-colors duration-200 disabled:bg-gray-500 disabled:cursor-not-allowed 
-                           focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-opacity-50 active:scale-[0.98]">
-                Shake the Orb!
-            </button>
-            <p id="errorMessage" class="text-red-400 text-center mt-2 h-5"></p>
-        </div>
+  <div class="hero">
+    <h1 class="hero-title">Magic 9 Ball</h1>
+    <p class="hero-sub">✦ the cosmos will answer ✦</p>
+  </div>
 
+  <!-- ball -->
+  <div class="ball-scene" id="ballScene" onclick="askBall()">
+    <div class="ball-glow"></div>
+    <svg class="constellation-ring" viewBox="0 0 380 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- constellation dots & lines around the ring -->
+      <circle cx="190" cy="10"  r="2.5" fill="rgba(192,132,252,0.6)"/>
+      <circle cx="340" cy="65"  r="2"   fill="rgba(192,132,252,0.4)"/>
+      <circle cx="370" cy="190" r="2.5" fill="rgba(192,132,252,0.6)"/>
+      <circle cx="330" cy="325" r="2"   fill="rgba(192,132,252,0.4)"/>
+      <circle cx="190" cy="370" r="2.5" fill="rgba(192,132,252,0.6)"/>
+      <circle cx="50"  cy="325" r="2"   fill="rgba(192,132,252,0.4)"/>
+      <circle cx="10"  cy="190" r="2.5" fill="rgba(192,132,252,0.6)"/>
+      <circle cx="50"  cy="65"  r="2"   fill="rgba(192,132,252,0.4)"/>
+      <!-- connecting lines -->
+      <line x1="190" y1="10"  x2="340" y2="65"  stroke="rgba(155,89,245,0.2)" stroke-width="1"/>
+      <line x1="340" y1="65"  x2="370" y2="190" stroke="rgba(155,89,245,0.15)" stroke-width="1"/>
+      <line x1="370" y1="190" x2="330" y2="325" stroke="rgba(155,89,245,0.2)" stroke-width="1"/>
+      <line x1="330" y1="325" x2="190" y2="370" stroke="rgba(155,89,245,0.15)" stroke-width="1"/>
+      <line x1="190" y1="370" x2="50"  y2="325" stroke="rgba(155,89,245,0.2)" stroke-width="1"/>
+      <line x1="50"  y1="325" x2="10"  y2="190" stroke="rgba(155,89,245,0.15)" stroke-width="1"/>
+      <line x1="10"  y1="190" x2="50"  y2="65"  stroke="rgba(155,89,245,0.2)" stroke-width="1"/>
+      <line x1="50"  y1="65"  x2="190" y2="10"  stroke="rgba(155,89,245,0.15)" stroke-width="1"/>
+      <!-- extra cross-lines -->
+      <line x1="190" y1="10"  x2="50"  y2="325" stroke="rgba(155,89,245,0.06)" stroke-width="1"/>
+      <line x1="340" y1="65"  x2="10"  y2="190" stroke="rgba(155,89,245,0.06)" stroke-width="1"/>
+    </svg>
+
+    <div class="ball" id="ball">
+      <div class="ball-nebula"></div>
+      <div class="answer-window" id="answerWindow">
+        <div class="window-glow" id="windowGlow"></div>
+        <div class="answer-text" id="answerText">✦</div>
+      </div>
+      <div class="ball-nine" id="ballNine">9</div>
+      <div class="ball-glint"></div>
     </div>
+  </div>
 
-    <script>
-        // Define all possible Magic 8 Ball responses
-        const ANSWERS = [
-            // Positive
-            "It is decidedly so.", "Without a doubt.", "Yes – definitely.", 
-            "You may rely on it.", "As I see it, yes.", "Most likely.", 
-            "Outlook good.", "Yes.", "Signs point to yes.",
-            
-            // Neutral
-            "Reply hazy, try again.", "Ask again later.", "Better not tell you now.",
-            "Cannot predict now.", "Concentrate and ask again.",
-            
-            // Negative
-            "Don't count on it.", "My reply is no.", "My sources say no.", 
-            "Outlook not so good.", "Very doubtful."
-        ];
+  <!-- ask section -->
+  <div class="ask-section">
+    <div class="ask-label">✦ pose your question to the cosmos ✦</div>
+    <div class="ask-row">
+      <input class="ask-input" id="askInput" type="text" placeholder="Will I find love this year?" maxlength="120"/>
+      <button class="ask-btn" onclick="askBall()">Ask</button>
+    </div>
+    <div class="answer-badge" id="answerBadge"></div>
+    <div class="hint-text">or click the ball · shake your fate</div>
+  </div>
 
-        // Get DOM elements
-        const magicBall = document.getElementById('magicBall');
-        const answerScreen = document.getElementById('answerScreen');
-        const answerText = document.getElementById('answerText');
-        const initialPrompt = document.getElementById('initialPrompt');
-        const questionInput = document.getElementById('questionInput');
-        const shakeButton = document.getElementById('shakeButton');
-        const errorMessage = document.getElementById('errorMessage');
+  <!-- history -->
+  <div class="history-section" id="historySection" style="display:none">
+    <div class="history-label">✦ the cosmic record ✦</div>
+    <div class="history-list" id="historyList"></div>
+  </div>
 
-        let isShaking = false;
+</div>
 
-        // Function to perform the shake and get the answer
-        function shakeBall() {
-            if (isShaking) return;
+<script>
+// ── Star field ──
+(function(){
+  const c=document.getElementById('starCanvas');
+  const ctx=c.getContext('2d');
+  c.width=window.innerWidth; c.height=window.innerHeight;
+  window.addEventListener('resize',()=>{c.width=window.innerWidth;c.height=window.innerHeight;drawStars();});
 
-            const question = questionInput.value.trim();
-            if (question.length < 5 || !question.endsWith('?')) {
-                errorMessage.textContent = 'Please ask a proper question (must end with a "?").';
-                return;
-            }
+  const stars=[];
+  for(let i=0;i<280;i++){
+    stars.push({
+      x:Math.random(),y:Math.random(),
+      r:Math.random()*1.5+0.2,
+      a:Math.random(),
+      speed:0.002+Math.random()*0.004,
+      phase:Math.random()*Math.PI*2
+    });
+  }
 
-            // Clear previous error and disable button
-            errorMessage.textContent = '';
-            shakeButton.disabled = true;
-            isShaking = true;
-            
-            // Hide the initial prompt and existing answer immediately
-            initialPrompt.classList.add('opacity-0', 'scale-0');
-            answerScreen.classList.remove('scale-100', 'opacity-100');
-            answerText.textContent = '';
+  let t=0;
+  function drawStars(){
+    ctx.clearRect(0,0,c.width,c.height);
+    t+=0.016;
+    stars.forEach(s=>{
+      const alpha=s.a*(0.5+0.5*Math.sin(t*s.speed*60+s.phase));
+      const col=Math.random()>0.95?'rgba(192,132,252,':'rgba(255,255,255,';
+      ctx.beginPath();
+      ctx.arc(s.x*c.width,s.y*c.height,s.r,0,Math.PI*2);
+      ctx.fillStyle=col+alpha+')';
+      ctx.fill();
+    });
+  }
+  function loop(){requestAnimationFrame(loop);drawStars();}
+  loop();
+})();
 
-            // 1. Start the shaking animation
-            magicBall.classList.add('animate-shake');
+// ── Particle burst ──
+const pCanvas=document.getElementById('particleCanvas');
+const pCtx=pCanvas.getContext('2d');
+pCanvas.width=window.innerWidth; pCanvas.height=window.innerHeight;
+window.addEventListener('resize',()=>{pCanvas.width=window.innerWidth;pCanvas.height=window.innerHeight;});
+let particles=[];
 
-            // Wait 500ms for the "shake" animation to complete
-            setTimeout(() => {
-                magicBall.classList.remove('animate-shake');
-                
-                // 2. Select a random answer
-                const randomIndex = Math.floor(Math.random() * ANSWERS.length);
-                const result = ANSWERS[randomIndex];
+function spawnParticles(x,y,type){
+  const colors={
+    yes:  ['#22c55e','#86efac','#4ade80','#ffffff'],
+    maybe:['#f5c842','#fde68a','#fbbf24','#fff8d0'],
+    no:   ['#f87171','#fca5a5','#ef4444','#ffcccc'],
+  };
+  const cols=colors[type]||colors.maybe;
+  for(let i=0;i<40;i++){
+    const angle=Math.random()*Math.PI*2;
+    const speed=1.5+Math.random()*4;
+    particles.push({
+      x,y,
+      vx:Math.cos(angle)*speed,
+      vy:Math.sin(angle)*speed-2,
+      r:2+Math.random()*3,
+      color:cols[Math.floor(Math.random()*cols.length)],
+      life:1,decay:0.018+Math.random()*0.015,
+      rot:Math.random()*Math.PI*2,
+      rotV:(Math.random()-0.5)*0.15,
+    });
+  }
+  if(!pRunning){pRunning=true;drawParticles();}
+}
 
-                // 3. Display the answer with a short delay for dramatic effect
-                setTimeout(() => {
-                    answerText.textContent = result;
-                    answerScreen.classList.add('scale-100', 'opacity-100');
-                    
-                    // 4. Re-enable the button and reset state
-                    shakeButton.disabled = false;
-                    isShaking = false;
-                    
-                    // Optional: Clear the question for the next one
-                    questionInput.value = '';
-                }, 200); // Short delay after shake stops
-                
-            }, 500); // Duration of the shake animation
-        }
+let pRunning=false;
+function drawParticles(){
+  pCtx.clearRect(0,0,pCanvas.width,pCanvas.height);
+  particles=particles.filter(p=>p.life>0);
+  particles.forEach(p=>{
+    p.x+=p.vx; p.y+=p.vy; p.vy+=0.12;
+    p.vx*=0.97; p.rot+=p.rotV;
+    p.life-=p.decay;
+    pCtx.save();
+    pCtx.globalAlpha=Math.max(0,p.life);
+    pCtx.translate(p.x,p.y); pCtx.rotate(p.rot);
+    pCtx.fillStyle=p.color;
+    // star shape
+    pCtx.beginPath();
+    for(let i=0;i<5;i++){
+      const a=i*Math.PI*2/5-Math.PI/2;
+      const a2=a+Math.PI/5;
+      if(i===0) pCtx.moveTo(Math.cos(a)*p.r,Math.sin(a)*p.r);
+      else pCtx.lineTo(Math.cos(a)*p.r,Math.sin(a)*p.r);
+      pCtx.lineTo(Math.cos(a2)*p.r*0.4,Math.sin(a2)*p.r*0.4);
+    }
+    pCtx.closePath();
+    pCtx.fill();
+    pCtx.restore();
+  });
+  if(particles.length>0) requestAnimationFrame(drawParticles);
+  else pRunning=false;
+}
 
-        // Event Listeners
-        shakeButton.addEventListener('click', shakeBall);
-        questionInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                shakeBall();
-            }
-        });
-        
-        // Initial setup to show the prompt
-        window.onload = () => {
-             // Ensure the initial prompt is visible on load
-            initialPrompt.classList.remove('opacity-0', 'scale-0');
-        };
+// ── Audio ──
+let audioCtx;
+function getAC(){
+  if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  return audioCtx;
+}
 
-    </script>
+function playMysticTone(type){
+  try{
+    const ac=getAC();
+    const freqs={yes:[523,659,784],maybe:[440,550,440],no:[392,349,330]};
+    const f=freqs[type]||freqs.maybe;
+    f.forEach((freq,i)=>{
+      const o=ac.createOscillator();
+      const g=ac.createGain();
+      const rev=ac.createConvolver();
+      o.type='sine'; o.frequency.value=freq;
+      const t=ac.currentTime+i*0.18;
+      g.gain.setValueAtTime(0,t);
+      g.gain.linearRampToValueAtTime(0.12,t+0.05);
+      g.gain.linearRampToValueAtTime(0,t+0.6);
+      o.connect(g); g.connect(ac.destination);
+      o.start(t); o.stop(t+0.65);
+    });
+
+    // ethereal shimmer
+    const noise=ac.createOscillator();
+    const ng=ac.createGain();
+    const nf=ac.createBiquadFilter();
+    noise.type='triangle'; noise.frequency.value=880+Math.random()*400;
+    nf.type='bandpass'; nf.Q.value=8; nf.frequency.value=1200;
+    ng.gain.setValueAtTime(0,ac.currentTime);
+    ng.gain.linearRampToValueAtTime(0.04,ac.currentTime+0.1);
+    ng.gain.linearRampToValueAtTime(0,ac.currentTime+1.2);
+    noise.connect(nf); nf.connect(ng); ng.connect(ac.destination);
+    noise.start(); noise.stop(ac.currentTime+1.3);
+  }catch(e){}
+}
+
+// ── Oracle responses ──
+const ANSWERS = {
+  yes:[
+    {text:'It is\ncertain',       type:'yes'},
+    {text:'Without\na doubt',     type:'yes'},
+    {text:'Yes,\ndefinitely',     type:'yes'},
+    {text:'The stars\nalign',     type:'yes'},
+    {text:'As I see it,\nyes',    type:'yes'},
+    {text:'The cosmos\nchooses you',type:'yes'},
+    {text:'Signs point\nto yes',  type:'yes'},
+    {text:'The universe\nnods',   type:'yes'},
+    {text:'Destined\nto be',      type:'yes'},
+  ],
+  maybe:[
+    {text:'Ask again\nlater',     type:'maybe'},
+    {text:'The mists\nare unclear',type:'maybe'},
+    {text:'Cannot\npredict now',  type:'maybe'},
+    {text:'The oracle\nhesitates',type:'maybe'},
+    {text:'Concentrate\nand ask again',type:'maybe'},
+    {text:'The stars\nsay maybe', type:'maybe'},
+    {text:'Fate\nwavers',         type:'maybe'},
+  ],
+  no:[
+    {text:'Don\'t count\non it',  type:'no'},
+    {text:'My sources\nsay no',   type:'no'},
+    {text:'Outlook\nnot so good', type:'no'},
+    {text:'Very\ndoubtful',       type:'no'},
+    {text:'The cosmos\nresists',  type:'no'},
+    {text:'Not in this\nlifetime',type:'no'},
+    {text:'The stars\noppose it', type:'no'},
+  ]
+};
+
+const ALL_ANSWERS=[...ANSWERS.yes,...ANSWERS.maybe,...ANSWERS.no];
+
+function getAnswer(){
+  // weighted: 50% yes, 30% maybe, 20% no
+  const r=Math.random();
+  let pool;
+  if(r<0.5) pool=ANSWERS.yes;
+  else if(r<0.8) pool=ANSWERS.maybe;
+  else pool=ANSWERS.no;
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+// ── Main logic ──
+let isAnimating=false;
+const history=[];
+
+function askBall(){
+  if(isAnimating) return;
+  isAnimating=true;
+
+  const question=document.getElementById('askInput').value.trim();
+  const answer=getAnswer();
+
+  // hide old answer
+  const nineEl=document.getElementById('ballNine');
+  const answerTextEl=document.getElementById('answerText');
+  const windowGlow=document.getElementById('windowGlow');
+  const badge=document.getElementById('answerBadge');
+  const scene=document.getElementById('ballScene');
+
+  answerTextEl.classList.remove('visible');
+  answerTextEl.textContent='✦';
+  windowGlow.classList.remove('lit');
+  badge.className='answer-badge';
+  nineEl.style.opacity='1';
+
+  // shake
+  scene.classList.add('shaking');
+
+  setTimeout(()=>{
+    scene.classList.remove('shaking');
+    // fade out 9
+    nineEl.style.opacity='0';
+    nineEl.style.transition='opacity 0.3s';
+
+    setTimeout(()=>{
+      // show answer
+      answerTextEl.textContent=answer.text;
+      answerTextEl.classList.add('visible');
+      windowGlow.classList.add('lit');
+
+      // badge
+      const labels={yes:'✦ Yes ✦',maybe:'✦ Maybe ✦',no:'✦ No ✦'};
+      badge.textContent=labels[answer.type];
+      badge.className='answer-badge '+answer.type+' show';
+
+      // sound + particles
+      playMysticTone(answer.type);
+      const ballRect=document.getElementById('ball').getBoundingClientRect();
+      spawnParticles(
+        ballRect.left+ballRect.width/2,
+        ballRect.top+ballRect.height/2,
+        answer.type
+      );
+
+      // add to history
+      if(history.length===0||history[0].answer!==answer.text){
+        history.unshift({question:question||'(no question asked)',answer:answer.text,type:answer.type});
+        if(history.length>10) history.pop();
+        renderHistory();
+      }
+
+      isAnimating=false;
+    },400);
+  },750);
+}
+
+function renderHistory(){
+  const sec=document.getElementById('historySection');
+  const list=document.getElementById('historyList');
+  if(history.length===0){sec.style.display='none';return;}
+  sec.style.display='block';
+  list.innerHTML='';
+  history.forEach(h=>{
+    const item=document.createElement('div');
+    item.className='history-item';
+    item.innerHTML=`
+      <div class="hi-dot ${h.type}"></div>
+      <div class="hi-content">
+        <div class="hi-q">${h.question}</div>
+        <div class="hi-a">${h.answer.replace(/\n/,' ')}</div>
+      </div>
+    `;
+    list.appendChild(item);
+  });
+}
+
+// ── Enter key ──
+document.getElementById('askInput').addEventListener('keydown',e=>{
+  if(e.key==='Enter') askBall();
+});
+
+// ── Shake device support ──
+let lastShake=0;
+window.addEventListener('devicemotion',e=>{
+  const acc=e.accelerationIncludingGravity;
+  if(!acc) return;
+  const force=Math.abs(acc.x)+Math.abs(acc.y)+Math.abs(acc.z);
+  if(force>25&&Date.now()-lastShake>1500){
+    lastShake=Date.now();
+    askBall();
+  }
+});
+</script>
 </body>
 </html>
