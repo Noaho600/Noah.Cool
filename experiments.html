@@ -1,207 +1,884 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-  <link rel="icon" type="image/png" href="/assets/test-tube.png" />
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Experiments – Noah.Cool</title>
+  <title>Experiments — Noah.cool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
+    /* ── THEME TOKENS ── */
     :root {
-      --bg: #f4f4f4;
-      --text: #333;
-      --primary: #333;
-      --tile-bg: #fff;
-      --tab-bg: #eee;
+      --bg:        #f4efe6;
+      --bg2:       #ede8dc;
+      --ink:       #18150f;
+      --ink2:      #3a3428;
+      --muted:     #9e9488;
+      --accent:    #e84c2b;
+      --accent2:   #c93d1e;
+      --border:    #ddd6c8;
+      --card:      #ffffff;
+      --card2:     #faf6ef;
+      --tag:       #ede8de;
+      --tag-ink:   #7a7060;
+      --shadow:    0 2px 8px rgba(0,0,0,0.06);
+      --shadow-lg: 0 16px 48px rgba(0,0,0,0.12);
+      --done-bg:   #e8f5e9; --done-ink: #2e7d32;
+      --wip-bg:    #fff8e1; --wip-ink:  #f57f17;
+      --idea-bg:   #ede8de; --idea-ink: #7a7060;
+      --trans: all 0.22s cubic-bezier(.4,0,.2,1);
     }
 
-    body.dark {
-      --bg: #1e1e1e;
-      --text: #f0f0f0;
-      --primary: #00ccff;
-      --tile-bg: #2a2a2a;
-      --tab-bg: #333;
+    [data-theme="dark"] {
+      --bg:        #111009;
+      --bg2:       #1a1810;
+      --ink:       #f0ece4;
+      --ink2:      #c8c2b8;
+      --muted:     #6a6458;
+      --accent:    #ff6040;
+      --accent2:   #e84c2b;
+      --border:    #2a2820;
+      --card:      #1e1c14;
+      --card2:     #242218;
+      --tag:       #2a2820;
+      --tag-ink:   #8a8478;
+      --shadow:    0 2px 8px rgba(0,0,0,0.3);
+      --shadow-lg: 0 20px 60px rgba(0,0,0,0.5);
+      --done-bg:   #0f2010; --done-ink: #4caf50;
+      --wip-bg:    #201800; --wip-ink:  #ffc107;
+      --idea-bg:   #2a2820; --idea-ink: #8a8478;
     }
+
+    *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Arial', sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      margin: 0;
-      padding: 0;
-      text-align: center;
-      transition: background 0.3s, color 0.3s;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
-    h1 {
-      margin: 40px 0 20px;
-      font-size: 2.5em;
+    /* grain */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999;
     }
 
-    .back-button {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      background: var(--tab-bg);
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-weight: bold;
+    /* ── TOPBAR ── */
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 28px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 11px; letter-spacing: 0.08em; color: var(--muted);
       text-decoration: none;
-      color: var(--text);
-      transition: background 0.2s;
+      background: var(--card2); border: 1px solid var(--border);
+      padding: 7px 14px; border-radius: 20px;
+      transition: var(--trans);
+    }
+    .back-btn:hover { color: var(--ink); border-color: var(--ink); }
+    .back-btn .arrow { transition: transform 0.15s; }
+    .back-btn:hover .arrow { transform: translateX(-3px); }
+
+    .topbar-right { display: flex; align-items: center; gap: 10px; }
+
+    /* dark mode toggle */
+    .theme-btn {
+      width: 44px; height: 26px; border-radius: 13px; border: none;
+      background: var(--card2); border: 1.5px solid var(--border);
+      cursor: pointer; position: relative; transition: var(--trans);
+      flex-shrink: 0;
+    }
+    .theme-btn:hover { border-color: var(--accent); }
+
+    .theme-thumb {
+      position: absolute; top: 2px; left: 2px;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--ink); font-size: 11px;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.25s cubic-bezier(.4,0,.2,1), background 0.25s;
     }
 
-    .back-button:hover {
-      background: #ccc;
+    [data-theme="dark"] .theme-thumb {
+      transform: translateX(18px);
+      background: var(--accent);
     }
 
-    .mode-toggle {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: var(--tab-bg);
-      color: var(--text);
-      padding: 8px 14px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background 0.3s;
+    /* ── HERO ── */
+    .hero {
+      max-width: 820px; margin: 0 auto;
+      padding: 52px 28px 36px;
+      animation: fadeUp 0.5s cubic-bezier(.22,1,.36,1) both;
     }
 
-    .tabs {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 30px;
+    .hero-eyebrow {
+      font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase;
+      color: var(--accent); font-weight: 700; margin-bottom: 14px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .hero-eyebrow::before { content: ''; display: inline-block; width: 20px; height: 1.5px; background: var(--accent); }
+
+    .hero-title {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(40px, 7vw, 72px);
+      font-weight: 900; letter-spacing: -3px; line-height: 0.92;
+      color: var(--ink);
     }
 
-    .tab-button {
-      background: var(--tab-bg);
-      border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.2s;
-      color: var(--text);
+    .hero-title .tilt { font-style: italic; color: var(--accent); }
+
+    .hero-meta {
+      display: flex; align-items: center; gap: 20px;
+      margin-top: 20px; flex-wrap: wrap;
     }
 
-    .tab-button.active,
-    .tab-button:hover {
-      background: var(--primary);
-      color: white;
+    .hero-desc { font-size: 13px; color: var(--muted); line-height: 1.7; max-width: 440px; }
+
+    .hero-stats {
+      display: flex; gap: 16px; margin-left: auto;
     }
 
-    .tiles-container {
+    .stat {
+      text-align: center;
+      background: var(--card2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 10px 16px;
+    }
+    .stat-num { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 900; color: var(--ink); display: block; line-height: 1; }
+    .stat-label { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 3px; display: block; }
+
+    /* ── GRID ── */
+    .wrap {
+      max-width: 820px; margin: 0 auto;
+      padding: 0 28px 80px;
+      animation: fadeUp 0.6s cubic-bezier(.22,1,.36,1) 0.1s both;
+    }
+
+    .exp-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      padding: 0 20px 40px;
-      max-width: 1000px;
-      margin: auto;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
     }
 
-    .tile {
-      background: var(--tile-bg);
-      padding: 30px 20px;
-      border-radius: 12px;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-      font-size: 18px;
-      font-weight: bold;
+    /* ── CARDS ── */
+    .exp-card {
+      border: 1.5px solid var(--border);
+      border-radius: 16px; padding: 20px 18px;
+      text-decoration: none; color: inherit;
+      display: flex; flex-direction: column; gap: 8px;
+      background: var(--card2);
+      transition: var(--trans);
+      position: relative; overflow: hidden;
       cursor: pointer;
-      transition: transform 0.2s ease, opacity 0.3s ease, background 0.3s;
-      animation: fadeIn 0.4s ease forwards;
     }
 
-    .tile:hover {
-      transform: scale(1.03);
+    .exp-card:hover {
+      background: var(--card);
+      border-color: var(--accent);
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: var(--shadow-lg);
     }
 
-    .tile.hidden {
-      opacity: 0;
-      pointer-events: none;
-      transform: scale(0.95);
-      transition: opacity 0.3s ease, transform 0.3s ease;
+    .exp-card:active { transform: translateY(-1px) scale(1); }
+
+    /* colored left accent on hover */
+    .exp-card::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: var(--accent);
+      border-radius: 3px 0 0 3px;
+      transform: scaleY(0); transform-origin: center;
+      transition: transform 0.2s cubic-bezier(.22,1,.36,1);
+    }
+    .exp-card:hover::before { transform: scaleY(1); }
+
+    /* mini canvas preview */
+    .exp-preview {
+      width: 100%; height: 80px;
+      border-radius: 10px; overflow: hidden;
+      margin-bottom: 4px;
+      background: var(--bg2);
+      position: relative;
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .exp-preview canvas { width: 100%; height: 100%; display: block; }
+
+    .exp-icon {
+      font-size: 24px; line-height: 1;
+      width: 44px; height: 44px;
+      background: var(--tag); border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.2s cubic-bezier(.22,1,.36,1);
+    }
+    .exp-card:hover .exp-icon { transform: scale(1.1) rotate(-4deg); }
+
+    .exp-card-top { display: flex; align-items: flex-start; gap: 12px; }
+    .exp-card-meta { flex: 1; min-width: 0; }
+
+    .exp-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 700; font-size: 15px; line-height: 1.2;
+      color: var(--ink);
+    }
+
+    .exp-desc {
+      font-size: 11.5px; color: var(--muted); line-height: 1.6;
+      flex: 1; margin-top: 4px;
+    }
+
+    .exp-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 6px; }
+
+    .exp-tag {
+      font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 2px 7px; border-radius: 5px;
+      background: var(--tag); color: var(--tag-ink); font-weight: 600;
+    }
+
+    .exp-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+
+    .exp-status {
+      display: inline-block; font-size: 9px; letter-spacing: 0.13em;
+      text-transform: uppercase; padding: 3px 8px; border-radius: 6px;
+      font-weight: 700;
+    }
+    .status-done  { background: var(--done-bg); color: var(--done-ink); }
+    .status-wip   { background: var(--wip-bg);  color: var(--wip-ink);  }
+    .status-idea  { background: var(--idea-bg); color: var(--idea-ink); }
+
+    .exp-date { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+    /* no results */
+    .no-results {
+      text-align: center; padding: 60px 20px;
+      color: var(--muted); font-size: 14px;
+      grid-column: 1 / -1;
+    }
+    .no-results .big { font-size: 40px; margin-bottom: 12px; }
+
+    /* ── FEATURED ── */
+    .featured-section {
+      max-width: 820px; margin: 0 auto;
+      padding: 0 28px 24px;
+    }
+
+    .featured-label {
+      font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .featured-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .featured-card {
+      border: 1.5px solid var(--border); border-radius: 20px;
+      background: var(--card2); overflow: hidden;
+      display: grid; grid-template-columns: 1fr 220px;
+      transition: var(--trans);
+      text-decoration: none; color: inherit;
+    }
+    .featured-card:hover { border-color: var(--accent); box-shadow: var(--shadow-lg); }
+
+    .featured-body { padding: 28px; }
+    .featured-badge {
+      display: inline-block; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+      background: var(--accent); color: white; padding: 3px 10px;
+      border-radius: 20px; font-weight: 700; margin-bottom: 14px;
+    }
+    .featured-title { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.1; margin-bottom: 10px; }
+    .featured-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
+    .featured-cta {
+      display: inline-flex; align-items: center; gap: 7px;
+      margin-top: 18px; font-size: 12px; font-weight: 700;
+      color: var(--accent); text-decoration: none;
+      letter-spacing: 0.04em;
+    }
+    .featured-cta:hover { gap: 11px; }
+    .featured-cta .arr { transition: transform 0.15s; }
+    .featured-card:hover .arr { transform: translateX(4px); }
+
+    .featured-canvas-wrap {
+      background: var(--bg2); position: relative; overflow: hidden;
+    }
+    .featured-canvas-wrap canvas { width: 100%; height: 100%; display: block; }
+
+    @media (max-width: 600px) {
+      .featured-card { grid-template-columns: 1fr; }
+      .featured-canvas-wrap { height: 140px; }
+      .hero-stats { display: none; }
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      max-width: 820px; margin: 0 auto;
+      padding: 24px 28px 60px;
+      display: flex; flex-wrap: wrap; gap: 14px;
+      justify-content: space-between; align-items: center;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-left { font-size: 12px; color: var(--muted); }
+    .footer-left strong { font-family: 'Fraunces', serif; font-style: italic; color: var(--ink); }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a { font-size: 11px; color: var(--muted); text-decoration: none; letter-spacing: 0.05em; transition: color 0.15s; }
+    .footer-links a:hover { color: var(--accent); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-enter {
+      animation: cardPop 0.3s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    @keyframes cardPop {
+      from { opacity: 0; transform: scale(0.94) translateY(8px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
     }
   </style>
 </head>
 <body>
 
-  <a class="back-button" href="index.html">← Back</a>
-  <button class="mode-toggle" id="toggleMode">🌙 Dark Mode</button>
-
-  <h1>🧪 Experiments</h1>
-
-  <div class="tabs">
-    <button class="tab-button active" data-filter="all">All</button>
-    <button class="tab-button" data-filter="ui">UI Tests</button>  
-    <button class="tab-button" data-filter="beta">Beta</button>
-    <button class="tab-button" data-filter="alpha">Alpha</button>
-    <button class="tab-button" data-filter="concept">Concept</button>  
+<!-- TOPBAR -->
+<div class="topbar">
+  <a class="back-btn" href="../index.html"><span class="arrow">←</span> noah.cool</a>
+  <div class="topbar-right">
+    <!-- dark mode -->
+    <button class="theme-btn" onclick="toggleTheme()" title="Toggle dark mode" aria-label="Toggle theme">
+      <div class="theme-thumb" id="themethumb">
+        <span id="themeIcon">☀️</span>
+      </div>
+    </button>
   </div>
+</div>
 
-  <div class="tiles-container">
-    <div class="tile" data-tag="concept">Grow A Tree</div>
-    <div class="tile" data-tag="alpha">AI Capabilities in Magical 9 Ball</div>
-    <div class="tile" data-tag="alpha">Digital Aquarium</div>
-    <div class="tile" data-tag="alpha">Planet Editor Test</div>
-    <div class="tile" data-tag="ui">UI Concept 1</div>
-    <div class="tile" data-tag="Concept">Phone Creator</div>    
-    <div class="tile" data-tag="ui">Seasonal UI</div>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">creative lab</div>
+  <h1 class="hero-title">Experi<span class="tilt">-</span><br>ments</h1>
+  <div class="hero-meta">
+    <p class="hero-desc">Half-finished ideas and weird things that may or may not work.</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num" id="doneCount">0</span>
+        <span class="stat-label">done</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num" id="wipCount">0</span>
+        <span class="stat-label">building</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num" id="ideaCount">0</span>
+        <span class="stat-label">ideas</span>
+      </div>
+    </div>
   </div>
+</div>
+
+<!-- FEATURED -->
+<div class="featured-section">
+  <div class="featured-label">✦ featured experiment</div>
+  <div class="featured-card" id="featuredCard">
+    <div class="featured-body">
+      <span class="featured-badge">✦ In Progress</span>
+      <div class="featured-title">Digital Aquarium</div>
+      <p class="featured-desc">Take care of you fishes</p>
+      <a class="featured-cta" href="#">
+        View experiment <span class="arr">→</span>
+      </a>
+    </div>
+    <div class="featured-canvas-wrap">
+      <canvas id="featuredCanvas"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- GRID -->
+<main class="wrap">
+  <div class="exp-grid" id="expGrid"></div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">made by <strong>Noah</strong> · somewhere on the internet</div>
+  <nav class="footer-links">
+    <a href="#">twitter</a>
+    <a href="#">github</a>
+    <a href="#">contact</a>
+  </nav>
+</footer>
 
 <script>
-  // Tab Filtering
-  const tabs = document.querySelectorAll('.tab-button');
-  const tiles = document.querySelectorAll('.tile');
+// ═══════════════════════════════════════
+//  EXPERIMENTS DATA
+// ═══════════════════════════════════════
+const EXPERIMENTS = [
+  {
+    id:'aquarium',
+    title:'Digital Aquarium',
+    icon:'🌀',
+    desc:'Thousands of particles flowing through an invisible vector field. Every frame is different. Equal parts screensaver and daydream.',
+    status:'wip',
+    tags:['generative','canvas','math'],
+    href:'#',
+    preview:'perlin',
+  },
+  {
+    id:'life',
+    title:"Life",
+    icon:'🧬',
+    desc:'Classic cellular automaton. Draw your own starting state and watch it evolve. Surprisingly meditative.',
+    status:'done',
+    tags:['simulation','interactive','classic'],
+    date:'Nov 2025',
+    href:'#',
+    preview:'life',
+  },
+  {
+    id:'pixel',
+    title:'Pixel Sorter',
+    icon:'🔬',
+    desc:'Upload any image and watch its pixels get sorted by hue, brightness, or chaos. Genuinely hypnotic.',
+    status:'wip',
+    tags:['images','art','sorting'],
+    date:'Jan 2026',
+    href:'#',
+    preview:'pixel',
+  },
+  {
+    id:'palette',
+    title:'Planet Maker',
+    icon:'🎨',
+    desc:'Make your own planey',
+    status:'done',
+    tags:['color','design','tools'],
+    date:'Oct 2025',
+    href:'#',
+    preview:'palette',
+  },
+  {
+    id:'walk',
+    title:'Random Walk',
+    icon:'🗺️',
+    desc:'Generative art from a simple drunk-walk algorithm. Thousands of tiny decisions make something beautiful.',
+    status:'done',
+    tags:['generative','math','art'],
+    date:'Sep 2025',
+    href:'#',
+    preview:'walk',
+  },
+  {
+    id:'web',
+    title:'Web of Things',
+    icon:'🕸️',
+    desc:'An interactive force-directed graph of random connections. Drag nodes. Watch it untangle itself.',
+    status:'idea',
+    tags:['graph','physics','interactive'],
+    date:'Feb 2026',
+    href:'#',
+    preview:'web',
+  },
+  {
+    id:'audio',
+    title:'Audio Visualizer',
+    icon:'🔊',
+    desc:'Pipe your microphone through a Web Audio FFT and turn your voice into something beautiful.',
+    status:'wip',
+    tags:['audio','canvas','realtime'],
+    date:'Jan 2026',
+    href:'#',
+    preview:'audio',
+  },
+  {
+    id:'radio',
+    title:'Radio Telescope',
+    icon:'📡',
+    desc:'Visualize real radio frequency data from publicly available space datasets. Someday.',
+    status:'idea',
+    tags:['space','data','visualization'],
+    date:'Mar 2026',
+    href:'#',
+    preview:'radio',
+  },
+  {
+    id:'lsystem',
+    title:'L-System Trees',
+    icon:'🌿',
+    desc:'Recursive grammar rules that grow into fractal trees, corals, and ferns. Change the rules, change the organism.',
+    status:'done',
+    tags:['fractals','math','generative'],
+    date:'Nov 2025',
+    href:'#',
+    preview:'lsystem',
+  },
+  {
+    id:'voronoi',
+    title:'Voronoi Diagrams',
+    icon:'🔷',
+    desc:'Click to place points and watch a Voronoi diagram tessellate the canvas in real time.',
+    status:'wip',
+    tags:['math','geometry','interactive'],
+    date:'Feb 2026',
+    href:'#',
+    preview:'voronoi',
+  },
+  {
+    id:'gravity',
+    title:'Gravity Sim',
+    icon:'🪐',
+    desc:'N-body gravitational simulation. Spawn planets, watch them orbit or collide. Newtonian physics in ~80 lines.',
+    status:'idea',
+    tags:['physics','space','simulation'],
+    date:'Mar 2026',
+    href:'#',
+    preview:'gravity',
+  },
+  {
+    id:'ascii',
+    title:'ASCII Webcam',
+    icon:'📷',
+    desc:'Your webcam feed rendered in real-time ASCII art. Dark room = more dramatic. Absolutely useless.',
+    status:'idea',
+    tags:['webcam','art','silly'],
+    date:'Mar 2026',
+    href:'#',
+    preview:'ascii',
+  },
+];
 
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
+// ═══════════════════════════════════════
+//  MINI CANVAS PREVIEWS
+// ═══════════════════════════════════════
+function drawPreview(canvas, type, isDark) {
+  const ctx  = canvas.getContext('2d');
+  const W = canvas.width = canvas.offsetWidth || 200;
+  const H = canvas.height = canvas.offsetHeight || 80;
+  const bg = isDark ? '#1e1c14' : '#f4efe6';
+  ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
 
-      const filter = tab.dataset.filter;
+  // seed-based pseudo-random
+  let seed = type.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+  const rng = () => { seed=(seed*1664525+1013904223)&0xffffffff; return (seed>>>0)/0xffffffff; };
 
-      tiles.forEach(tile => {
-        const tag = tile.dataset.tag;
-        const matches = filter === 'all' || tag === filter;
-        tile.style.display = matches ? 'block' : 'none';
+  const accent = isDark ? '#ff6040' : '#e84c2b';
+  const muted  = isDark ? '#3a3830' : '#ddd6c8';
+
+  switch(type) {
+    case 'perlin': {
+      // flowing lines
+      ctx.strokeStyle = accent; ctx.lineWidth = 1; ctx.globalAlpha = 0.7;
+      for (let j=0;j<12;j++) {
+        ctx.beginPath();
+        let x=rng()*W, y=rng()*H;
+        ctx.moveTo(x,y);
+        for(let i=0;i<60;i++){
+          const a = (Math.sin(x*0.04+j*0.5)*Math.PI + Math.cos(y*0.04)*Math.PI);
+          x += Math.cos(a)*2.5; y += Math.sin(a)*2.5;
+          ctx.lineTo(Math.max(0,Math.min(W,x)),Math.max(0,Math.min(H,y)));
+        }
+        ctx.stroke();
+      }
+      ctx.globalAlpha=1; break;
+    }
+    case 'life': {
+      // Conway grid
+      const sz=10;
+      for(let r=0;r<H/sz;r++) for(let c=0;c<W/sz;c++) {
+        if(rng()>0.65) {
+          ctx.fillStyle=rng()>0.5?accent:muted;
+          ctx.fillRect(c*sz+1,r*sz+1,sz-2,sz-2);
+        }
+      }
+      break;
+    }
+    case 'pixel': {
+      // sorted color bars
+      const bars=20;
+      for(let i=0;i<bars;i++){
+        const hue=i/bars*360;
+        ctx.fillStyle=`hsl(${hue},60%,55%)`;
+        ctx.fillRect(i*W/bars,0,W/bars+1,H);
+      }
+      ctx.fillStyle='rgba(0,0,0,0.15)';
+      for(let i=0;i<20;i++){
+        ctx.fillRect(rng()*W,rng()*H,rng()*30+5,rng()*20+5);
+      }
+      break;
+    }
+    case 'palette': {
+      // color swatches
+      const cols=['#E84C2B','#F5C842','#3A7D44','#4A90D9','#9B59B6','#E67E22'];
+      cols.forEach((c,i)=>{
+        ctx.fillStyle=c;
+        ctx.beginPath();
+        const cx=W*(i+0.5)/cols.length, cy=H/2, r=Math.min(W/cols.length*0.38,18);
+        ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fill();
       });
+      break;
+    }
+    case 'walk': {
+      // random walk path
+      let x=W/2,y=H/2;
+      ctx.strokeStyle=accent; ctx.lineWidth=1.5; ctx.globalAlpha=0.8;
+      ctx.beginPath(); ctx.moveTo(x,y);
+      for(let i=0;i<200;i++){
+        const a=rng()*Math.PI*2;
+        x+=Math.cos(a)*4; y+=Math.sin(a)*4;
+        x=Math.max(2,Math.min(W-2,x)); y=Math.max(2,Math.min(H-2,y));
+        ctx.lineTo(x,y);
+      }
+      ctx.stroke(); ctx.globalAlpha=1; break;
+    }
+    case 'web': {
+      // nodes and edges
+      const nodes=[];
+      for(let i=0;i<8;i++) nodes.push({x:10+rng()*(W-20),y:10+rng()*(H-20)});
+      ctx.strokeStyle=muted; ctx.lineWidth=1; ctx.globalAlpha=0.6;
+      nodes.forEach((a,i)=>nodes.forEach((b,j)=>{
+        if(j>i&&rng()>0.4){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
+      }));
+      ctx.globalAlpha=1;
+      nodes.forEach(n=>{
+        ctx.beginPath(); ctx.arc(n.x,n.y,5,0,Math.PI*2);
+        ctx.fillStyle=accent; ctx.fill();
+      });
+      break;
+    }
+    case 'audio': {
+      // waveform bars
+      const bars=30;
+      for(let i=0;i<bars;i++){
+        const bh=(0.2+Math.pow(Math.sin(i/bars*Math.PI),0.5)*0.7+rng()*0.1)*H;
+        ctx.fillStyle=accent;
+        ctx.globalAlpha=0.5+rng()*0.5;
+        ctx.fillRect(i*W/bars+1,H/2-bh/2,W/bars-2,bh);
+      }
+      ctx.globalAlpha=1; break;
+    }
+    case 'radio': {
+      // signal scatter plot
+      ctx.strokeStyle=accent; ctx.lineWidth=1.5;
+      for(let i=0;i<4;i++){
+        ctx.globalAlpha=0.15+i*0.15;
+        ctx.beginPath();
+        ctx.arc(W/2,H/2,(i+1)*H*0.18,0,Math.PI*2); ctx.stroke();
+      }
+      ctx.globalAlpha=1;
+      ctx.fillStyle=accent;
+      for(let i=0;i<12;i++){
+        const a=rng()*Math.PI*2, r=rng()*H*0.4;
+        ctx.beginPath(); ctx.arc(W/2+Math.cos(a)*r,H/2+Math.sin(a)*r*0.5,2,0,Math.PI*2); ctx.fill();
+      }
+      break;
+    }
+    case 'lsystem': {
+      // fractal tree
+      ctx.strokeStyle=accent; ctx.lineWidth=1.2;
+      function branch(x,y,len,angle,depth){
+        if(depth===0||len<2)return;
+        ctx.beginPath(); ctx.moveTo(x,y);
+        const ex=x+len*Math.cos(angle), ey=y+len*Math.sin(angle);
+        ctx.lineTo(ex,ey); ctx.globalAlpha=depth/6; ctx.stroke();
+        branch(ex,ey,len*0.7,angle-0.5,depth-1);
+        branch(ex,ey,len*0.7,angle+0.4,depth-1);
+      }
+      ctx.globalAlpha=1;
+      branch(W/2,H,H*0.28,-Math.PI/2,6);
+      ctx.globalAlpha=1; break;
+    }
+    case 'voronoi': {
+      // colored voronoi approximation
+      const pts=[]; for(let i=0;i<8;i++) pts.push({x:rng()*W,y:rng()*H,h:rng()*360});
+      for(let x=0;x<W;x+=3) for(let y=0;y<H;y+=3){
+        let best=Infinity,bestH=0;
+        pts.forEach(p=>{const d=(x-p.x)**2+(y-p.y)**2;if(d<best){best=d;bestH=p.h;}});
+        ctx.fillStyle=`hsl(${bestH},40%,${isDark?30:70}%)`;
+        ctx.fillRect(x,y,3,3);
+      }
+      pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,4,0,Math.PI*2);ctx.fillStyle=accent;ctx.fill();});
+      break;
+    }
+    case 'gravity': {
+      // orbiting dots
+      const cx=W/2,cy=H/2;
+      ctx.beginPath(); ctx.arc(cx,cy,7,0,Math.PI*2);
+      ctx.fillStyle=accent; ctx.fill();
+      for(let i=0;i<4;i++){
+        const a=rng()*Math.PI*2, r=20+rng()*H*0.3;
+        ctx.beginPath(); ctx.arc(cx+Math.cos(a)*r,cy+Math.sin(a)*r*0.55,3,0,Math.PI*2);
+        ctx.fillStyle=muted; ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(cx,cy,r,r*0.55,0,0,Math.PI*2);
+        ctx.strokeStyle=muted; ctx.lineWidth=0.8; ctx.globalAlpha=0.4; ctx.stroke();
+        ctx.globalAlpha=1;
+      }
+      break;
+    }
+    case 'ascii': {
+      // ascii art text
+      const chars=['@','#','%','*','+','-','.',' '];
+      ctx.font='8px DM Mono,monospace'; ctx.fillStyle=accent; ctx.textBaseline='top';
+      for(let row=0;row<H/9;row++) for(let col=0;col<W/5;col++){
+        const v=rng();
+        if(v>0.3) {
+          ctx.globalAlpha=v*0.8;
+          ctx.fillText(chars[Math.floor(v*chars.length)],col*5,row*9);
+        }
+      }
+      ctx.globalAlpha=1; break;
+    }
+  }
+}
+
+// ═══════════════════════════════════════
+//  FEATURED CANVAS ANIMATION
+// ═══════════════════════════════════════
+let featParticles = [];
+let featAnimId = null;
+
+function initFeaturedCanvas() {
+  const canvas = document.getElementById('featuredCanvas');
+  if(!canvas) return;
+  const parent = canvas.parentElement;
+  canvas.width  = parent.offsetWidth || 220;
+  canvas.height = parent.offsetHeight || 200;
+  featParticles = [];
+  for(let i=0;i<180;i++){
+    featParticles.push({
+      x: Math.random()*canvas.width,
+      y: Math.random()*canvas.height,
+      vx:0, vy:0, age:Math.random()*100
+    });
+  }
+  animFeatured();
+}
+
+function animFeatured() {
+  const canvas = document.getElementById('featuredCanvas');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width, H=canvas.height;
+  const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+
+  ctx.fillStyle = isDark ? 'rgba(30,28,20,0.12)' : 'rgba(244,239,230,0.12)';
+  ctx.fillRect(0,0,W,H);
+
+  const accentColor = isDark ? '#ff6040' : '#e84c2b';
+
+  featParticles.forEach(p => {
+    p.age++;
+    const nx = p.x/W, ny = p.y/H;
+    const angle = (Math.sin(nx*3.2+p.age*0.008)*Math.PI + Math.cos(ny*2.8+p.age*0.006)*Math.PI);
+    p.vx = p.vx*0.95 + Math.cos(angle)*0.5;
+    p.vy = p.vy*0.95 + Math.sin(angle)*0.5;
+    p.x += p.vx; p.y += p.vy;
+    if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+    if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+    ctx.beginPath(); ctx.arc(p.x,p.y,1,0,Math.PI*2);
+    ctx.fillStyle=accentColor; ctx.globalAlpha=0.35; ctx.fill();
+  });
+  ctx.globalAlpha=1;
+  featAnimId = requestAnimationFrame(animFeatured);
+}
+
+// ═══════════════════════════════════════
+//  THEME
+// ═══════════════════════════════════════
+let isDark = localStorage.getItem('theme_v1') === 'dark';
+
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.getElementById('themeIcon').textContent = isDark ? '🌙' : '☀️';
+  // redraw previews
+  document.querySelectorAll('[data-preview]').forEach(canvas => {
+    const type = canvas.getAttribute('data-preview');
+    drawPreview(canvas, type, isDark);
+  });
+}
+
+function toggleTheme() {
+  isDark = !isDark;
+  localStorage.setItem('theme_v1', isDark ? 'dark' : 'light');
+  applyTheme();
+}
+
+// ═══════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════
+const STATUS_LABEL = { done:'Done', wip:'In Progress', idea:'Early Idea' };
+
+function renderGrid(exps) {
+  const grid = document.getElementById('expGrid');
+  grid.innerHTML = '';
+
+  exps.forEach((exp, i) => {
+    const card = document.createElement('a');
+    card.href = exp.href;
+    card.className = 'exp-card card-enter';
+    card.style.animationDelay = (i * 0.04) + 's';
+
+    card.innerHTML = `
+      <div class="exp-preview">
+        <canvas data-preview="${exp.id}" style="width:100%;height:80px;"></canvas>
+      </div>
+      <div class="exp-card-top">
+        <div class="exp-icon">${exp.icon}</div>
+        <div class="exp-card-meta">
+          <div class="exp-title">${exp.title}</div>
+          <div class="exp-desc">${exp.desc}</div>
+          <div class="exp-tags">
+            ${exp.tags.map(t=>`<span class="exp-tag">${t}</span>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div class="exp-footer">
+        <span class="exp-status status-${exp.status}">${STATUS_LABEL[exp.status]}</span>
+        <span class="exp-date">${exp.date}</span>
+      </div>`;
+
+    grid.appendChild(card);
+
+    requestAnimationFrame(() => {
+      const c = card.querySelector('[data-preview]');
+      if(c) drawPreview(c, exp.id, isDark);
     });
   });
+}
 
-  // Light/Dark Mode Toggle
-  const toggleBtn = document.getElementById('toggleMode');
+// ═══════════════════════════════════════
+//  STATS
+// ═══════════════════════════════════════
+function updateStats() {
+  document.getElementById('doneCount').textContent = EXPERIMENTS.filter(e=>e.status==='done').length;
+  document.getElementById('wipCount').textContent  = EXPERIMENTS.filter(e=>e.status==='wip').length;
+  document.getElementById('ideaCount').textContent = EXPERIMENTS.filter(e=>e.status==='idea').length;
+}
 
-  function setMode(dark) {
-    document.body.classList.toggle('dark', dark);
-    toggleBtn.textContent = dark ? '☀️ Light Mode' : '🌙 Dark Mode';
-    localStorage.setItem('theme', dark ? 'dark' : 'light');
-  }
+// ═══════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════
+applyTheme();
+updateStats();
+renderGrid(EXPERIMENTS);
+initFeaturedCanvas();
 
-  toggleBtn.addEventListener('click', () => {
-    const isDark = document.body.classList.toggle('dark');
-    setMode(isDark);
+window.addEventListener('resize', () => {
+  initFeaturedCanvas();
+  document.querySelectorAll('[data-preview]').forEach(c => {
+    drawPreview(c, c.getAttribute('data-preview'), isDark);
   });
-
-  // Load theme preference
-  window.addEventListener('DOMContentLoaded', () => {
-    const theme = localStorage.getItem('theme') || 'light';
-    setMode(theme === 'dark');
-  });
+});
 </script>
-
 </body>
 </html>
