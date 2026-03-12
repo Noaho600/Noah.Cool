@@ -1,223 +1,953 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ultimate Sandwich Creator</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sandwich Maker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
   <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: Arial, sans-serif;
-      background: #f7f7f7;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      background: #FFF8EE;
+      font-family: 'Nunito', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
+    #root { min-height: 100vh; }
 
-    header {
-      width: 100%;
-      padding: 20px;
-      background: #4CAF50;
-      color: white;
-      text-align: center;
-      font-size: 24px;
-      font-weight: bold;
+    @keyframes bounceIn {
+      0%   { transform: translateY(-30px) scale(0.8); opacity: 0; }
+      60%  { transform: translateY(4px) scale(1.05); opacity: 1; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
     }
-
-    .container {
-      margin: 30px;
-      display: flex;
-      gap: 30px;
+    @keyframes popIn {
+      0%   { transform: scale(0.5); opacity: 0; }
+      70%  { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
     }
-
-    .ingredients, .sandwich, .scoreboard {
-      background: white;
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
     }
-
-    .ingredients {
-      width: 200px;
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20% { transform: translateX(-8px) rotate(-2deg); }
+      40% { transform: translateX(8px) rotate(2deg); }
+      60% { transform: translateX(-6px) rotate(-1deg); }
+      80% { transform: translateX(6px) rotate(1deg); }
     }
-
-    .ingredients h2 {
-      text-align: center;
-      margin-bottom: 15px;
+    @keyframes float {
+      0%,100% { transform: translateY(0px); }
+      50%      { transform: translateY(-6px); }
     }
-
-    .ingredient {
-      background: #e3e3e3;
-      border-radius: 12px;
-      padding: 10px;
-      margin: 10px 0;
-      text-align: center;
-      cursor: grab;
+    @keyframes scoreCount {
+      from { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+      to   { transform: scale(1) rotate(0deg); opacity: 1; }
     }
-
-    .sandwich {
-      width: 250px;
-      height: 400px;
-      border: 2px dashed #ccc;
-      display: flex;
-      flex-direction: column-reverse;
-      align-items: center;
-      justify-content: flex-start;
-      overflow-y: auto;
+    @keyframes unlockPop {
+      0%   { transform: translateX(-50%) translateY(20px) scale(0.8); opacity: 0; }
+      20%  { transform: translateX(-50%) translateY(0) scale(1.1); opacity: 1; }
+      80%  { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateX(-50%) translateY(-10px) scale(0.9); opacity: 0; }
     }
-
-    .sandwich h2 {
-      margin-bottom: 15px;
-    }
-
-    .sandwich-item {
-      width: 180px;
-      padding: 8px;
-      margin: 5px 0;
-      text-align: center;
-      border-radius: 8px;
-      color: white;
-      font-weight: bold;
-    }
-
-    .scoreboard {
-      width: 200px;
-      text-align: center;
-    }
-
-    .scoreboard h2 {
-      margin-bottom: 15px;
-    }
-
-    #eatButton {
-      margin-top: 20px;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 12px;
-      background: #4CAF50;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    #review {
-      margin-top: 20px;
-      font-style: italic;
+    @keyframes wiggle {
+      0%,100% { transform: rotate(0deg); }
+      25% { transform: rotate(-3deg); }
+      75% { transform: rotate(3deg); }
     }
   </style>
 </head>
 <body>
-  <header>🥪 Noah.Cool – Ultimate Sandwich Creator</header>
+<div id="root"></div>
 
-  <div class="container">
-    <!-- Ingredient Menu -->
-    <div class="ingredients">
-      <h2>Ingredients</h2>
-      <div class="ingredient" draggable="true" data-name="Bread" data-color="#deb887">🍞 Bread</div>
-      <div class="ingredient" draggable="true" data-name="Lettuce" data-color="#4CAF50">🥬 Lettuce</div>
-      <div class="ingredient" draggable="true" data-name="Tomato" data-color="#e74c3c">🍅 Tomato</div>
-      <div class="ingredient" draggable="true" data-name="Cheese" data-color="#f1c40f">🧀 Cheese</div>
-      <div class="ingredient" draggable="true" data-name="Meat" data-color="#8b0000">🍖 Meat</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script>
+const { useState, useEffect, useRef, useCallback } = React;
 
-      <!-- Secret Ingredients -->
-      <div class="ingredient" draggable="true" data-name="Car Tire" data-color="#333">🛞 Car Tire</div>
-      <div class="ingredient" draggable="true" data-name="Shoe" data-color="#6d4c41">👟 Shoe</div>
-      <div class="ingredient" draggable="true" data-name="Fart Cloud" data-color="#9acd32">💨 Fart Cloud</div>
-    </div>
+// ─── INGREDIENT DATA ───────────────────────────────────────────────
+const INGREDIENTS = [
+  // BREADS
+  { id:'bread_white',   cat:'bread',  name:'White Bread',      emoji:'🍞', color:'#F5C842', h:28, desc:'Soft & classic',     unlock:'start' },
+  { id:'bread_wheat',   cat:'bread',  name:'Wheat Bread',      emoji:'🌾', color:'#B8894A', h:28, desc:'Nutty & wholesome',  unlock:'start' },
+  { id:'bread_sour',    cat:'bread',  name:'Sourdough',        emoji:'🥖', color:'#D4842A', h:30, desc:'Tangy & chewy',      unlock:'start' },
+  { id:'bread_brioche', cat:'bread',  name:'Brioche',          emoji:'🫓', color:'#F0B830', h:30, desc:'Buttery & rich',     unlock:'start' },
+  { id:'bread_rye',     cat:'bread',  name:'Dark Rye',         emoji:'🫓', color:'#6B4423', h:28, desc:'Bold & malty',       unlock:'start' },
+  // PROTEINS
+  { id:'beef_patty',    cat:'protein',name:'Beef Patty',       emoji:'🍔', color:'#6B3A1F', h:22, desc:'Juicy & meaty',      unlock:'start' },
+  { id:'bacon',         cat:'protein',name:'Crispy Bacon',     emoji:'🥓', color:'#C0392B', h:14, desc:'Smoky & salty',      unlock:'start' },
+  { id:'fried_egg',     cat:'protein',name:'Fried Egg',        emoji:'🍳', color:'#F8D030', h:18, desc:'Rich & gooey',       unlock:'start' },
+  { id:'turkey',        cat:'protein',name:'Turkey Slices',    emoji:'🦃', color:'#D4A060', h:14, desc:'Lean & deli-fresh',  unlock:'start' },
+  { id:'cheddar',       cat:'cheese', name:'Cheddar',          emoji:'🧀', color:'#F5A800', h:12, desc:'Sharp & melty',      unlock:'start' },
+  { id:'swiss',         cat:'cheese', name:'Swiss Cheese',     emoji:'🧀', color:'#F0D080', h:12, desc:'Mild & nutty',       unlock:'start' },
+  { id:'blue_cheese',   cat:'cheese', name:'Blue Cheese',      emoji:'🫙', color:'#B0A8C0', h:12, desc:'Bold & funky',       unlock:'rate3'  },
+  // VEGGIES
+  { id:'lettuce',       cat:'veggie', name:'Romaine Lettuce',  emoji:'🥬', color:'#4CAF50', h:14, desc:'Fresh & crunchy',    unlock:'start' },
+  { id:'tomato',        cat:'veggie', name:'Tomato Slices',    emoji:'🍅', color:'#E53935', h:12, desc:'Juicy & bright',     unlock:'start' },
+  { id:'onion',         cat:'veggie', name:'Red Onion',        emoji:'🧅', color:'#9C4A8A', h:12, desc:'Sharp & pungent',    unlock:'start' },
+  { id:'pickle',        cat:'veggie', name:'Dill Pickles',     emoji:'🥒', color:'#388E3C', h:10, desc:'Tangy & briny',      unlock:'start' },
+  { id:'avocado',       cat:'veggie', name:'Avocado',          emoji:'🥑', color:'#558B2F', h:14, desc:'Creamy & mild',      unlock:'start' },
+  { id:'mushroom',      cat:'veggie', name:'Grilled Mushrooms',emoji:'🍄', color:'#8D6E63', h:14, desc:'Earthy & savory',    unlock:'rate3'  },
+  { id:'jalapeno',      cat:'veggie', name:'Jalapeños',        emoji:'🌶️',color:'#2E7D32', h:10, desc:'Hot & spicy',        unlock:'rate3'  },
+  // SAUCES
+  { id:'mayo',          cat:'sauce',  name:'Mayo',             emoji:'🫙', color:'#FFFDE7', h:8,  desc:'Creamy & classic',   unlock:'start' },
+  { id:'mustard',       cat:'sauce',  name:'Yellow Mustard',   emoji:'🟡', color:'#FDD835', h:8,  desc:'Tangy & bright',     unlock:'start' },
+  { id:'ketchup',       cat:'sauce',  name:'Ketchup',          emoji:'🍅', color:'#E53935', h:8,  desc:'Sweet & tomatoey',   unlock:'start' },
+  { id:'hot_sauce',     cat:'sauce',  name:'Hot Sauce',        emoji:'🌶️',color:'#BF360C', h:8,  desc:'Fiery & vinegary',   unlock:'start' },
+  { id:'ranch',         cat:'sauce',  name:'Ranch Dressing',   emoji:'🍶', color:'#F5F5DC', h:8,  desc:'Cool & herby',       unlock:'rate5'  },
+  { id:'bbq',           cat:'sauce',  name:'BBQ Sauce',        emoji:'🍖', color:'#6D2600', h:8,  desc:'Smoky & sweet',      unlock:'rate5'  },
+  // WEIRD
+  { id:'gummy_bears',   cat:'weird',  name:'Gummy Bears',      emoji:'🐻', color:'#FF4081', h:14, desc:'Chewy & sweet chaos',unlock:'rate5'  },
+  { id:'peanut_butter', cat:'weird',  name:'Peanut Butter',    emoji:'🥜', color:'#A0522D', h:10, desc:'Thick & nutty',      unlock:'rate3'  },
+  { id:'fries',         cat:'weird',  name:'French Fries',     emoji:'🍟', color:'#FFD54F', h:18, desc:'Crispy & salty',     unlock:'rate7'  },
+  { id:'ice_cream',     cat:'weird',  name:'Ice Cream Scoop',  emoji:'🍦', color:'#E8D5F5', h:20, desc:'Cold & melting fast',unlock:'score8' },
+  { id:'spaghetti',     cat:'weird',  name:'Cold Spaghetti',   emoji:'🍝', color:'#FFB74D', h:16, desc:'Cursed & carby',     unlock:'rate10' },
+  { id:'donut',         cat:'weird',  name:'Glazed Donut',     emoji:'🍩', color:'#F48FB1', h:18, desc:'Sweet & doughy',     unlock:'score8' },
+  { id:'cereal',        cat:'weird',  name:'Lucky Charms',     emoji:'🌈', color:'#E040FB', h:12, desc:'Crunchy & magical',  unlock:'rate7'  },
+  { id:'candy',         cat:'weird',  name:'Candy Bar',        emoji:'🍫', color:'#5D4037', h:14, desc:'Chocolatey chaos',   unlock:'rate10' },
+  { id:'glitter',       cat:'weird',  name:'Edible Glitter',   emoji:'✨', color:'#E8D8FF', h:8,  desc:'Zero flavor, max vibe',unlock:'rate15'},
+  { id:'pizza_slice',   cat:'weird',  name:'Cold Pizza Slice', emoji:'🍕', color:'#FF7043', h:16, desc:'The forbidden combo', unlock:'rate15'},
+];
 
-    <!-- Sandwich Build Area -->
-    <div class="sandwich" id="sandwich">
-      <h2>Drop Here</h2>
-    </div>
+const ING_MAP = {};
+INGREDIENTS.forEach(i => ING_MAP[i.id] = i);
 
-    <!-- Scoreboard -->
-    <div class="scoreboard">
-      <h2>Score</h2>
-      <p>Height: <span id="heightScore">0</span></p>
-      <p>Weirdness: <span id="weirdScore">0</span></p>
-      <p>Integrity: <span id="integrityScore">100</span></p>
-      <button id="eatButton">🍴 Eat Sandwich</button>
-      <p id="review"></p>
-    </div>
-  </div>
+// Layer drawing colors & patterns
+const LAYER_STYLES = {
+  bread_white:   { bg: '#F5C842', stripe: '#E8B820', top: '#FDD870', pattern: 'bread' },
+  bread_wheat:   { bg: '#B8894A', stripe: '#A07838', top: '#C89A58', pattern: 'bread' },
+  bread_sour:    { bg: '#D4842A', stripe: '#C07020', top: '#E09040', pattern: 'bread' },
+  bread_brioche: { bg: '#F0B830', stripe: '#E0A820', top: '#F8C840', pattern: 'bread' },
+  bread_rye:     { bg: '#6B4423', stripe: '#5A3318', top: '#7A5530', pattern: 'bread' },
+  beef_patty:    { bg: '#6B3A1F', stripe: '#5A2A10', top: '#7A4828', pattern: 'meat' },
+  bacon:         { bg: '#C0392B', stripe: '#E8907A', top: '#D0493B', pattern: 'bacon' },
+  fried_egg:     { bg: '#FFFFFF', stripe: '#F8F0D0', top: '#F8D030', pattern: 'egg' },
+  turkey:        { bg: '#D4A060', stripe: '#C49050', top: '#E4B070', pattern: 'meat' },
+  cheddar:       { bg: '#F5A800', stripe: '#F0A000', top: '#FFBA20', pattern: 'cheese' },
+  swiss:         { bg: '#F0D080', stripe: '#E0C070', top: '#FFDF90', pattern: 'cheese' },
+  blue_cheese:   { bg: '#B0A8C0', stripe: '#8A80A0', top: '#C0B8D0', pattern: 'cheese' },
+  lettuce:       { bg: '#4CAF50', stripe: '#388E3C', top: '#66BB6A', pattern: 'veggie' },
+  tomato:        { bg: '#E53935', stripe: '#C62828', top: '#EF5350', pattern: 'tomato' },
+  onion:         { bg: '#9C4A8A', stripe: '#7B3870', top: '#AB5A9A', pattern: 'onion' },
+  pickle:        { bg: '#388E3C', stripe: '#2E7D32', top: '#43A047', pattern: 'veggie' },
+  avocado:       { bg: '#558B2F', stripe: '#33691E', top: '#689F38', pattern: 'veggie' },
+  mushroom:      { bg: '#8D6E63', stripe: '#6D4C41', top: '#A1887F', pattern: 'meat' },
+  jalapeno:      { bg: '#2E7D32', stripe: '#1B5E20', top: '#388E3C', pattern: 'veggie' },
+  mayo:          { bg: '#FFFDE7', stripe: '#FFF9C4', top: '#FFFFFF', pattern: 'sauce' },
+  mustard:       { bg: '#FDD835', stripe: '#F9A825', top: '#FFEE58', pattern: 'sauce' },
+  ketchup:       { bg: '#E53935', stripe: '#C62828', top: '#EF5350', pattern: 'sauce' },
+  hot_sauce:     { bg: '#BF360C', stripe: '#8D2000', top: '#D44000', pattern: 'sauce' },
+  ranch:         { bg: '#F5F5DC', stripe: '#E0E0C0', top: '#FFFFFF', pattern: 'sauce' },
+  bbq:           { bg: '#6D2600', stripe: '#4E1A00', top: '#8D3600', pattern: 'sauce' },
+  gummy_bears:   { bg: '#FF4081', stripe: '#F50057', top: '#FF80AB', pattern: 'candy' },
+  peanut_butter: { bg: '#A0522D', stripe: '#8B4513', top: '#BC6F3A', pattern: 'sauce' },
+  fries:         { bg: '#FFD54F', stripe: '#FFB300', top: '#FFEE58', pattern: 'fries' },
+  ice_cream:     { bg: '#E8D5F5', stripe: '#D1B3E8', top: '#F3E5FF', pattern: 'sauce' },
+  spaghetti:     { bg: '#FFB74D', stripe: '#FF9800', top: '#FFCC80', pattern: 'veggie' },
+  donut:         { bg: '#F48FB1', stripe: '#E91E8C', top: '#F8BBD9', pattern: 'candy' },
+  cereal:        { bg: '#E040FB', stripe: '#AB47BC', top: '#EA80FC', pattern: 'candy' },
+  candy:         { bg: '#5D4037', stripe: '#4E342E', top: '#795548', pattern: 'meat' },
+  glitter:       { bg: '#E8D8FF', stripe: '#C4A8FF', top: '#F0E8FF', pattern: 'sauce' },
+  pizza_slice:   { bg: '#FF7043', stripe: '#E64A19', top: '#FF8A65', pattern: 'meat' },
+};
 
-  <script>
-    const sandwich = document.getElementById("sandwich");
-    const heightScore = document.getElementById("heightScore");
-    const weirdScore = document.getElementById("weirdScore");
-    const integrityScore = document.getElementById("integrityScore");
-    const review = document.getElementById("review");
+// ─── CANVAS DRAWING ────────────────────────────────────────────────
+function drawLayer(ctx, ing, x, y, w, h, isTop=false, isBottom=false) {
+  const style = LAYER_STYLES[ing.id] || { bg: ing.color, stripe: ing.color, top: ing.color, pattern: 'plain' };
+  const r = Math.min(h * 0.45, 12);
 
-    let height = 0;
-    let weirdness = 0;
-    let integrity = 100;
+  ctx.save();
 
-    // Drag & Drop
-    document.querySelectorAll(".ingredient").forEach(item => {
-      item.addEventListener("dragstart", e => {
-        e.dataTransfer.setData("name", item.dataset.name);
-        e.dataTransfer.setData("color", item.dataset.color);
-      });
+  // Shadow
+  ctx.shadowColor = 'rgba(0,0,0,0.18)';
+  ctx.shadowBlur = 6;
+  ctx.shadowOffsetY = 3;
+
+  // Main shape
+  ctx.beginPath();
+  if (isTop) {
+    // Bread top — dome shape
+    ctx.moveTo(x + r, y + h);
+    ctx.lineTo(x + w - r, y + h);
+    ctx.quadraticCurveTo(x + w, y + h, x + w, y + h - r);
+    ctx.lineTo(x + w + 8, y + r * 2);
+    ctx.quadraticCurveTo(x + w + 6, y - 2, x + w/2, y - h * 0.3);
+    ctx.quadraticCurveTo(x + w/2, y - h * 0.32, x - 6, y + r * 2);
+    ctx.lineTo(x, y + h - r);
+    ctx.quadraticCurveTo(x, y + h, x + r, y + h);
+  } else if (isBottom) {
+    // Bread bottom — slight curve on bottom
+    ctx.moveTo(x - 6, y);
+    ctx.lineTo(x + w + 6, y);
+    ctx.lineTo(x + w + 4, y + h - r);
+    ctx.quadraticCurveTo(x + w + 4, y + h + 4, x + w - r, y + h + 4);
+    ctx.lineTo(x + r, y + h + 4);
+    ctx.quadraticCurveTo(x - 4, y + h + 4, x - 4, y + h - r);
+    ctx.closePath();
+  } else {
+    // Regular ingredient — wavy edges
+    const wave = Math.min(h * 0.3, 5);
+    ctx.moveTo(x, y + wave);
+    ctx.bezierCurveTo(x + w*0.25, y - wave, x + w*0.75, y + wave, x + w, y);
+    ctx.lineTo(x + w, y + h);
+    ctx.bezierCurveTo(x + w*0.75, y + h + wave, x + w*0.25, y + h - wave, x, y + h);
+    ctx.closePath();
+  }
+
+  // Fill gradient
+  const grad = ctx.createLinearGradient(x, y, x, y + h);
+  grad.addColorStop(0, style.top);
+  grad.addColorStop(0.4, style.bg);
+  grad.addColorStop(1, style.stripe);
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  ctx.shadowColor = 'transparent';
+
+  // Patterns
+  ctx.save();
+  ctx.clip();
+
+  if (style.pattern === 'bacon') {
+    // Bacon stripes
+    for (let i = 0; i < w; i += 18) {
+      ctx.fillStyle = 'rgba(255,255,255,0.25)';
+      ctx.fillRect(x + i, y, 9, h);
+    }
+  } else if (style.pattern === 'cheese') {
+    // Cheese holes
+    ctx.fillStyle = 'rgba(0,0,0,0.08)';
+    for (let i = 0; i < 5; i++) {
+      ctx.beginPath();
+      ctx.ellipse(x + 20 + i * 35, y + h/2, 8, 5, 0, 0, Math.PI*2);
+      ctx.fill();
+    }
+  } else if (style.pattern === 'egg') {
+    // Egg yolk
+    ctx.fillStyle = '#F8D030';
+    ctx.beginPath();
+    ctx.ellipse(x + w/2, y + h/2, h * 0.6, h * 0.55, 0, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = '#FFB300';
+    ctx.beginPath();
+    ctx.ellipse(x + w/2 - 2, y + h/2 - 2, h * 0.25, h * 0.22, 0, 0, Math.PI*2);
+    ctx.fill();
+  } else if (style.pattern === 'tomato') {
+    // Tomato sections
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(x + w/2, y); ctx.lineTo(x + w/2, y + h);
+    ctx.moveTo(x + w*0.3, y); ctx.lineTo(x + w*0.3, y + h);
+    ctx.moveTo(x + w*0.7, y); ctx.lineTo(x + w*0.7, y + h);
+    ctx.stroke();
+  } else if (style.pattern === 'veggie') {
+    // Veggie texture lines
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+    ctx.lineWidth = 1;
+    for (let i = 8; i < w; i += 20) {
+      ctx.beginPath();
+      ctx.moveTo(x + i, y); ctx.lineTo(x + i - 5, y + h);
+      ctx.stroke();
+    }
+  } else if (style.pattern === 'fries') {
+    // Fry sticks
+    ctx.fillStyle = 'rgba(255,180,0,0.7)';
+    for (let i = 0; i < w; i += 12) {
+      ctx.fillRect(x + i + 2, y + 2, 6, h - 4);
+    }
+  } else if (style.pattern === 'candy') {
+    // Colorful dots
+    const dotColors = ['#FF4081','#00BCD4','#FFEB3B','#4CAF50','#FF5722'];
+    for (let i = 0; i < 8; i++) {
+      ctx.fillStyle = dotColors[i % dotColors.length];
+      ctx.beginPath();
+      ctx.arc(x + 15 + i * (w-20)/7, y + h/2, 4, 0, Math.PI*2);
+      ctx.fill();
+    }
+  } else if (style.pattern === 'bread' && (isTop || isBottom)) {
+    // Sesame seeds
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    const seedPositions = [[0.2,0.4],[0.5,0.3],[0.75,0.5],[0.35,0.65],[0.65,0.35],[0.15,0.6],[0.85,0.45]];
+    seedPositions.forEach(([sx, sy]) => {
+      ctx.beginPath();
+      ctx.ellipse(x + w*sx, y + h*sy, 4, 2.5, -0.4, 0, Math.PI*2);
+      ctx.fill();
+    });
+  }
+
+  // Sauce drip effect
+  if (style.pattern === 'sauce') {
+    ctx.fillStyle = style.bg + 'CC';
+    for (let i = 0; i < 4; i++) {
+      const dx = x + 20 + i * (w - 30)/3;
+      ctx.beginPath();
+      ctx.ellipse(dx, y + h, 5, 3, 0, 0, Math.PI);
+      ctx.fill();
+    }
+  }
+
+  ctx.restore();
+
+  // Border
+  ctx.beginPath();
+  if (!isTop && !isBottom) {
+    const wave = Math.min(h * 0.3, 5);
+    ctx.moveTo(x, y + wave);
+    ctx.bezierCurveTo(x + w*0.25, y - wave, x + w*0.75, y + wave, x + w, y);
+    ctx.lineTo(x + w, y + h);
+    ctx.bezierCurveTo(x + w*0.75, y + h + wave, x + w*0.25, y + h - wave, x, y + h);
+    ctx.closePath();
+  }
+  ctx.strokeStyle = style.stripe;
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Emoji label
+  ctx.shadowColor = 'transparent';
+  ctx.font = `${Math.min(h - 2, 14)}px serif`;
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(ing.emoji + ' ' + ing.name, x + 10, y + h/2);
+
+  ctx.restore();
+}
+
+// ─── SCORING ENGINE ─────────────────────────────────────────────────
+const CRITICS = [
+  { name: 'Chef Reginald Brie', title: 'Senior Critic, The Hoagie Review', emoji: '👨‍🍳' },
+  { name: 'Madame Fromage',     title: 'Paris Culinary Institute',         emoji: '👩‍🍳' },
+  { name: 'Tony "The Stack"',   title: 'World Sandwich Champion 2019',     emoji: '🏆' },
+  { name: 'Dr. Phyllis Crust',  title: 'Sandwich Psychology, MIT',         emoji: '🔬' },
+  { name: 'Big Mike',           title: 'Just a really hungry guy',         emoji: '😤' },
+];
+
+function scoreSandwich(layers) {
+  const ids = layers.map(l => l.id);
+  const cats = layers.map(l => l.cat);
+  let score = 5.0;
+
+  const hasProtein   = ids.some(id => ['beef_patty','bacon','fried_egg','turkey'].includes(id));
+  const hasVeggie    = ids.some(id => ['lettuce','tomato','avocado','pickle','onion','mushroom','jalapeno'].includes(id));
+  const hasCheese    = ids.some(id => ['cheddar','swiss','blue_cheese'].includes(id));
+  const hasSauce     = cats.includes('sauce');
+  const weirdCount   = layers.filter(l => l.cat === 'weird').length;
+  const total        = layers.length;
+  const unique       = new Set(ids).size;
+
+  if (hasProtein) score += 1;
+  if (hasVeggie)  score += 0.8;
+  if (hasCheese)  score += 0.5;
+  if (hasSauce)   score += 0.5;
+  if (unique === total) score += 0.5; // no repeats bonus
+  if (total >= 4 && total <= 7) score += 0.5;
+  if (total > 12) score -= (total - 12) * 0.3;
+  if (total > 18) score -= 3;
+
+  // Weird scoring
+  if (weirdCount > 0) {
+    score -= weirdCount * 0.4;
+    score += Math.random() * 2.5; // chaos dice
+  }
+
+  // Classic combo bonuses
+  if (ids.includes('beef_patty') && ids.includes('cheddar') && ids.includes('lettuce') && ids.includes('tomato')) score += 1.5;
+  if (ids.includes('bacon') && ids.includes('fried_egg') && ids.includes('cheddar')) score += 1.2;
+  if (ids.includes('avocado') && ids.includes('tomato') && ids.includes('bacon')) score += 1.0;
+
+  // Chaos combos
+  if (ids.includes('ice_cream') && ids.includes('beef_patty')) score -= 1.5;
+  if (ids.includes('spaghetti') && ids.includes('pizza_slice')) score += 2; // cursed but valid
+  if (ids.includes('gummy_bears') && ids.includes('mustard')) score -= 2;
+
+  score += (Math.random() - 0.5) * 1.5;
+  return Math.max(0.5, Math.min(10, parseFloat(score.toFixed(1))));
+}
+
+function getReview(score, layers) {
+  const ids = layers.map(l => l.id);
+  const weirdCount = layers.filter(l => l.cat === 'weird').length;
+
+  const openers = {
+    high: [
+      "I've been reviewing sandwiches for 23 years. This stopped me cold.",
+      "An architectural achievement. The audacity of the layering alone deserves an award.",
+      "Extraordinary. I texted my mother immediately.",
+      "I wept into my napkin. No shame.",
+    ],
+    mid: [
+      "A competent effort. Shows promise, lacks conviction.",
+      "Solid. Respectable. Won't win trophies, won't cause arguments.",
+      "I've had this exact sandwich on a sad Tuesday. It was fine.",
+      "The construction is sound. The ambition is... adequate.",
+    ],
+    low: [
+      "I've been doing this for 30 years. Nothing prepared me for this.",
+      "I don't know who hurt you, but this sandwich is the result.",
+      "There are no words. Only consequences.",
+      "My therapist will be hearing about this.",
+    ],
+  };
+
+  const tier = score >= 7.5 ? 'high' : score >= 5 ? 'mid' : 'low';
+  let text = openers[tier][Math.floor(Math.random() * openers[tier].length)];
+
+  if (ids.includes('ice_cream')) text += " The ice cream is melting into everything. This is either genius or a cry for help.";
+  if (ids.includes('spaghetti')) text += " Cold spaghetti in a sandwich is a choice that future historians will study.";
+  if (ids.includes('gummy_bears')) text += " The gummy bears add a textural chaos I cannot in good conscience recommend.";
+  if (ids.includes('pizza_slice')) text += " A pizza inside a sandwich. The Forbidden Loop. I'm calling someone.";
+  if (ids.includes('glitter')) text += " Edible glitter contributes precisely nothing nutritionally but somehow elevates my spirit.";
+  if (weirdCount >= 3) text += " The sheer commitment to chaos here is, frankly, inspiring.";
+  if (layers.length > 15) text += " I cannot physically see where one ingredient ends and another begins.";
+
+  const closers = {
+    high: ["Would order again. Immediately.", "Frame it.", "My legacy is complete."],
+    mid:  ["Eat it. Think about what you've done.", "It exists. That's something.", "Inoffensive. Occasionally charming."],
+    low:  ["Do not serve this to guests.", "I'm calling the sandwich authorities.", "On behalf of bread everywhere: please stop."],
+  };
+
+  text += ' ' + closers[tier][Math.floor(Math.random() * closers[tier].length)];
+  return text;
+}
+
+// ─── MAIN COMPONENT ─────────────────────────────────────────────────
+function SandwichMaker() {
+  const [layers, setLayers]           = useState([]);
+  const [rating, setRating]           = useState(null);
+  const [rateCount, setRateCount]     = useState(() => parseInt(localStorage.getItem('sc_rates')||'0'));
+  const [bestScore, setBestScore]     = useState(() => parseFloat(localStorage.getItem('sc_best')||'0'));
+  const [hallOfFame, setHallOfFame]   = useState(() => JSON.parse(localStorage.getItem('sc_hof')||'[]'));
+  const [unlocked, setUnlocked]       = useState(() => JSON.parse(localStorage.getItem('sc_unlocked')||'["start"]'));
+  const [activeTab, setActiveTab]     = useState('bread');
+  const [sandwichName, setSandwichName] = useState('');
+  const [showHof, setShowHof]         = useState(false);
+  const [toastMsg, setToastMsg]       = useState('');
+  const [isRating, setIsRating]       = useState(false);
+  const [animScore, setAnimScore]     = useState(0);
+  const [shake, setShake]             = useState(false);
+  const canvasRef = useRef(null);
+
+  const UNLOCK_CONDITIONS = {
+    start:  () => true,
+    rate3:  () => rateCount >= 3,
+    rate5:  () => rateCount >= 5,
+    rate7:  () => rateCount >= 7,
+    rate10: () => rateCount >= 10,
+    rate15: () => rateCount >= 15,
+    score8: () => bestScore >= 8,
+  };
+
+  const isUnlocked = (ing) => {
+    const cond = UNLOCK_CONDITIONS[ing.unlock];
+    return cond ? cond() : unlocked.includes(ing.unlock);
+  };
+
+  // Draw sandwich on canvas
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width;
+    const H = canvas.height;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Background plate
+    ctx.fillStyle = '#FFF8EE';
+    ctx.fillRect(0, 0, W, H);
+
+    // Plate shadow/surface
+    ctx.save();
+    ctx.beginPath();
+    ctx.ellipse(W/2, H - 24, W * 0.42, 16, 0, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(0,0,0,0.08)';
+    ctx.fill();
+    ctx.restore();
+
+    if (layers.length === 0) {
+      // Empty state
+      ctx.font = '48px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.globalAlpha = 0.25;
+      ctx.fillText('🍞', W/2, H/2 - 10);
+      ctx.globalAlpha = 1;
+      ctx.font = '600 14px Nunito, sans-serif';
+      ctx.fillStyle = '#BBA88A';
+      ctx.fillText('Click an ingredient to start!', W/2, H/2 + 38);
+      return;
+    }
+
+    // Calculate total height
+    const PADDING = 16;
+    const ingW = W - PADDING * 2;
+    const ingX = PADDING;
+
+    // Bottom bread height
+    const bottomH = 32;
+    const topH = 36;
+    const totalLayerH = layers.reduce((s, l) => s + l.h + 4, 0);
+    const totalH = bottomH + totalLayerH + topH;
+    const maxH = H - 60;
+    const scale = totalH > maxH ? maxH / totalH : 1;
+
+    let currentY = H - 32 - bottomH * scale;
+
+    // Draw bottom bread
+    const bottomBread = layers[0]; // use the bread type from first added bread if any
+    const breadIngForBottom = layers.find(l => l.cat === 'bread') || ING_MAP['bread_white'];
+    drawLayer(ctx, breadIngForBottom, ingX, currentY, ingW, bottomH * scale, false, true);
+    currentY -= 2;
+
+    // Draw fillings bottom to top
+    layers.forEach((ing, idx) => {
+      const lh = ing.h * scale + 2;
+      currentY -= lh;
+      drawLayer(ctx, ing, ingX, currentY, ingW, ing.h * scale);
     });
 
-    sandwich.addEventListener("dragover", e => e.preventDefault());
+    // Draw top bread
+    currentY -= topH * scale;
+    drawLayer(ctx, breadIngForBottom, ingX, currentY, ingW, topH * scale, true, false);
 
-    sandwich.addEventListener("drop", e => {
-      e.preventDefault();
-      const name = e.dataTransfer.getData("name");
-      const color = e.dataTransfer.getData("color");
+    // Layer count indicator
+    ctx.font = '600 12px Nunito, sans-serif';
+    ctx.fillStyle = '#BBA88A';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText(`${layers.length} ingredient${layers.length !== 1 ? 's' : ''} inside`, W/2, H - 4);
 
-      const newItem = document.createElement("div");
-      newItem.className = "sandwich-item";
-      newItem.style.background = color;
-      newItem.innerText = name;
-      sandwich.appendChild(newItem);
+  }, [layers]);
 
-      // Update Scores
-      height++;
-      if (["Car Tire", "Shoe", "Fart Cloud"].includes(name)) weirdness += 10;
-      if (height > 5) integrity -= 5;
+  const addIngredient = useCallback((ing) => {
+    if (!isUnlocked(ing)) return;
+    if (layers.length >= 20) {
+      showToast("That's enough. The sandwich is at capacity! 🏗️");
+      return;
+    }
+    setLayers(prev => [...prev, ing]);
+    setRating(null);
 
-      heightScore.innerText = height;
-      weirdScore.innerText = weirdness;
-      integrityScore.innerText = integrity;
+    // Check new unlocks
+    const newRates = rateCount;
+    const newBest  = bestScore;
+    const newlyUnlocked = [];
+    INGREDIENTS.forEach(i => {
+      if (unlocked.includes(i.unlock)) return;
+      const cond = UNLOCK_CONDITIONS[i.unlock];
+      if (cond && cond()) newlyUnlocked.push(i.unlock);
     });
+    if (newlyUnlocked.length > 0) {
+      const next = [...new Set([...unlocked, ...newlyUnlocked])];
+      setUnlocked(next);
+      localStorage.setItem('sc_unlocked', JSON.stringify(next));
+      showToast('🎉 New weird toppings unlocked! Check the Weird tab!');
+    }
+  }, [layers, unlocked, rateCount, bestScore]);
 
-    // Eat Button
-    document.getElementById("eatButton").addEventListener("click", () => {
-      const funnyReviews = [
-        "🤢 Gordon Ramsay fainted!",
-        "😂 This belongs in a museum, not a stomach.",
-        "👏 10/10, would regret again.",
-        "🔥 Structural collapse detected!",
-        "🥇 Truly a sandwich for the history books."
-      ];
-      review.innerText = funnyReviews[Math.floor(Math.random() * funnyReviews.length)];
+  const removeLayer = (idx) => {
+    setLayers(prev => prev.filter((_, i) => i !== idx));
+    setRating(null);
+  };
 
-      // Confetti effect
-      for (let i = 0; i < 30; i++) {
-        let confetti = document.createElement("div");
-        confetti.style.position = "fixed";
-        confetti.style.top = Math.random() * window.innerHeight + "px";
-        confetti.style.left = Math.random() * window.innerWidth + "px";
-        confetti.style.width = "10px";
-        confetti.style.height = "10px";
-        confetti.style.background = `hsl(${Math.random() * 360},100%,50%)`;
-        confetti.style.borderRadius = "50%";
-        confetti.style.opacity = "0.8";
-        confetti.style.transition = "transform 1s ease-out, opacity 1s";
-        document.body.appendChild(confetti);
+  const clearSandwich = () => {
+    setLayers([]);
+    setRating(null);
+    setSandwichName('');
+  };
 
-        setTimeout(() => {
-          confetti.style.transform = "translateY(100px)";
-          confetti.style.opacity = "0";
-        }, 100);
+  const showToast = (msg) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(''), 3000);
+  };
 
-        setTimeout(() => confetti.remove(), 2000);
+  const NAME_ADJS = ['Magnificent','Legendary','Towering','Cursed','Chaotic','Blessed','Forbidden','Glorious','Suspicious','Eternal'];
+  const NAME_NOUNS = ['Stack','Masterpiece','Situation','Catastrophe','Dream','Creation','Achievement','Statement','Experience','Journey'];
+  const shuffleName = () => {
+    const adj  = NAME_ADJS[Math.floor(Math.random() * NAME_ADJS.length)];
+    const noun = NAME_NOUNS[Math.floor(Math.random() * NAME_NOUNS.length)];
+    setSandwichName(`The ${adj} ${noun}`);
+  };
+
+  const rateSandwich = async () => {
+    if (layers.length === 0) return;
+    setIsRating(true);
+    setShake(true);
+    setTimeout(() => setShake(false), 600);
+
+    await new Promise(r => setTimeout(r, 700));
+
+    const score  = scoreSandwich(layers);
+    const review = getReview(score, layers);
+    const critic = CRITICS[Math.floor(Math.random() * CRITICS.length)];
+    const weirdCount = layers.filter(l => l.cat === 'weird').length;
+
+    // animate score
+    let cur = 0;
+    const interval = setInterval(() => {
+      cur += score / 25;
+      if (cur >= score) { cur = score; clearInterval(interval); }
+      setAnimScore(parseFloat(cur.toFixed(1)));
+    }, 30);
+
+    const tags = [];
+    if (score >= 8) tags.push({ label: '⭐ Masterpiece', color: '#27AE60' });
+    if (score >= 6 && score < 8) tags.push({ label: '👍 Well Made', color: '#2980B9' });
+    if (score < 4) tags.push({ label: '😬 Needs Work', color: '#E74C3C' });
+    if (layers.some(l => ['beef_patty','bacon','turkey','fried_egg'].includes(l.id))) tags.push({ label: '💪 Protein Power', color: '#8E44AD' });
+    if (layers.some(l => l.cat === 'veggie')) tags.push({ label: '🥗 Veggie Lover', color: '#27AE60' });
+    if (weirdCount >= 2) tags.push({ label: '🌀 Certified Chaotic', color: '#E67E22' });
+    if (weirdCount >= 1) tags.push({ label: `🎲 ${weirdCount}× Weird`, color: '#9B59B6' });
+    if (layers.length > 12) tags.push({ label: '🏗️ Tower of Chaos', color: '#E74C3C' });
+
+    setRating({ score, review, critic, tags });
+    setIsRating(false);
+
+    const newCount = rateCount + 1;
+    const newBest  = Math.max(bestScore, score);
+    setRateCount(newCount);
+    setBestScore(newBest);
+    localStorage.setItem('sc_rates', newCount);
+    localStorage.setItem('sc_best', newBest);
+
+    // Check unlocks after rating
+    const newUnlocked = [...unlocked];
+    let changed = false;
+    INGREDIENTS.forEach(i => {
+      if (newUnlocked.includes(i.unlock)) return;
+      if (i.unlock === 'rate3'  && newCount >= 3)  { newUnlocked.push(i.unlock); changed = true; }
+      if (i.unlock === 'rate5'  && newCount >= 5)  { newUnlocked.push(i.unlock); changed = true; }
+      if (i.unlock === 'rate7'  && newCount >= 7)  { newUnlocked.push(i.unlock); changed = true; }
+      if (i.unlock === 'rate10' && newCount >= 10) { newUnlocked.push(i.unlock); changed = true; }
+      if (i.unlock === 'rate15' && newCount >= 15) { newUnlocked.push(i.unlock); changed = true; }
+      if (i.unlock === 'score8' && newBest >= 8)   { newUnlocked.push(i.unlock); changed = true; }
+    });
+    if (changed) {
+      setUnlocked(newUnlocked);
+      localStorage.setItem('sc_unlocked', JSON.stringify(newUnlocked));
+      showToast('🎉 New ingredients unlocked! Check the tabs!');
+    }
+  };
+
+  const saveSandwich = () => {
+    const name = sandwichName.trim() || 'Unnamed Sandwich';
+    const entry = {
+      name,
+      score: rating.score,
+      ingredients: layers.map(l => l.name),
+      date: new Date().toLocaleDateString(),
+    };
+    const newHof = [entry, ...hallOfFame].slice(0, 12);
+    setHallOfFame(newHof);
+    localStorage.setItem('sc_hof', JSON.stringify(newHof));
+    showToast('💾 Sandwich saved to Hall of Fame!');
+  };
+
+  const TABS = [
+    { id: 'bread',   label: '🍞 Bread',   color: '#F5C842' },
+    { id: 'protein', label: '🥩 Protein',  color: '#E74C3C' },
+    { id: 'cheese',  label: '🧀 Cheese',   color: '#F39C12' },
+    { id: 'veggie',  label: '🥗 Veggie',   color: '#27AE60' },
+    { id: 'sauce',   label: '🫙 Sauce',    color: '#E67E22' },
+    { id: 'weird',   label: '🎲 Weird',    color: '#9B59B6' },
+  ];
+
+  const tabIngredients = INGREDIENTS.filter(i => i.cat === activeTab);
+
+  const starsFor = (score) => {
+    const full  = Math.floor(score / 2);
+    const empty = 5 - full;
+    return '★'.repeat(full) + '☆'.repeat(empty);
+  };
+
+  const scoreColor = (s) => s >= 8 ? '#27AE60' : s >= 6 ? '#F39C12' : s >= 4 ? '#E67E22' : '#E74C3C';
+
+  return React.createElement('div', {
+    style: { minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#FFF8EE' }
+  },
+    // ── TOPBAR ──
+    React.createElement('div', {
+      style: {
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '12px 20px', background: '#fff', borderBottom: '2px solid #F0E4D0',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.06)', position: 'sticky', top: 0, zIndex: 100,
       }
-    });
-  </script>
+    },
+      React.createElement('a', {
+        href: 'index.html',
+        style: { textDecoration: 'none', fontSize: 12, color: '#999', background: '#F8F4EE', border: '1px solid #E8DDD0', padding: '6px 14px', borderRadius: 20 }
+      }, '← noah.cool'),
+
+      React.createElement('div', { style: { textAlign: 'center' } },
+        React.createElement('div', {
+          style: { fontFamily: 'Fredoka One, sans-serif', fontSize: 22, color: '#D63C2A', letterSpacing: '-0.5px' }
+        }, '🥪 Sandwich Maker'),
+        React.createElement('div', { style: { fontSize: 10, color: '#BBA88A', letterSpacing: '0.1em', textTransform: 'uppercase', marginTop: -2 } },
+          `rated ${rateCount}× · best: ${bestScore.toFixed(1)}/10`)
+      ),
+
+      React.createElement('button', {
+        onClick: () => setShowHof(true),
+        style: { fontSize: 12, color: '#9B59B6', background: '#F4EEFF', border: '1px solid #D4BFFF', padding: '6px 14px', borderRadius: 20, cursor: 'pointer', fontFamily: 'Nunito, sans-serif' }
+      }, '🏆 Hall of Fame'),
+    ),
+
+    // ── MAIN LAYOUT ──
+    React.createElement('div', {
+      style: { display: 'flex', flex: 1, gap: 0, minHeight: 0 }
+    },
+
+      // ── LEFT: SANDWICH CANVAS + CONTROLS ──
+      React.createElement('div', {
+        style: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 20px 30px', borderRight: '2px solid #F0E4D0', background: '#FFFDF9' }
+      },
+
+        // Name input
+        React.createElement('div', {
+          style: { display: 'flex', gap: 8, width: '100%', maxWidth: 400, marginBottom: 16 }
+        },
+          React.createElement('input', {
+            value: sandwichName,
+            onChange: e => setSandwichName(e.target.value),
+            placeholder: 'Name your sandwich...',
+            style: {
+              flex: 1, fontFamily: 'Fredoka One, sans-serif', fontSize: 20, color: '#4A3020',
+              background: 'transparent', border: 'none', borderBottom: '2px solid #E8D8C0',
+              padding: '4px 2px', outline: 'none', letterSpacing: '-0.3px'
+            }
+          }),
+          React.createElement('button', {
+            onClick: shuffleName,
+            style: { background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', padding: '4px 6px' },
+            title: 'Random name'
+          }, '🎲'),
+        ),
+
+        // Canvas
+        React.createElement('canvas', {
+          ref: canvasRef,
+          width: 380,
+          height: 340,
+          style: {
+            width: '100%', maxWidth: 380,
+            background: '#FFFDF9',
+            borderRadius: 20,
+            border: '2px solid #F0E4D0',
+            animation: shake ? 'shake 0.6s ease' : 'none',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
+          }
+        }),
+
+        // Layer pills (clickable to remove)
+        layers.length > 0 && React.createElement('div', {
+          style: { width: '100%', maxWidth: 400, marginTop: 12, display: 'flex', flexWrap: 'wrap', gap: 5, justifyContent: 'center' }
+        },
+          layers.map((l, i) => React.createElement('span', {
+            key: i + l.id,
+            onClick: () => removeLayer(i),
+            style: {
+              fontSize: 11, padding: '4px 10px', borderRadius: 20,
+              background: l.cat === 'weird' ? '#F4EEFF' : '#FFF0E8',
+              border: `1px solid ${l.cat === 'weird' ? '#D4BFFF' : '#F0D0B8'}`,
+              color: '#6A4A30', cursor: 'pointer', transition: 'all 0.1s',
+              animation: 'popIn 0.25s ease both',
+            },
+            title: 'Click to remove'
+          }, l.emoji + ' ' + l.name + ' ✕'))
+        ),
+
+        // Action buttons
+        React.createElement('div', {
+          style: { display: 'flex', gap: 10, marginTop: 16, flexWrap: 'wrap', justifyContent: 'center' }
+        },
+          React.createElement('button', {
+            onClick: rateSandwich,
+            disabled: layers.length === 0 || isRating,
+            style: {
+              fontFamily: 'Fredoka One, sans-serif', fontSize: 17,
+              color: 'white', background: layers.length === 0 ? '#CCC' : 'linear-gradient(135deg, #E84C2B, #C0392B)',
+              background: layers.length === 0 ? '#CCC' : '#E84C2B',
+              border: 'none', borderRadius: 50, padding: '13px 32px',
+              cursor: layers.length === 0 ? 'default' : 'pointer',
+              boxShadow: layers.length > 0 ? '0 4px 16px rgba(232,76,43,0.35)' : 'none',
+              transition: 'all 0.15s', opacity: isRating ? 0.7 : 1,
+            }
+          }, isRating ? '⏳ Tasting...' : '✦ Rate My Sandwich'),
+
+          layers.length > 0 && React.createElement('button', {
+            onClick: clearSandwich,
+            style: {
+              fontSize: 13, color: '#999', background: 'none',
+              border: '1.5px solid #E8D8C0', borderRadius: 50, padding: '12px 20px',
+              cursor: 'pointer', fontFamily: 'Nunito, sans-serif',
+            }
+          }, '✕ Clear'),
+        ),
+
+        // Rating card
+        rating && React.createElement('div', {
+          style: {
+            width: '100%', maxWidth: 400, marginTop: 18,
+            background: '#fff', border: '2px solid #F0E4D0', borderRadius: 20,
+            padding: '20px 22px', animation: 'slideUp 0.4s cubic-bezier(.22,.68,0,1.2) both',
+            boxShadow: '0 6px 24px rgba(0,0,0,0.08)',
+            borderTop: `4px solid ${scoreColor(rating.score)}`,
+          }
+        },
+          // Critic header
+          React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 } },
+            React.createElement('div', {
+              style: { width: 40, height: 40, borderRadius: '50%', background: '#FFF0E8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, border: '2px solid #F0D8C8', flexShrink: 0 }
+            }, rating.critic.emoji),
+            React.createElement('div', null,
+              React.createElement('div', { style: { fontWeight: 800, fontSize: 13, color: '#4A3020' } }, rating.critic.name),
+              React.createElement('div', { style: { fontSize: 11, color: '#9A8A7A' } }, rating.critic.title),
+            )
+          ),
+
+          // Score
+          React.createElement('div', { style: { display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 10 } },
+            React.createElement('span', {
+              style: {
+                fontFamily: 'Fredoka One, sans-serif', fontSize: 60, lineHeight: 1,
+                color: scoreColor(animScore),
+                animation: 'scoreCount 0.5s cubic-bezier(.22,.68,0,1.3) both',
+              }
+            }, animScore.toFixed(1)),
+            React.createElement('span', { style: { fontSize: 22, color: '#CCC', fontFamily: 'Fredoka One' } }, '/10'),
+            React.createElement('span', { style: { fontSize: 18, color: scoreColor(animScore), letterSpacing: 2 } }, starsFor(animScore)),
+          ),
+
+          // Review text
+          React.createElement('p', {
+            style: { fontSize: 13.5, lineHeight: 1.7, color: '#5A4A3A', fontStyle: 'italic', marginBottom: 12 }
+          }, rating.review),
+
+          // Tags
+          React.createElement('div', { style: { display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 } },
+            rating.tags.map((t, i) => React.createElement('span', {
+              key: i,
+              style: {
+                fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase',
+                padding: '3px 10px', borderRadius: 20, color: t.color,
+                background: t.color + '18', border: `1px solid ${t.color}44`,
+              }
+            }, t.label))
+          ),
+
+          // Save button
+          React.createElement('button', {
+            onClick: saveSandwich,
+            style: {
+              fontSize: 12, color: '#27AE60', background: '#EAFAF1',
+              border: '1.5px solid #A9DFBF', borderRadius: 20, padding: '8px 18px',
+              cursor: 'pointer', fontFamily: 'Nunito, sans-serif', fontWeight: 700,
+            }
+          }, '💾 Save to Hall of Fame'),
+        ),
+      ),
+
+      // ── RIGHT: INGREDIENT PICKER ──
+      React.createElement('div', {
+        style: { width: 320, display: 'flex', flexDirection: 'column', background: '#fff', flexShrink: 0 }
+      },
+
+        // Tabs
+        React.createElement('div', {
+          style: { display: 'flex', flexWrap: 'wrap', borderBottom: '2px solid #F0E4D0', background: '#FFFDF9' }
+        },
+          TABS.map(tab => React.createElement('button', {
+            key: tab.id,
+            onClick: () => setActiveTab(tab.id),
+            style: {
+              flex: 1, minWidth: '33%', padding: '10px 4px', fontSize: 11, fontWeight: 700,
+              fontFamily: 'Nunito, sans-serif', letterSpacing: '0.03em',
+              color: activeTab === tab.id ? tab.color : '#AAA',
+              background: 'none', border: 'none', borderBottom: `2.5px solid ${activeTab === tab.id ? tab.color : 'transparent'}`,
+              cursor: 'pointer', transition: 'all 0.15s',
+            }
+          }, tab.label))
+        ),
+
+        // Weird tab unlock info
+        activeTab === 'weird' && React.createElement('div', {
+          style: { margin: '8px 12px 0', padding: '8px 12px', background: '#F4EEFF', border: '1px dashed #C4A4FF', borderRadius: 10, fontSize: 11, color: '#7B52B8', lineHeight: 1.5 }
+        }, '🔒 Unlock weird toppings by rating sandwiches and achieving high scores!'),
+
+        // Ingredient grid
+        React.createElement('div', {
+          style: { flex: 1, overflowY: 'auto', padding: 12, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, alignContent: 'start' }
+        },
+          tabIngredients.map(ing => {
+            const locked = !isUnlocked(ing);
+            return React.createElement('div', {
+              key: ing.id,
+              onClick: () => !locked && addIngredient(ing),
+              title: locked ? `🔒 ${ing.unlock === 'rate3' ? 'Rate 3 sandwiches' : ing.unlock === 'rate5' ? 'Rate 5 sandwiches' : ing.unlock === 'rate7' ? 'Rate 7 sandwiches' : ing.unlock === 'rate10' ? 'Rate 10 sandwiches' : ing.unlock === 'rate15' ? 'Rate 15 sandwiches' : ing.unlock === 'score8' ? 'Get a score of 8+' : 'Keep playing!'} to unlock` : ing.desc,
+              style: {
+                border: `2px solid ${locked ? '#EEE' : ing.cat === 'weird' ? '#D4BFFF' : '#F0E4D0'}`,
+                borderRadius: 14, padding: '10px 10px', cursor: locked ? 'not-allowed' : 'pointer',
+                background: locked ? '#F8F8F8' : ing.cat === 'weird' ? '#FAF6FF' : '#fff',
+                opacity: locked ? 0.45 : 1,
+                transition: 'all 0.15s',
+                filter: locked ? 'grayscale(0.5)' : 'none',
+              }
+            },
+              React.createElement('div', { style: { fontSize: 26, marginBottom: 4 } }, locked ? '🔒' : ing.emoji),
+              React.createElement('div', { style: { fontSize: 11, fontWeight: 800, color: '#4A3020' } }, ing.name),
+              React.createElement('div', { style: { fontSize: 10, color: '#AA9080', marginTop: 2 } }, locked ? 'Locked' : ing.desc),
+            );
+          })
+        ),
+      ),
+    ),
+
+    // ── HALL OF FAME MODAL ──
+    showHof && React.createElement('div', {
+      onClick: e => e.target === e.currentTarget && setShowHof(false),
+      style: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }
+    },
+      React.createElement('div', {
+        style: { background: '#fff', borderRadius: 24, padding: 28, maxWidth: 480, width: '100%', maxHeight: '80vh', overflowY: 'auto', position: 'relative', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }
+      },
+        React.createElement('div', { style: { fontFamily: 'Fredoka One', fontSize: 28, color: '#D63C2A', marginBottom: 4 } }, '🏆 Hall of Fame'),
+        React.createElement('div', { style: { fontSize: 12, color: '#9A8A7A', marginBottom: 20 } }, 'Your greatest sandwiches'),
+        React.createElement('button', {
+          onClick: () => setShowHof(false),
+          style: { position: 'absolute', top: 18, right: 18, background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#AAA' }
+        }, '✕'),
+
+        hallOfFame.length === 0
+          ? React.createElement('div', { style: { textAlign: 'center', color: '#BBA88A', padding: '30px 0', fontSize: 14 } }, "No saved sandwiches yet!\nRate one and hit Save.")
+          : hallOfFame.map((s, i) => React.createElement('div', {
+              key: i,
+              style: { border: '1.5px solid #F0E4D0', borderRadius: 14, padding: '14px 16px', marginBottom: 10 }
+            },
+              React.createElement('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 } },
+                React.createElement('span', { style: { fontFamily: 'Fredoka One', fontSize: 17, color: '#4A3020' } }, `#${i+1} ${s.name}`),
+                React.createElement('span', { style: { fontFamily: 'Fredoka One', fontSize: 22, color: scoreColor(s.score) } }, s.score + '/10'),
+              ),
+              React.createElement('div', { style: { fontSize: 11, color: '#AA9080' } },
+                starsFor(s.score) + ' · ' + s.ingredients.slice(0, 5).join(', ') + (s.ingredients.length > 5 ? '...' : '')),
+              React.createElement('div', { style: { fontSize: 10, color: '#CCC', marginTop: 4 } }, s.date),
+            ))
+      )
+    ),
+
+    // ── TOAST ──
+    toastMsg && React.createElement('div', {
+      style: {
+        position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)',
+        background: '#4A3020', color: '#fff', padding: '12px 24px', borderRadius: 30,
+        fontSize: 13, fontWeight: 700, zIndex: 300, boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
+        animation: 'popIn 0.3s ease both', whiteSpace: 'nowrap',
+      }
+    }, toastMsg),
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(SandwichMaker));
+</script>
 </body>
 </html>
