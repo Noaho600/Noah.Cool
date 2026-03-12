@@ -2,99 +2,123 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Feedback – Noah.Cool</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feedback &#8212; Noah.cool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    body {
-      margin: 0;
-      font-family: 'Fredoka', sans-serif;
-      background: linear-gradient(135deg, #e0f7fa, #fff0f5);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
-      color: #333;
-      text-align: center;
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-    }
-
-    .form-card {
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-      max-width: 500px;
-      width: 100%;
-      animation: fadeInUp 0.5s ease;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      margin-top: 20px;
-    }
-
-    input, textarea {
-      padding: 12px;
-      border: 2px solid #ddd;
-      border-radius: 10px;
-      font-family: inherit;
-      font-size: 16px;
-      resize: vertical;
-    }
-
-    button {
-      padding: 12px;
-      background-color: #4fc3f7;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #039be5;
-    }
-
-    .back-button {
-      margin-top: 30px;
-      text-decoration: none;
-      color: #4fc3f7;
-      font-weight: bold;
-      font-size: 16px;
-      display: inline-block;
-    }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#f4efe6;--ink:#18160f;--accent:#e84c2b;--muted:#a09890;--card-bg:#fff;--border:#e0d9ce}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--ink);font-family:"DM Mono",monospace;min-height:100vh}
+    body::after{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+    .page-header{max-width:780px;margin:0 auto;padding:64px 28px 48px;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both}
+    .back{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.1em;color:var(--muted);text-decoration:none;margin-bottom:36px;transition:color .15s}
+    .back:hover{color:var(--ink)}
+    .back-arrow{display:inline-block;transition:transform .15s}
+    .back:hover .back-arrow{transform:translateX(-3px)}
+    .page-title{font-family:"Fraunces",serif;font-size:clamp(36px,7vw,64px);font-weight:700;letter-spacing:-2px;line-height:.95}
+    .page-sub{font-size:12px;color:var(--muted);margin-top:14px;line-height:1.7}
+    .hero-rule{width:32px;height:2px;background:var(--accent);border-radius:99px;margin-top:32px}
+    .wrap{max-width:580px;margin:0 auto;padding:0 28px 96px;animation:fadeUp .6s cubic-bezier(.22,1,.36,1) .05s both}
+    .form-card{background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:36px 32px}
+    .form-row{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
+    .form-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+    .form-input,.form-textarea{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:12px 16px;font-family:"DM Mono",monospace;font-size:12.5px;color:var(--ink);outline:none;transition:border-color .18s,box-shadow .18s;width:100%}
+    .form-input:focus,.form-textarea:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(24,22,15,.06)}
+    .form-input::placeholder,.form-textarea::placeholder{color:var(--muted)}
+    .form-textarea{resize:vertical;min-height:120px;line-height:1.6}
+    .type-row{display:flex;gap:8px;flex-wrap:wrap}
+    .type-btn{font-family:"DM Mono",monospace;font-size:11px;letter-spacing:.1em;padding:8px 16px;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s ease}
+    .type-btn:hover{border-color:var(--ink);color:var(--ink)}
+    .type-btn.active{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+    .submit-btn{width:100%;background:var(--ink);color:var(--bg);border:none;border-radius:10px;padding:14px 24px;font-family:"DM Mono",monospace;font-size:12px;letter-spacing:.1em;cursor:pointer;transition:background .18s,transform .12s;margin-top:8px}
+    .submit-btn:hover{background:var(--accent)}
+    .submit-btn:active{transform:scale(.98)}
+    .success-state{display:none;text-align:center;padding:48px 24px}
+    .success-icon{font-size:48px;display:block;margin-bottom:18px}
+    .success-title{font-family:"Fraunces",serif;font-size:28px;font-weight:700;margin-bottom:10px}
+    .success-sub{font-size:12px;color:var(--muted);line-height:1.7}
+    footer{max-width:780px;margin:0 auto;padding:28px 28px 72px;display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center;border-top:1px solid var(--border)}
+    .footer-left{font-size:12px;color:var(--muted)}
+    .footer-left strong{font-family:"Fraunces",serif;font-style:italic;color:var(--ink)}
+    .footer-links{display:flex;gap:22px}
+    .footer-links a{font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:.05em;transition:color .15s}
+    .footer-links a:hover{color:var(--accent)}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
   </style>
 </head>
 <body>
-
-  <h1>🗣️ Feedback</h1>
-
-  <div class="form-card">
-    <p>Have suggestions, bug reports, or ideas? Let me know!</p>
-    <form action="https://formspree.io/f/mgvzklqy"method="POST">
-      <input type="text" name="name" placeholder="Your Name" required>
-      <input type="email" name="email" placeholder="Your Email (optional)">
-      <textarea name="message" rows="5" placeholder="Your Feedback" required></textarea>
-      <button type="submit">Send Feedback</button>
-    </form>
+  <div class="page-header">
+    <a class="back" href="index.html"><span class="back-arrow">&#8592;</span> noah.cool</a>
+    <h1 class="page-title">Feed<span style="color:var(--accent)">-</span><br>back</h1>
+    <p class="page-sub">Say anything. I actually read these.</p>
+    <div class="hero-rule"></div>
   </div>
+  <main class="wrap">
+    <div class="form-card" id="formCard">
+      <div class="form-row">
+        <label class="form-label">Type</label>
+        <div class="type-row">
+          <button class="type-btn active" onclick="selectType(this)">&#x1F4A1; idea</button>
+          <button class="type-btn" onclick="selectType(this)">&#x1F41B; bug</button>
+          <button class="type-btn" onclick="selectType(this)">&#x1F44B; just saying hi</button>
+          <button class="type-btn" onclick="selectType(this)">&#x1F525; other</button>
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Message</label>
+        <textarea class="form-textarea" id="msgInput" placeholder="What's on your mind?"></textarea>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Email <span style="opacity:.4">(optional)</span></label>
+        <input class="form-input" type="email" id="emailInput" placeholder="in case I want to reply" />
+      </div>
+      <button class="submit-btn" onclick="submitForm()">Send it &#8594;</button>
+    </div>
+    <div class="success-state" id="successState">
+      <span class="success-icon">&#x1F44B;</span>
+      <div class="success-title">Got it, thanks!</div>
+      <p class="success-sub">I'll take a look soon. If you left your email I might just reply.</p>
+    </div>
+  </main>
+  <footer>
+    <div class="footer-left">made by <strong>Noah</strong> &middot; somewhere on the internet</div>
+    <nav class="footer-links"><a href="#">twitter</a><a href="#">github</a><a href="#">contact</a></nav>
+  </footer>
+  <script>
+    function selectType(btn){document.querySelectorAll(".type-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active")}
 
-  <a href="index.html" class="back-button">← Back to Home</a>
+    async function submitForm(){
+      const msg   = document.getElementById("msgInput").value.trim();
+      const email = document.getElementById("emailInput").value.trim();
+      const type  = document.querySelector(".type-btn.active")?.textContent.trim() || "feedback";
+      if(!msg){document.getElementById("msgInput").focus();return;}
 
+      const btn = document.querySelector(".submit-btn");
+      btn.textContent = "Sending…";
+      btn.disabled = true;
+
+      try {
+        const res = await fetch("https://formspree.io/f/mgvzklqy", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify({ type, message: msg, email: email || "(not provided)" })
+        });
+
+        if(res.ok){
+          document.getElementById("formCard").style.display = "none";
+          const s = document.getElementById("successState");
+          s.style.display = "block";
+          s.style.animation = "fadeUp .5s cubic-bezier(.22,1,.36,1) both";
+        } else {
+          btn.textContent = "Something went wrong — try again";
+          btn.disabled = false;
+        }
+      } catch(e){
+        btn.textContent = "Network error — try again";
+        btn.disabled = false;
+      }
+    }
+  </script>
 </body>
 </html>
