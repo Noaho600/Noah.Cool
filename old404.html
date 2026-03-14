@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>404 - Not Found</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0a0a0a;
+      color: white;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 20px;
+      font-size: 5rem;
+    }
+
+    p {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    #gameCanvas {
+      display: block;
+      margin: auto;
+      border: 2px solid white;
+      background: #111;
+    }
+
+    .back-button {
+      margin-top: 20px;
+      background: #ff5a5f;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .back-button:hover {
+      background: #e94b4f;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>404</h1>
+  <p>This page got lost... but you can play a bit!</p>
+
+  <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+  <br />
+  <button class="back-button" onclick="window.location.href='index.html'">Go Back Home</button>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const gravity = 0.3;
+    const friction = 0.9;
+
+    let balls = [];
+
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      balls.push({
+        x: x,
+        y: y,
+        radius: 15,
+        vx: (Math.random() - 0.5) * 6,
+        vy: -Math.random() * 8,
+        color: `hsl(${Math.random() * 360}, 70%, 60%)`
+      });
+    });
+
+    function drawBall(ball) {
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+      ctx.fillStyle = ball.color;
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    function update() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let ball of balls) {
+        ball.vy += gravity;
+        ball.x += ball.vx;
+        ball.y += ball.vy;
+
+        // Bounce off walls
+        if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+          ball.vx = -ball.vx * friction;
+        }
+
+        // Bounce off floor
+        if (ball.y + ball.radius > canvas.height) {
+          ball.y = canvas.height - ball.radius;
+          ball.vy = -ball.vy * friction;
+        }
+
+        drawBall(ball);
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    update();
+  </script>
+
+</body>
+</html>
