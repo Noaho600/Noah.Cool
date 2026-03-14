@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>City Builder — Noah.cool</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ui:#0e1117;--ui2:#161b22;--ui3:#1c2230;--ui4:#21262d;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.12);
+  --text:#e6edf3;--muted:#484f58;--muted2:#7d8590;
+  --green:#2ea043;--green2:#3fb950;--green-bg:rgba(46,160,67,0.12);
+  --blue:#388bfd;--blue2:#58a6ff;--blue-bg:rgba(56,139,253,0.12);
+  --gold:#d4a017;--gold2:#f0b429;--gold-bg:rgba(212,160,23,0.12);
+  --red:#da3633;--red2:#f85149;--red-bg:rgba(218,54,51,0.12);
+  --purple:#8957e5;--purple2:#a371f7;
+  --orange:#db6d28;--orange2:#f0883e;
+  --cyan:#1f6feb;--cyan2:#79c0ff;
+}
+html,body{height:100%;background:var(--ui);color:var(--text);font-family:'Space Grotesk',sans-serif;overflow:hidden;font-size:13px}
+
+.back{position:fixed;top:12px;left:12px;z-index:400;display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted2);text-decoration:none;background:rgba(14,17,23,0.9);border:1px solid var(--border);padding:5px 12px;border-radius:20px;font-family:'Space Mono',monospace;letter-spacing:.04em;transition:color .15s;backdrop-filter:blur(8px)}
+.back:hover{color:var(--text)}
+
+/* ── LAYOUT ── */
+.layout{display:grid;grid-template-columns:220px 1fr 240px;height:100vh}
+
+/* ══════════════════════
+   LEFT PANEL
+══════════════════════ */
+.left{background:var(--ui2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+
+.left-top{padding:10px 12px 0;flex-shrink:0}
+.mayor-row{display:flex;align-items:center;gap:8px;padding:8px 0 10px;border-bottom:1px solid var(--border)}
+.mayor-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--blue));display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.mayor-name{font-size:12px;font-weight:600;color:var(--text)}
+.mayor-title{font-size:9px;color:var(--muted2);font-family:'Space Mono',monospace;letter-spacing:.04em}
+
+/* category tabs */
+.cat-tabs{display:flex;gap:2px;padding:8px 0 6px;flex-shrink:0;overflow-x:auto}
+.cat-tabs::-webkit-scrollbar{display:none}
+.ct{
+  flex-shrink:0;padding:5px 8px;border-radius:6px;border:none;background:transparent;
+  cursor:pointer;font-size:10px;font-weight:600;color:var(--muted2);
+  transition:all .13s;display:flex;flex-direction:column;align-items:center;gap:2px;
+  font-family:'Space Grotesk',sans-serif;
+}
+.ct:hover{background:rgba(255,255,255,0.04);color:var(--text)}
+.ct.active{background:var(--ui3);color:var(--text)}
+.ct-icon{font-size:14px}
+.ct-label{font-size:9px;letter-spacing:.04em}
+
+/* building list */
+.build-scroll{flex:1;overflow-y:auto;padding:4px 8px 8px}
+.build-scroll::-webkit-scrollbar{width:3px}
+.build-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+.bldg-card{
+  width:100%;display:flex;align-items:center;gap:8px;
+  padding:8px 10px;border-radius:8px;
+  border:1px solid var(--border);background:transparent;
+  cursor:pointer;margin-bottom:4px;text-align:left;
+  transition:all .13s cubic-bezier(.22,1,.36,1);
+  position:relative;overflow:hidden;
+}
+.bldg-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .13s}
+.bldg-card:hover::before{opacity:1}
+.bldg-card:hover{border-color:var(--border2);transform:translateX(2px)}
+.bldg-card.sel{border-color:var(--green2);background:var(--green-bg)}
+.bldg-card.locked{opacity:.35;cursor:not-allowed}
+.bc-icon{font-size:20px;flex-shrink:0;line-height:1}
+.bc-info{flex:1;min-width:0}
+.bc-name{font-size:11px;font-weight:600;color:var(--text);line-height:1.2}
+.bc-sub{font-size:9px;color:var(--muted2);font-family:'Space Mono',monospace;margin-top:1px}
+.bc-badge{font-size:8px;padding:1px 5px;border-radius:3px;letter-spacing:.06em;font-family:'Space Mono',monospace}
+.badge-cost{background:var(--gold-bg);color:var(--gold2)}
+.badge-lock{background:rgba(255,255,255,.04);color:var(--muted2)}
+.bc-stats{display:flex;gap:4px;margin-top:3px;flex-wrap:wrap}
+.bc-stat{font-size:8px;font-family:'Space Mono',monospace;padding:1px 5px;border-radius:3px}
+
+/* selected building preview */
+.sel-preview{margin:0 8px 8px;background:var(--ui3);border:1px solid var(--border2);border-radius:10px;padding:10px;flex-shrink:0;display:none}
+.sel-preview.show{display:block}
+.sp-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.sp-icon{font-size:24px}
+.sp-name{font-size:13px;font-weight:700;color:var(--text)}
+.sp-stats{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.sp-stat{background:var(--ui2);border-radius:6px;padding:5px 7px}
+.sp-stat-k{font-size:8px;color:var(--muted2);font-family:'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase}
+.sp-stat-v{font-size:12px;font-weight:700;margin-top:1px}
+
+.demolish-btn{
+  width:100%;margin-top:6px;padding:7px;border-radius:6px;
+  border:1px solid rgba(218,54,51,0.3);background:var(--red-bg);
+  color:var(--red2);font-family:'Space Grotesk',sans-serif;font-size:11px;
+  font-weight:600;cursor:pointer;transition:all .13s;
+}
+.demolish-btn:hover{border-color:var(--red2);background:rgba(218,54,51,0.2)}
+.demolish-btn.active-demo{border-color:var(--red2);background:rgba(218,54,51,0.25);box-shadow:0 0 8px rgba(218,54,51,0.3)}
+
+/* ══════════════════════
+   CENTER
+══════════════════════ */
+.center{position:relative;overflow:hidden;background:#0d1520;display:flex;flex-direction:column}
+
+/* top HUD bar */
+.hud-bar{
+  flex-shrink:0;display:flex;align-items:center;gap:0;
+  background:rgba(14,17,23,0.92);border-bottom:1px solid var(--border);
+  backdrop-filter:blur(12px);height:46px;z-index:10;
+  padding:0 12px;
+}
+.hud-city-name{font-size:14px;font-weight:700;letter-spacing:-.3px;color:var(--text);margin-right:16px}
+.hud-sep{width:1px;height:24px;background:var(--border);margin:0 12px;flex-shrink:0}
+.hud-stat{display:flex;align-items:center;gap:5px;padding:0 8px}
+.hud-stat-icon{font-size:13px}
+.hud-stat-val{font-family:'Space Mono',monospace;font-size:11px;font-weight:700}
+.hud-stat-label{font-size:9px;color:var(--muted2);font-family:'Space Mono',monospace}
+.hud-mid{flex:1}
+.hud-time{display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:11px}
+.hud-year{font-size:13px;font-weight:700;color:var(--cyan2)}
+.hud-season{font-size:10px;color:var(--muted2)}
+.speed-wrap{display:flex;gap:3px}
+.spd{width:26px;height:26px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--muted2);cursor:pointer;font-size:11px;transition:all .12s;display:flex;align-items:center;justify-content:center}
+.spd.on{background:var(--green-bg);border-color:var(--green2);color:var(--green2)}
+.spd:hover:not(.on){background:rgba(255,255,255,0.04);color:var(--text)}
+
+/* canvas */
+.canvas-wrap{flex:1;position:relative;overflow:hidden}
+#city-canvas{width:100%;height:100%;display:block;cursor:crosshair}
+
+/* bottom notification bar */
+.notif-bar{
+  position:absolute;bottom:0;left:0;right:0;
+  display:flex;align-items:center;gap:0;
+  background:rgba(14,17,23,0.88);border-top:1px solid var(--border);
+  backdrop-filter:blur(8px);padding:5px 12px;min-height:30px;
+  font-size:10px;color:var(--muted2);font-family:'Space Mono',monospace;
+}
+.notif-item{margin-right:16px;opacity:.8}
+.notif-item.warn{color:var(--gold2)}
+.notif-item.alert{color:var(--red2)}
+.notif-item.good{color:var(--green2)}
+
+/* event toast */
+.toast{
+  position:absolute;top:56px;left:50%;transform:translateX(-50%);
+  background:var(--ui3);border:1px solid var(--gold2);
+  border-radius:10px;padding:10px 20px;
+  font-size:13px;font-weight:600;color:var(--gold2);
+  z-index:200;pointer-events:none;
+  opacity:0;transition:opacity .3s;text-align:center;
+  backdrop-filter:blur(8px);white-space:nowrap;
+  box-shadow:0 4px 24px rgba(0,0,0,.4);
+}
+.toast.show{opacity:1}
+
+/* click-to-place tooltip */
+.place-tip{
+  position:absolute;pointer-events:none;z-index:100;
+  background:var(--ui3);border:1px solid var(--border2);
+  border-radius:7px;padding:5px 10px;font-size:10px;
+  font-family:'Space Mono',monospace;color:var(--text);
+  box-shadow:0 4px 12px rgba(0,0,0,.4);
+  opacity:0;transition:opacity .15s;
+}
+.place-tip.show{opacity:1}
+
+/* ══════════════════════
+   RIGHT PANEL
+══════════════════════ */
+.right{background:var(--ui2);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+
+/* tab switcher */
+.rtabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
+.rtab{flex:1;padding:10px 4px;border:none;background:transparent;cursor:pointer;font-size:10px;font-weight:600;color:var(--muted2);letter-spacing:.04em;transition:all .13s;font-family:'Space Grotesk',sans-serif;border-bottom:2px solid transparent}
+.rtab:hover{color:var(--text)}
+.rtab.active{color:var(--text);border-bottom-color:var(--green2)}
+
+.rpanel{display:none;flex:1;overflow-y:auto;padding:10px 12px}
+.rpanel.active{display:block}
+.rpanel::-webkit-scrollbar{width:3px}
+.rpanel::-webkit-scrollbar-thumb{background:var(--border2)}
+
+.rs{margin-bottom:14px}
+.rs-title{font-size:9px;font-family:'Space Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--muted2);margin-bottom:7px;padding-bottom:5px;border-top:1px solid var(--border);padding-top:10px}
+.rs-title:first-of-type{border-top:none;padding-top:0}
+
+/* stat rows */
+.sr{display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.sr-k{color:var(--muted2);font-size:11px;display:flex;align-items:center;gap:5px}
+.sr-v{font-family:'Space Mono',monospace;font-size:11px;font-weight:700}
+.sr-v.g{color:var(--green2)}.sr-v.r{color:var(--red2)}.sr-v.b{color:var(--blue2)}.sr-v.o{color:var(--gold2)}.sr-v.p{color:var(--purple2)}
+
+/* resource bars */
+.res-bar-wrap{margin-bottom:10px}
+.res-bar-row{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.res-bar-label{font-size:10px;color:var(--muted2);width:72px;flex-shrink:0}
+.res-bar-track{flex:1;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;position:relative}
+.res-bar-fill{height:100%;border-radius:3px;transition:width .6s cubic-bezier(.22,1,.36,1)}
+.res-bar-val{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted2);width:28px;text-align:right;flex-shrink:0}
+
+/* sparkline chart */
+.sparkline-wrap{position:relative}
+#sparkline{width:100%;display:block}
+
+/* news */
+.news-wrap{max-height:200px;overflow-y:auto}
+.news-wrap::-webkit-scrollbar{width:2px}
+.news-wrap::-webkit-scrollbar-thumb{background:var(--border)}
+.news-item{padding:5px 8px;border-radius:6px;margin-bottom:3px;font-size:10px;line-height:1.5;border-left:2px solid transparent}
+.news-item.good{background:var(--green-bg);border-color:var(--green2);color:#7ee787}
+.news-item.bad{background:var(--red-bg);border-color:var(--red2);color:#ffa198}
+.news-item.info{background:var(--blue-bg);border-color:var(--blue2);color:var(--cyan2)}
+.news-item.warn{background:var(--gold-bg);border-color:var(--gold2);color:var(--gold2)}
+
+/* milestones */
+.ms-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:7px;margin-bottom:4px;font-size:11px;background:var(--ui3)}
+.ms-item.done{background:var(--green-bg);border:1px solid rgba(46,160,67,0.2)}
+.ms-item.next{background:var(--gold-bg);border:1px solid rgba(212,160,23,0.2)}
+.ms-item.locked{opacity:.4}
+.ms-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ms-label{flex:1}
+.ms-val{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted2)}
+.ms-progress{height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin-top:4px;overflow:hidden}
+.ms-progress-fill{height:100%;border-radius:2px;transition:width .5s;background:var(--gold2)}
+
+/* policies */
+.policy-card{background:var(--ui3);border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:6px;cursor:pointer;transition:all .13s}
+.policy-card:hover{border-color:var(--border2)}
+.policy-card.active-p{border-color:var(--green2);background:var(--green-bg)}
+.pc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.pc-name{font-size:11px;font-weight:600}
+.pc-tag{font-size:8px;padding:1px 6px;border-radius:3px;font-family:'Space Mono',monospace}
+.pc-desc{font-size:10px;color:var(--muted2);line-height:1.5}
+
+/* ══════════════════════
+   MISC
+══════════════════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes shimmer{0%{opacity:.5}50%{opacity:1}100%{opacity:.5}}
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← noah.cool</a>
+
+<div class="layout">
+<!-- ════════════════════ LEFT ════════════════════ -->
+<div class="left">
+  <div class="left-top">
+    <div class="mayor-row">
+      <div class="mayor-avatar">🏛️</div>
+      <div>
+        <div class="mayor-name" id="cityName">New City</div>
+        <div class="mayor-title">Mayor's Office</div>
+      </div>
+    </div>
+    <div class="cat-tabs" id="catTabs"></div>
+  </div>
+  <div class="build-scroll" id="buildScroll"></div>
+  <div class="sel-preview" id="selPreview">
+    <div class="sp-header">
+      <div class="sp-icon" id="spIcon"></div>
+      <div>
+        <div class="sp-name" id="spName"></div>
+        <div style="font-size:9px;color:var(--muted2);font-family:'Space Mono',monospace" id="spDesc"></div>
+      </div>
+    </div>
+    <div class="sp-stats" id="spStats"></div>
+    <button class="demolish-btn" id="demolishBtn" onclick="toggleDemolish()">🔨 Demolish Mode</button>
+  </div>
+</div>
+
+<!-- ════════════════════ CENTER ════════════════════ -->
+<div class="center">
+  <div class="hud-bar">
+    <div class="hud-city-name" id="hudCityName">New City</div>
+    <div class="hud-sep"></div>
+    <div class="hud-stat">
+      <span class="hud-stat-icon">💰</span>
+      <div>
+        <div class="hud-stat-val" id="hudGold" style="color:var(--gold2)">$10,000</div>
+        <div class="hud-stat-label">Treasury</div>
+      </div>
+    </div>
+    <div class="hud-sep"></div>
+    <div class="hud-stat">
+      <span class="hud-stat-icon">👥</span>
+      <div>
+        <div class="hud-stat-val" id="hudPop" style="color:var(--green2)">0</div>
+        <div class="hud-stat-label">Population</div>
+      </div>
+    </div>
+    <div class="hud-sep"></div>
+    <div class="hud-stat">
+      <span class="hud-stat-icon">😊</span>
+      <div>
+        <div class="hud-stat-val" id="hudHap" style="color:var(--blue2)">50%</div>
+        <div class="hud-stat-label">Happiness</div>
+      </div>
+    </div>
+    <div class="hud-sep"></div>
+    <div class="hud-stat">
+      <span class="hud-stat-icon">📈</span>
+      <div>
+        <div class="hud-stat-val" id="hudNet" style="color:var(--green2)">$0</div>
+        <div class="hud-stat-label">Net/yr</div>
+      </div>
+    </div>
+    <div class="hud-mid"></div>
+    <div class="hud-time">
+      <div>
+        <div class="hud-year" id="hudYear">Year 1</div>
+        <div class="hud-season" id="hudSeason">Spring</div>
+      </div>
+      <div class="hud-sep"></div>
+      <div class="speed-wrap">
+        <button class="spd on" id="spd0" onclick="setSpeed(0)" title="Pause">⏸</button>
+        <button class="spd" id="spd1" onclick="setSpeed(1)" title="Normal">▶</button>
+        <button class="spd" id="spd2" onclick="setSpeed(2)" title="Fast">▶▶</button>
+        <button class="spd" id="spd3" onclick="setSpeed(3)" title="Very fast">▶▶▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="canvas-wrap">
+    <canvas id="city-canvas"></canvas>
+    <div class="notif-bar" id="notifBar">
+      <span class="notif-item" id="notif1">🏙️ Welcome, Mayor! Start by placing some Roads and Houses.</span>
+    </div>
+    <div class="toast" id="toast"></div>
+    <div class="place-tip" id="placeTip"></div>
+  </div>
+</div>
+
+<!-- ════════════════════ RIGHT ════════════════════ -->
+<div class="right">
+  <div class="rtabs">
+    <button class="rtab active" onclick="setRTab('stats')">📊 Stats</button>
+    <button class="rtab" onclick="setRTab('news')">📰 News</button>
+    <button class="rtab" onclick="setRTab('goals')">🏆 Goals</button>
+    <button class="rtab" onclick="setRTab('policy')">⚖️ Policy</button>
+  </div>
+
+  <!-- STATS TAB -->
+  <div class="rpanel active" id="tab-stats">
+    <div class="rs-title">City Overview</div>
+    <div class="sr"><span class="sr-k">💰 Treasury</span><span class="sr-v o" id="rs-gold">$10,000</span></div>
+    <div class="sr"><span class="sr-k">👥 Population</span><span class="sr-v g" id="rs-pop">0</span></div>
+    <div class="sr"><span class="sr-k">📐 Land used</span><span class="sr-v" id="rs-land">0 / 384 tiles</span></div>
+    <div class="sr"><span class="sr-k">🏗️ Buildings</span><span class="sr-v" id="rs-bld">0</span></div>
+    <div class="sr"><span class="sr-k">📅 Game year</span><span class="sr-v b" id="rs-yr">2025</span></div>
+
+    <div class="rs-title">Finances</div>
+    <div class="sr"><span class="sr-k">📈 Gross income</span><span class="sr-v g" id="rs-inc">$0</span></div>
+    <div class="sr"><span class="sr-k">📉 Upkeep</span><span class="sr-v r" id="rs-cost">$0</span></div>
+    <div class="sr"><span class="sr-k">💵 Net / year</span><span class="sr-v" id="rs-net">$0</span></div>
+    <div class="sr"><span class="sr-k">📊 Tax rate</span><span class="sr-v" id="rs-tax">10%</span></div>
+
+    <div class="rs-title">City Metrics</div>
+    <div style="margin-bottom:10px">
+      <div class="res-bar-row"><span class="res-bar-label">😊 Happiness</span><div class="res-bar-track"><div class="res-bar-fill" id="br-hap" style="background:var(--blue2);width:50%"></div></div><span class="res-bar-val" id="bv-hap">50%</span></div>
+      <div class="res-bar-row"><span class="res-bar-label">⚡ Power</span><div class="res-bar-track"><div class="res-bar-fill" id="br-pwr" style="background:var(--gold2);width:0%"></div></div><span class="res-bar-val" id="bv-pwr">0%</span></div>
+      <div class="res-bar-row"><span class="res-bar-label">💧 Water</span><div class="res-bar-track"><div class="res-bar-fill" id="br-wtr" style="background:var(--cyan2);width:0%"></div></div><span class="res-bar-val" id="bv-wtr">0%</span></div>
+      <div class="res-bar-row"><span class="res-bar-label">🌲 Ecology</span><div class="res-bar-track"><div class="res-bar-fill" id="br-eco" style="background:var(--green2);width:0%"></div></div><span class="res-bar-val" id="bv-eco">0%</span></div>
+      <div class="res-bar-row"><span class="res-bar-label">🎓 Education</span><div class="res-bar-track"><div class="res-bar-fill" id="br-edu" style="background:var(--purple2);width:0%"></div></div><span class="res-bar-val" id="bv-edu">0%</span></div>
+      <div class="res-bar-row"><span class="res-bar-label">🏥 Health</span><div class="res-bar-track"><div class="res-bar-fill" id="br-hlth" style="background:var(--red2);width:0%"></div></div><span class="res-bar-val" id="bv-hlth">0%</span></div>
+      <div class="res-bar-row"><span class="res-bar-label">🛡️ Safety</span><div class="res-bar-track"><div class="res-bar-fill" id="br-sft" style="background:var(--orange2);width:0%"></div></div><span class="res-bar-val" id="bv-sft">0%</span></div>
+    </div>
+
+    <div class="rs-title">Population Growth</div>
+    <div class="sparkline-wrap"><canvas id="sparkline" height="60"></canvas></div>
+    <div style="font-size:9px;color:var(--muted2);font-family:'Space Mono',monospace;margin-top:4px" id="growthRate">Growth: +0 /yr</div>
+
+    <div class="rs-title">Breakdown</div>
+    <div class="sr"><span class="sr-k">🏠 Residential cap</span><span class="sr-v" id="rs-rescap">0</span></div>
+    <div class="sr"><span class="sr-k">👔 Jobs available</span><span class="sr-v" id="rs-jobs">0</span></div>
+    <div class="sr"><span class="sr-k">🚗 Roads</span><span class="sr-v" id="rs-roads">0</span></div>
+    <div class="sr"><span class="sr-k">🌲 Green score</span><span class="sr-v g" id="rs-grn">0</span></div>
+  </div>
+
+  <!-- NEWS TAB -->
+  <div class="rpanel" id="tab-news">
+    <div class="rs-title" style="padding-top:0;border-top:none">City Dispatch</div>
+    <div class="news-wrap" id="newsWrap">
+      <div class="news-item info">🏙️ Your city has been founded. Lead it to greatness!</div>
+    </div>
+  </div>
+
+  <!-- GOALS TAB -->
+  <div class="rpanel" id="tab-goals">
+    <div class="rs-title" style="padding-top:0;border-top:none">Milestones</div>
+    <div id="milestoneList"></div>
+  </div>
+
+  <!-- POLICY TAB -->
+  <div class="rpanel" id="tab-policy">
+    <div class="rs-title" style="padding-top:0;border-top:none">City Policies <span style="font-size:9px;color:var(--muted2)">(active: <span id="activePolicies">0</span>/3)</span></div>
+    <div id="policyList"></div>
+    <div class="rs-title">Tax Rate</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <span style="font-size:10px;color:var(--muted2);font-family:'Space Mono',monospace">Tax:</span>
+      <input type="range" id="taxSlider" min="0" max="30" value="10" oninput="setTax()" style="-webkit-appearance:none;flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.08);outline:none;cursor:pointer"/>
+      <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--gold2)" id="taxVal">10%</span>
+    </div>
+    <div style="font-size:10px;color:var(--muted2);line-height:1.6" id="taxNote">Higher taxes = more income but lower happiness. Sweet spot is 10–15%.</div>
+  </div>
+</div>
+</div><!-- /layout -->
+
+<script>
+// ══════════════════════════════════════
+//  BUILDING DEFINITIONS
+// ══════════════════════════════════════
+const CATS = [
+  {id:'road',    label:'Roads',   icon:'🛣️'},
+  {id:'zone',    label:'Zone',    icon:'🏘️'},
+  {id:'power',   label:'Power',   icon:'⚡'},
+  {id:'water',   label:'Water',   icon:'💧'},
+  {id:'civic',   label:'Civic',   icon:'🏛️'},
+  {id:'commerce',label:'Trade',   icon:'🏪'},
+  {id:'nature',  label:'Nature',  icon:'🌳'},
+  {id:'special', label:'Special', icon:'✨'},
+];
+
+const BUILDINGS = [
+  // ── ROADS ──
+  {id:'road',      cat:'road',    name:'Road',           emoji:'🛣️', w:1,h:1, cost:150,   upkeep:5,    income:0,    popCap:0, jobs:0,  power:-1, water:-1, eco:0,  edu:0,  health:0, safety:0, happy:1,  color:'#3d4451', desc:'Connects your city',      unlockPop:0},
+  {id:'highway',   cat:'road',    name:'Highway',        emoji:'🛤️', w:1,h:1, cost:500,   upkeep:20,   income:0,    popCap:0, jobs:0,  power:-2, water:-1, eco:-2, edu:0,  health:0, safety:0, happy:2,  color:'#2d3440', desc:'High-capacity road',       unlockPop:300},
+  // ── ZONING ──
+  {id:'cottage',   cat:'zone',    name:'Cottage',        emoji:'🏡', w:1,h:1, cost:400,   upkeep:30,   income:80,   popCap:6, jobs:0,  power:4,  water:3,  eco:2,  edu:0,  health:0, safety:0, happy:8,  color:'#8B6914', desc:'Cozy low-density home',    unlockPop:0},
+  {id:'house',     cat:'zone',    name:'House',          emoji:'🏠', w:1,h:1, cost:600,   upkeep:40,   income:120,  popCap:10,jobs:0,  power:5,  water:4,  eco:1,  edu:0,  health:0, safety:0, happy:6,  color:'#c47c2b', desc:'Standard family home',     unlockPop:0},
+  {id:'apartment', cat:'zone',    name:'Apartment',      emoji:'🏢', w:1,h:1, cost:2500,  upkeep:150,  income:400,  popCap:45,jobs:5,  power:15, water:12, eco:-1, edu:0,  health:0, safety:0, happy:4,  color:'#4c5fa8', desc:'Multi-family dwelling',    unlockPop:80},
+  {id:'condo',     cat:'zone',    name:'Condo Tower',    emoji:'🏙️', w:1,h:1, cost:8000,  upkeep:400,  income:1200, popCap:120,jobs:10,power:40, water:30, eco:-3, edu:0,  health:0, safety:0, happy:5,  color:'#355070', desc:'High-rise residential',    unlockPop:400},
+  {id:'mansion',   cat:'zone',    name:'Mansion',        emoji:'🏰', w:2,h:2, cost:12000, upkeep:600,  income:2000, popCap:8, jobs:3,  power:20, water:15, eco:5,  edu:0,  health:0, safety:0, happy:20, color:'#c9a227', desc:'Luxury estate — very happy',unlockPop:500},
+  // ── POWER ──
+  {id:'solar',     cat:'power',   name:'Solar Farm',     emoji:'☀️', w:2,h:2, cost:3000,  upkeep:80,   income:200,  popCap:0, jobs:2,  power:-60,water:-1, eco:10, edu:0,  health:0, safety:0, happy:3,  color:'#d4a017', desc:'Clean renewable energy',   unlockPop:0},
+  {id:'coalplant', cat:'power',   name:'Coal Plant',     emoji:'🏭', w:2,h:2, cost:5000,  upkeep:300,  income:800,  popCap:0, jobs:15, power:-150,water:-5,eco:-15,edu:0, health:-8,safety:0, happy:-10,color:'#5c5c5c', desc:'Cheap but dirty power',    unlockPop:100},
+  {id:'nuclear',   cat:'power',   name:'Nuclear Plant',  emoji:'⚛️', w:2,h:2, cost:25000, upkeep:1500, income:3000, popCap:0, jobs:30, power:-400,water:-10,eco:-5,edu:3, health:-3,safety:-5,happy:-5, color:'#4a7c59', desc:'Massive clean baseload',   unlockPop:2000},
+  {id:'windmill',  cat:'power',   name:'Wind Turbines',  emoji:'🌬️',w:1,h:1, cost:2000,  upkeep:50,   income:100,  popCap:0, jobs:1,  power:-30,water:0,  eco:8,  edu:0,  health:0, safety:0, happy:1,  color:'#6ab0de', desc:'Clean wind energy',        unlockPop:50},
+  // ── WATER ──
+  {id:'pump',      cat:'water',   name:'Water Pump',     emoji:'💧', w:1,h:1, cost:2000,  upkeep:100,  income:0,    popCap:0, jobs:2,  power:5,  water:-80,eco:-2, edu:0,  health:3, safety:0, happy:5,  color:'#1e88e5', desc:'Basic water supply',       unlockPop:0},
+  {id:'reservoir', cat:'water',   name:'Reservoir',      emoji:'🏞️',w:2,h:2, cost:8000,  upkeep:300,  income:0,    popCap:0, jobs:5,  power:8,  water:-250,eco:5, edu:0,  health:8, safety:0, happy:8,  color:'#0277bd', desc:'Large water storage',      unlockPop:300},
+  {id:'desal',     cat:'water',   name:'Desalination',   emoji:'🌊', w:2,h:2, cost:20000, upkeep:1000, income:500,  popCap:0, jobs:10, power:15, water:-500,eco:-3,edu:0, health:5, safety:0, happy:3,  color:'#0288d1', desc:'Unlimited fresh water',    unlockPop:3000},
+  // ── CIVIC ──
+  {id:'park',      cat:'civic',   name:'City Park',      emoji:'🌳', w:2,h:2, cost:800,   upkeep:80,   income:0,    popCap:0, jobs:2,  power:2,  water:4,  eco:12, edu:1,  health:5, safety:2, happy:15, color:'#2e7d32', desc:'Green lungs of the city',  unlockPop:0},
+  {id:'school',    cat:'civic',   name:'School',         emoji:'🏫', w:2,h:2, cost:4000,  upkeep:350,  income:0,    popCap:0, jobs:20, power:8,  water:5,  eco:2,  edu:20, health:2, safety:2, happy:15, color:'#e65100', desc:'Educates young citizens',  unlockPop:100},
+  {id:'library',   cat:'civic',   name:'Library',        emoji:'📚', w:1,h:1, cost:2000,  upkeep:120,  income:0,    popCap:0, jobs:8,  power:3,  water:2,  eco:1,  edu:12, health:0, safety:1, happy:10, color:'#7b4f12', desc:'Knowledge for all',        unlockPop:50},
+  {id:'hospital',  cat:'civic',   name:'Hospital',       emoji:'🏥', w:2,h:2, cost:8000,  upkeep:600,  income:0,    popCap:0, jobs:40, power:12, water:10, eco:1,  edu:3,  health:25,safety:3, happy:20, color:'#c62828', desc:'Keeps citizens healthy',   unlockPop:200},
+  {id:'police',    cat:'civic',   name:'Police Station', emoji:'👮', w:1,h:1, cost:3000,  upkeep:250,  income:0,    popCap:0, jobs:15, power:4,  water:2,  eco:0,  edu:0,  health:0, safety:20,happy:12, color:'#1565c0', desc:'Reduces crime',            unlockPop:150},
+  {id:'firestation',cat:'civic',  name:'Fire Station',   emoji:'🚒', w:1,h:1, cost:2500,  upkeep:200,  income:0,    popCap:0, jobs:12, power:3,  water:8,  eco:0,  edu:0,  health:3, safety:15,happy:10, color:'#b71c1c', desc:'Prevents disasters',       unlockPop:100},
+  {id:'stadium',   cat:'civic',   name:'Stadium',        emoji:'🏟️',w:3,h:3, cost:25000, upkeep:1200, income:5000, popCap:0, jobs:50, power:30, water:15, eco:-5, edu:0,  health:2, safety:-3,happy:35, color:'#6a1b9a', desc:'Boosts morale massively',  unlockPop:2000},
+  {id:'university',cat:'civic',   name:'University',     emoji:'🎓', w:2,h:2, cost:15000, upkeep:800,  income:500,  popCap:0, jobs:60, power:15, water:8,  eco:3,  edu:40, health:2, safety:2, happy:25, color:'#5e35b1', desc:'Top-tier education hub',   unlockPop:1000},
+  // ── COMMERCE ──
+  {id:'market',    cat:'commerce',name:'Market',         emoji:'🏪', w:1,h:1, cost:600,   upkeep:60,   income:300,  popCap:0, jobs:8,  power:3,  water:2,  eco:0,  edu:0,  health:1, safety:0, happy:8,  color:'#00796b', desc:'Local goods & services',   unlockPop:20},
+  {id:'mall',      cat:'commerce',name:'Shopping Mall',  emoji:'🏬', w:2,h:2, cost:12000, upkeep:600,  income:3000, popCap:0, jobs:80, power:25, water:10, eco:-3, edu:0,  health:0, safety:-2,happy:18, color:'#00695c', desc:'Major retail destination',  unlockPop:500},
+  {id:'factory',   cat:'commerce',name:'Factory',        emoji:'🏭', w:2,h:2, cost:6000,  upkeep:400,  income:2500, popCap:0, jobs:60, power:20, water:15, eco:-12,edu:0,  health:-5,safety:-3,happy:-12,color:'#546e7a', desc:'Industrial employment',    unlockPop:200},
+  {id:'techpark',  cat:'commerce',name:'Tech Park',      emoji:'💻', w:2,h:2, cost:20000, upkeep:1000, income:6000, popCap:0, jobs:100,power:30, water:10, eco:-3, edu:5,  health:0, safety:2, happy:10, color:'#0097a7', desc:'High-tech economy',        unlockPop:3000},
+  {id:'airport',   cat:'commerce',name:'Airport',        emoji:'✈️', w:3,h:3, cost:50000, upkeep:3000, income:12000,popCap:0, jobs:200,power:60, water:20, eco:-20,edu:0,  health:-5,safety:-5,happy:15, color:'#37474f', desc:'Global connectivity',      unlockPop:5000},
+  // ── NATURE ──
+  {id:'forest',    cat:'nature',  name:'Forest',         emoji:'🌲', w:2,h:2, cost:300,   upkeep:10,   income:0,    popCap:0, jobs:0,  power:0,  water:0,  eco:15, edu:0,  health:5, safety:0, happy:8,  color:'#1b5e20', desc:'Natural woodland area',    unlockPop:0},
+  {id:'lake',      cat:'nature',  name:'Lake',           emoji:'🏞️',w:2,h:2, cost:500,   upkeep:0,    income:0,    popCap:0, jobs:0,  power:0,  water:-30,eco:10, edu:0,  health:3, safety:0, happy:12, color:'#01579b', desc:'Natural water feature',    unlockPop:0},
+  {id:'garden',    cat:'nature',  name:'Botanical Garden',emoji:'🌺',w:2,h:2,cost:5000,  upkeep:300,  income:200,  popCap:0, jobs:10, power:3,  water:8,  eco:18, edu:5,  health:8, safety:1, happy:22, color:'#558b2f', desc:'Beautiful green space',    unlockPop:400},
+  {id:'beach',     cat:'nature',  name:'Beach Resort',   emoji:'🏖️',w:2,h:1, cost:8000,  upkeep:400,  income:1000, popCap:0, jobs:20, power:5,  water:0,  eco:5,  edu:0,  health:5, safety:0, happy:28, color:'#f9a825', desc:'Major happiness booster',  unlockPop:800},
+  // ── SPECIAL ──
+  {id:'cityhal',   cat:'special', name:'City Hall',      emoji:'🏛️', w:2,h:2, cost:10000, upkeep:500,  income:1000, popCap:0, jobs:30, power:10, water:5,  eco:2,  edu:5,  health:3, safety:5, happy:20, color:'#bf360c', desc:'Seat of government',       unlockPop:0},
+  {id:'monument',  cat:'special', name:'Monument',       emoji:'🗽', w:1,h:1, cost:15000, upkeep:100,  income:500,  popCap:0, jobs:5,  power:2,  water:1,  eco:0,  edu:3,  health:0, safety:0, happy:30, color:'#795548', desc:'City landmark — big morale',unlockPop:1000},
+  {id:'spaceport', cat:'special', name:'Spaceport',      emoji:'🚀', w:3,h:3, cost:100000,upkeep:5000, income:20000,popCap:0, jobs:300,power:100,water:30, eco:-10,edu:10, health:-3,safety:-5,happy:40, color:'#1a237e', desc:'Future of your city',      unlockPop:10000},
+];
+
+const BMAP = {};
+BUILDINGS.forEach(b=>BMAP[b.id]=b);
+
+// ══════════════════════════════════════
+//  POLICIES
+// ══════════════════════════════════════
+const POLICIES = [
+  {id:'greeninit', name:'Green Initiative',     emoji:'🌿', tag:'Ecology',  desc:'All green buildings cost 20% less. Eco score +10.',     effect:{ecoBon:0.2, costDiscount:{nature:0.2}},     unlockPop:0},
+  {id:'education', name:'Free Education',       emoji:'🎓', tag:'Social',   desc:'+15% happiness from schools. Income -5%.',              effect:{eduBonus:1.15, incMult:0.95},                unlockPop:500},
+  {id:'taxcut',    name:'Tax Holiday',          emoji:'💸', tag:'Economy',  desc:'All residential income +25%. Tax rate capped at 8%.',   effect:{resIncomeMult:1.25, maxTax:8},               unlockPop:200},
+  {id:'safety',    name:'Community Policing',   emoji:'🛡️',tag:'Safety',   desc:'+20% effect from police. Crime-related events reduced.', effect:{safetyBonus:1.2},                           unlockPop:300},
+  {id:'healthcare',name:'Universal Healthcare', emoji:'🏥', tag:'Health',   desc:'Happiness +8 per hospital. Upkeep +20%.',               effect:{healthHappyBonus:8, upkeepMult:1.2},         unlockPop:800},
+  {id:'techzone',  name:'Silicon Valley',       emoji:'💡', tag:'Economy',  desc:'Tech park and factory income +30%. Edu requirement.',   effect:{techIncomeMult:1.3},                         unlockPop:2000},
+  {id:'transit',   name:'Public Transit',       emoji:'🚌', tag:'Infra',    desc:'Roads upkeep -30%. Population growth +5% per year.',    effect:{roadUpkeepDiscount:0.3, growthBonus:0.05},   unlockPop:400},
+  {id:'renewable', name:'Renewables Only',      emoji:'☀️', tag:'Ecology',  desc:'Solar/Wind income +40%. Coal plant banned.',            effect:{renewableBonus:1.4, banCoal:true},            unlockPop:1000},
+];
+
+// ══════════════════════════════════════
+//  MILESTONES
+// ══════════════════════════════════════
+const MILESTONES = [
+  {id:'first',   label:'First Settlement',    icon:'🏠', req:{pop:10},    reward:500,   done:false},
+  {id:'hamlet',  label:'Hamlet',              icon:'🏘️', req:{pop:50},    reward:1000,  done:false},
+  {id:'village', label:'Village',             icon:'🏡', req:{pop:200},   reward:3000,  done:false},
+  {id:'town',    label:'Town',                icon:'🌆', req:{pop:500},   reward:8000,  done:false},
+  {id:'city',    label:'City',                icon:'🏙️', req:{pop:1000},  reward:20000, done:false},
+  {id:'metro',   label:'Metropolis',          icon:'🌇', req:{pop:5000},  reward:60000, done:false},
+  {id:'mega',    label:'Megacity',            icon:'🌃', req:{pop:20000}, reward:200000,done:false},
+  {id:'global',  label:'Global City',         icon:'🌉', req:{pop:50000}, reward:500000,done:false},
+  {id:'happy80', label:'Happy Citizens 80%',  icon:'😄', req:{happy:80},  reward:5000,  done:false},
+  {id:'edu50',   label:'Educated City 50%',   icon:'📚', req:{edu:50},    reward:10000, done:false},
+  {id:'eco50',   label:'Eco-friendly 50%',    icon:'🌿', req:{eco:50},    reward:10000, done:false},
+  {id:'rich',    label:'Treasury $100K',      icon:'💰', req:{gold:100000},reward:10000,done:false},
+  {id:'space',   label:'To the Stars!',       icon:'🚀', req:{bldg:'spaceport'},reward:0,done:false},
+];
+
+// ══════════════════════════════════════
+//  GAME STATE
+// ══════════════════════════════════════
+let gold         = 10000;
+let gameYear     = 2025;
+let gameSeason   = 0; // 0=Spring,1=Summer,2=Autumn,3=Winter
+let population   = 0;
+let popGrowthBuf = 0; // fractional population accumulator
+let happiness    = 50;
+let metrics      = {power:0,water:0,eco:0,edu:0,health:0,safety:0};
+let placed       = []; // {id, gx, gy, bldg}
+let selectedBldg = null;
+let demolishMode = false;
+let gameSpeed    = 1;
+let tickTimer    = null;
+let taxRate      = 10;
+let activePolicies = new Set();
+let popHistory   = [];  // last 30 values
+let newsLog      = [];
+let cityName     = 'New City';
+let tickCount    = 0;
+
+// grid
+const COLS = 24, ROWS = 16;
+const CELL = 44;
+let offsetX = 0, offsetY = 0;
+let mouseCell = {gx:-1,gy:-1};
+let isDragging = false, dragStart = {x:0,y:0}, dragOff = {x:0,y:0};
+let wasDragging = false;
+
+// ══════════════════════════════════════
+//  CANVAS SETUP
+// ══════════════════════════════════════
+const canvas = document.getElementById('city-canvas');
+const ctx    = canvas.getContext('2d');
+
+function resizeCanvas(){
+  canvas.width  = canvas.clientWidth  * devicePixelRatio;
+  canvas.height = canvas.clientHeight * devicePixelRatio;
+  centerGrid();
+}
+
+function centerGrid(){
+  const W=canvas.clientWidth, H=canvas.clientHeight;
+  offsetX = (W - COLS*CELL)/2;
+  offsetY = (H - ROWS*CELL)/2 + 20;
+}
+
+resizeCanvas();
+window.addEventListener('resize',()=>{resizeCanvas();});
+
+// ══════════════════════════════════════
+//  DRAWING
+// ══════════════════════════════════════
+let animT = 0;
+const SEASON_COLORS = {
+  0:{sky:'#0d2137',ground:'#2d4a1e',ground2:'#3a5a28'},   // Spring
+  1:{sky:'#061428',ground:'#2a4a12',ground2:'#384f1a'},   // Summer
+  2:{sky:'#1a1a2e',ground:'#4a3a1a',ground2:'#5a4520'},   // Autumn
+  3:{sky:'#0a1020',ground:'#3a3a4a',ground2:'#2a2a3a'},   // Winter
+};
+
+function cellToScreen(gx,gy){ return {x:offsetX+gx*CELL, y:offsetY+gy*CELL}; }
+function screenToCell(sx,sy){ return {gx:Math.floor((sx-offsetX)/CELL), gy:Math.floor((sy-offsetY)/CELL)}; }
+
+function isCellFree(gx,gy,w,h,excludeIdx=-1){
+  for(let i=0;i<placed.length;i++){
+    if(i===excludeIdx) continue;
+    const p=placed[i];
+    if(gx<p.gx+p.bldg.w && gx+w>p.gx && gy<p.gy+p.bldg.h && gy+h>p.gy) return false;
+  }
+  return true;
+}
+function inGrid(gx,gy,w,h){ return gx>=0&&gy>=0&&gx+w<=COLS&&gy+h<=ROWS; }
+
+function lightenHex(hex, t){
+  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return `rgb(${Math.min(255,r+t)},${Math.min(255,g+t)},${Math.min(255,b+t)})`;
+}
+function darkenHex(hex, t){
+  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return `rgb(${Math.max(0,r-t)},${Math.max(0,g-t)},${Math.max(0,b-t)})`;
+}
+
+function draw(){
+  const dpr=devicePixelRatio, W=canvas.width/dpr, H=canvas.height/dpr;
+  ctx.save(); ctx.scale(dpr,dpr);
+
+  // Background sky
+  const sc=SEASON_COLORS[gameSeason];
+  const skyGrad=ctx.createLinearGradient(0,0,0,H);
+  skyGrad.addColorStop(0,sc.sky); skyGrad.addColorStop(1,lightenHex(sc.sky,20));
+  ctx.fillStyle=skyGrad; ctx.fillRect(0,0,W,H);
+
+  // Stars (at night / winter)
+  if(gameSeason===3||gameSeason===0){
+    ctx.fillStyle='rgba(255,255,255,0.4)';
+    for(let i=0;i<80;i++){
+      const sx=(i*137.5+5)%(W), sy=(i*91.3)%(H*0.6);
+      const r=i%5===0?.7:.3;
+      ctx.beginPath(); ctx.arc(sx,sy,r,0,Math.PI*2); ctx.fill();
+    }
+  }
+
+  // Sun/moon
+  const dayT=(animT*.3+gameYear*.1)%1;
+  const sunX=W*.05+W*.9*dayT, sunY=H*.15+Math.sin(dayT*Math.PI)*(-H*.08);
+  if(dayT>0.15&&dayT<0.85){
+    const sunGrd=ctx.createRadialGradient(sunX,sunY,0,sunX,sunY,22);
+    const isHot=gameSeason===1;
+    sunGrd.addColorStop(0,isHot?'rgba(255,200,60,.9)':'rgba(255,180,50,.8)');
+    sunGrd.addColorStop(1,'rgba(255,140,0,0)');
+    ctx.fillStyle=sunGrd; ctx.beginPath(); ctx.arc(sunX,sunY,22,0,Math.PI*2); ctx.fill();
+  }
+
+  // Clouds
+  if(gameSeason!==3){
+    ctx.fillStyle='rgba(255,255,255,0.06)';
+    [[0.2,0.12,80,20],[0.5,0.08,120,18],[0.75,0.15,90,16]].forEach(([rx,ry,rw,rh])=>{
+      const cx=((rx*W+animT*8)%(W+150))-75;
+      ctx.beginPath(); ctx.ellipse(cx,ry*H,rw,rh,0,0,Math.PI*2); ctx.fill();
+    });
+  }
+  // Snow
+  if(gameSeason===3){
+    ctx.fillStyle='rgba(200,220,255,0.5)';
+    for(let i=0;i<30;i++){
+      const sx=((i*137.5+animT*15)%(W));
+      const sy=((i*91.3+animT*8)%(H));
+      ctx.beginPath(); ctx.arc(sx,sy,1,0,Math.PI*2); ctx.fill();
+    }
+  }
+
+  // Grid cells
+  for(let gy=0;gy<ROWS;gy++){
+    for(let gx=0;gx<COLS;gx++){
+      const {x,y}=cellToScreen(gx,gy);
+      const isWater=gy>=ROWS-2;
+      const isCoast=gy===ROWS-3;
+      if(isWater){
+        ctx.fillStyle=`rgba(26,80,140,${0.7+0.1*Math.sin((gx*.4+animT*2))})`;
+      } else if(isCoast){
+        ctx.fillStyle='#d4c4a0';
+      } else {
+        ctx.fillStyle=(gx+gy)%2===0?sc.ground:sc.ground2;
+      }
+      ctx.fillRect(x,y,CELL,CELL);
+      ctx.strokeStyle='rgba(0,0,0,0.12)'; ctx.lineWidth=.5;
+      ctx.strokeRect(x,y,CELL,CELL);
+    }
+  }
+
+  // Hover preview
+  if(selectedBldg && mouseCell.gx>=0 && !demolishMode){
+    const b=BMAP[selectedBldg];
+    const {x,y}=cellToScreen(mouseCell.gx,mouseCell.gy);
+    const canPlace=inGrid(mouseCell.gx,mouseCell.gy,b.w,b.h)&&isCellFree(mouseCell.gx,mouseCell.gy,b.w,b.h)&&gold>=b.cost;
+    ctx.fillStyle=canPlace?'rgba(46,160,67,0.22)':'rgba(218,54,51,0.22)';
+    ctx.strokeStyle=canPlace?'#2ea043':'#da3633'; ctx.lineWidth=1.5;
+    ctx.fillRect(x,y,b.w*CELL,b.h*CELL);
+    ctx.strokeRect(x,y,b.w*CELL,b.h*CELL);
+    // emoji preview
+    ctx.font=`${Math.min(b.w,b.h)*CELL*.45}px serif`;
+    ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.globalAlpha=.6;
+    ctx.fillText(b.emoji, x+b.w*CELL/2, y+b.h*CELL/2); ctx.globalAlpha=1;
+  }
+
+  // Demolish hover
+  if(demolishMode && mouseCell.gx>=0){
+    const hitIdx=placed.findIndex(p=>mouseCell.gx>=p.gx&&mouseCell.gx<p.gx+p.bldg.w&&mouseCell.gy>=p.gy&&mouseCell.gy<p.gy+p.bldg.h);
+    if(hitIdx>=0){
+      const p=placed[hitIdx];
+      const {x,y}=cellToScreen(p.gx,p.gy);
+      ctx.fillStyle='rgba(218,54,51,0.3)'; ctx.strokeStyle='#da3633'; ctx.lineWidth=2;
+      ctx.fillRect(x,y,p.bldg.w*CELL,p.bldg.h*CELL);
+      ctx.strokeRect(x,y,p.bldg.w*CELL,p.bldg.h*CELL);
+    }
+  }
+
+  // Placed buildings
+  for(const p of placed){
+    const {x,y}=cellToScreen(p.gx,p.gy);
+    const b=p.bldg, W2=b.w*CELL, H2=b.h*CELL;
+    // shadow
+    ctx.fillStyle='rgba(0,0,0,0.2)'; ctx.fillRect(x+3,y+H2*.6,W2-3,H2*.42);
+    // body gradient
+    const bg=ctx.createLinearGradient(x,y,x,y+H2);
+    bg.addColorStop(0,lightenHex(b.color,30)); bg.addColorStop(1,darkenHex(b.color,10));
+    ctx.fillStyle=bg; ctx.fillRect(x,y,W2,H2);
+    // window grid for tall buildings
+    if(b.h>1&&b.cat!=='nature'&&b.cat!=='road'){
+      ctx.fillStyle='rgba(255,220,80,0.35)';
+      const rows=Math.max(1,Math.floor(H2/14)), cols=Math.max(1,Math.floor(W2/14));
+      for(let wr=0;wr<rows;wr++){
+        for(let wc=0;wc<cols;wc++){
+          if((wc+wr+p.gx+p.gy)%3!==0){
+            ctx.fillRect(x+3+wc*(W2-6)/cols, y+4+wr*(H2-8)/rows, (W2-6)/cols-2, (H2-8)/rows-2);
+          }
+        }
+      }
+    }
+    // emoji
+    ctx.font=`${Math.min(W2,H2)*.42}px serif`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(b.emoji, x+W2/2, y+H2/2);
+    // border
+    ctx.strokeStyle=lightenHex(b.color,40); ctx.lineWidth=1;
+    ctx.strokeRect(x,y,W2,H2);
+  }
+
+  // Water animation
+  const waveY=offsetY+(ROWS-2)*CELL;
+  ctx.globalAlpha=0.6;
+  for(let wx=0;wx<COLS*CELL;wx+=6){
+    const wy=waveY+5+Math.sin((wx/25)+animT*2)*3;
+    ctx.strokeStyle='rgba(100,180,255,0.3)'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(offsetX+wx,wy); ctx.lineTo(offsetX+wx+6,wy); ctx.stroke();
+  }
+  ctx.globalAlpha=1;
+
+  // Population particles (little citizen dots)
+  if(population>0){
+    const numPts=Math.min(Math.floor(population/10)+2,40);
+    ctx.fillStyle='rgba(100,220,255,0.7)';
+    for(let i=0;i<numPts;i++){
+      const t2=animT+i*.8;
+      if(placed.length===0) break;
+      const base=placed[i%placed.length];
+      const bx=offsetX+(base.gx+.5)*CELL+Math.sin(t2*1.5+i)*8;
+      const by=offsetY+(base.gy+.5)*CELL+Math.cos(t2*1.2+i)*6;
+      ctx.beginPath(); ctx.arc(bx,by,1.5,0,Math.PI*2); ctx.fill();
+    }
+  }
+
+  animT+=0.012;
+  ctx.restore();
+}
+
+// ══════════════════════════════════════
+//  GAME LOGIC
+// ══════════════════════════════════════
+function recalc(){
+  let income=0, upkeep=0, popCap=0, jobs=0, powerNeed=0, waterNeed=0;
+  let ecoRaw=0, eduRaw=0, healthRaw=0, safetyRaw=0, happyBase=50;
+  let roads=0, greenRaw=0;
+
+  for(const p of placed){
+    const b=p.bldg;
+    let bIncome=b.income, bUpkeep=b.upkeep;
+    // policy modifiers
+    if(activePolicies.has('transit')&&b.cat==='road') bUpkeep*=0.7;
+    if(activePolicies.has('taxcut')&&b.cat==='zone')  bIncome*=1.25;
+    if(activePolicies.has('renewable')&&(b.id==='solar'||b.id==='windmill')) bIncome*=1.4;
+    if(activePolicies.has('techzone')&&(b.id==='techpark'||b.id==='factory')) bIncome*=1.3;
+    if(activePolicies.has('healthcare')&&b.id==='hospital') happyBase+=8;
+    if(activePolicies.has('education')&&b.id==='school') bIncome*=1; // no income effect
+    income+=bIncome; upkeep+=bUpkeep;
+    popCap+=b.popCap; jobs+=b.jobs;
+    powerNeed+=Math.max(0,b.power); waterNeed+=Math.max(0,b.water);
+    ecoRaw   +=b.eco;    eduRaw   +=b.edu;
+    healthRaw+=b.health; safetyRaw+=b.safety;
+    happyBase+=b.happy;
+    if(b.cat==='road') roads++;
+    if(b.cat==='nature') greenRaw+=5;
+  }
+
+  // Tax income: taxRate% of popCap * avg income
+  const taxIncome = Math.round(population * taxRate * 0.8);
+  income += taxIncome;
+  const net = income - upkeep;
+
+  // Resource coverage (0–100)
+  const powerCapacity = placed.filter(p=>p.bldg.power<0).reduce((s,p)=>s+Math.abs(p.bldg.power),0);
+  const waterCapacity = placed.filter(p=>p.bldg.water<0).reduce((s,p)=>s+Math.abs(p.bldg.water),0);
+  const powerCoverage = powerCapacity>0?Math.min(100,Math.round(powerCapacity/Math.max(1,powerNeed+population/50)*100)):0;
+  const waterCoverage = waterCapacity>0?Math.min(100,Math.round(waterCapacity/Math.max(1,waterNeed+population/30)*100)):0;
+  const ecoCoverage   = Math.min(100,Math.max(0,Math.round((ecoRaw+greenRaw)/Math.max(1,placed.length)*15)));
+  const eduCoverage   = Math.min(100,Math.max(0,Math.round(eduRaw/Math.max(1,population)*500)));
+  const healthCoverage= Math.min(100,Math.max(0,Math.round(healthRaw/Math.max(1,population)*600)));
+  const safetyCoverage= Math.min(100,Math.max(0,Math.round(safetyRaw/Math.max(1,population)*600)));
+
+  // Policy eco bonus
+  if(activePolicies.has('greeninit')) ecoCoverage+10;
+
+  // Happiness formula
+  let happy = happyBase
+    + (powerCoverage/100)*15 + (waterCoverage/100)*15
+    + (ecoCoverage/100)*8   + (eduCoverage/100)*8
+    + (healthCoverage/100)*10 + (safetyCoverage/100)*8
+    - (taxRate-10)*0.8;
+  happy = Math.max(5, Math.min(100, Math.round(happy)));
+
+  happiness = happy;
+  metrics = {power:powerCoverage, water:waterCoverage, eco:ecoCoverage, edu:eduCoverage, health:healthCoverage, safety:safetyCoverage};
+
+  return {income, upkeep, net, popCap, jobs, roads, green:ecoRaw+greenRaw, taxIncome, powerCoverage, waterCoverage};
+}
+
+function gameTick(){
+  tickCount++;
+  const stats=recalc();
+  const {net,popCap,jobs}=stats;
+
+  // ── REALISTIC POPULATION GROWTH ──
+  // Growth depends on: housing capacity, jobs, happiness, services
+  const popPotential = Math.min(popCap, jobs * 3); // need both housing AND jobs
+  const growthFactor = (happiness/100) * 0.15  // happy people move in
+    + (metrics.power/100) * 0.08
+    + (metrics.water/100) * 0.08
+    + (metrics.health/100) * 0.05
+    - 0.02; // base attrition
+
+  // Population growth rate (realistic S-curve)
+  const capacityUtilization = population / Math.max(1, popPotential);
+  const logisticFactor = capacityUtilization < 0.8 ? 1 : Math.max(0, 1 - (capacityUtilization-0.8)*5);
+  const growthRate = Math.max(-0.02, growthFactor * logisticFactor);
+  const rawGrowth = population * growthRate + (popPotential > population ? 2 : -1);
+
+  // Policy transit bonus
+  const transitBonus = activePolicies.has('transit') ? rawGrowth * 0.05 : 0;
+  popGrowthBuf += rawGrowth + transitBonus;
+
+  // Only add whole people
+  const wholePeople = Math.floor(popGrowthBuf);
+  if(wholePeople !== 0){
+    population = Math.max(0, Math.min(popPotential, population + wholePeople));
+    popGrowthBuf -= wholePeople;
+  }
+
+  // Also allow natural initial seed
+  if(population===0 && popCap>0 && metrics.power>10 && metrics.water>10){
+    population = Math.min(5, popCap);
+    addNews('👥 First citizens have arrived!', 'good');
+  }
+
+  // Treasury
+  const happyMult = happiness > 70 ? 1.15 : happiness < 30 ? 0.8 : 1;
+  gold += Math.round(net * happyMult);
+
+  // Season / Year
+  gameSeason = (gameSeason + 1) % 4;
+  if(gameSeason === 0) gameYear++;
+
+  // Random events
+  if(Math.random() < 0.07) randomEvent(stats);
+
+  // Pop history
+  popHistory.push(population);
+  if(popHistory.length > 40) popHistory.shift();
+
+  // Milestones
+  checkMilestones();
+  updateHUD();
+  renderStatsPanel();
+  renderBuildMenu(); // refresh unlock states
+}
+
+const EVENTS_POOL = [
+  {w:3, type:'good', fn:(s)=>{gold+=2000; return '📈 Economic boom! Treasury +$2,000'},     req:p=>p>50},
+  {w:3, type:'good', fn:(s)=>{gold+=5000; return '🏆 Best-managed city award! +$5,000'},   req:p=>p>200},
+  {w:4, type:'good', fn:(s)=>{happiness=Math.min(100,happiness+8); return '🎉 City festival! Happiness +8'}, req:p=>p>0},
+  {w:2, type:'bad',  fn:(s)=>{gold-=800;  return '🌧️ Storm damage! Lost $800'},              req:p=>p>0},
+  {w:2, type:'bad',  fn:(s)=>{gold-=1500; return '🔥 Warehouse fire! Lost $1,500'},          req:p=>p>100},
+  {w:1, type:'bad',  fn:(s)=>{happiness=Math.max(10,happiness-10); return '🦠 Flu outbreak! Happiness -10'}, req:p=>p>500},
+  {w:2, type:'warn', fn:(s)=>{gold-=3000; return '💸 Budget scandal! -$3,000'},              req:p=>p>1000},
+  {w:3, type:'info', fn:(s)=>{return '🌱 New green businesses opened'},                      req:p=>p>0},
+  {w:2, type:'good', fn:(s)=>{gold+=Math.round(population*2); return `👶 Baby boom! +$${Math.round(population*2)} in tax revenue`}, req:p=>p>200},
+  {w:1, type:'bad',  fn:(s)=>{happiness=Math.max(5,happiness-15); return '🏗️ Construction chaos! Happiness -15'}, req:p=>p>0},
+  {w:2, type:'good', fn:(s)=>{happiness=Math.min(100,happiness+12); return '🎆 National holiday! Happiness +12'}, req:p=>p>0},
+  {w:1, type:'bad',  fn:(s)=>{gold-=5000; return '🌊 Coastal flooding! Emergency $5,000 damage'}, req:p=>p>300},
+];
+
+function randomEvent(stats){
+  const eligible = EVENTS_POOL.filter(e=>e.req(population));
+  const totalW = eligible.reduce((s,e)=>s+e.w,0);
+  let r = Math.random()*totalW;
+  for(const ev of eligible){ r-=ev.w; if(r<=0){ const msg=ev.fn(stats); addNews(msg,ev.type); showToast(msg); return; } }
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+function checkMilestones(){
+  const s=recalc();
+  MILESTONES.forEach(m=>{
+    if(m.done) return;
+    let met=false;
+    if(m.req.pop&&population>=m.req.pop) met=true;
+    if(m.req.happy&&happiness>=m.req.happy) met=true;
+    if(m.req.edu&&metrics.edu>=m.req.edu) met=true;
+    if(m.req.eco&&metrics.eco>=m.req.eco) met=true;
+    if(m.req.gold&&gold>=m.req.gold) met=true;
+    if(m.req.bldg&&placed.some(p=>p.bldg.id===m.req.bldg)) met=true;
+    if(met){
+      m.done=true;
+      if(m.reward>0) gold+=m.reward;
+      addNews(`🏆 Milestone reached: ${m.label}! ${m.reward>0?'+$'+m.reward.toLocaleString():''}`, 'good');
+      showToast(`🏆 ${m.icon} ${m.label}!`);
+      renderGoalsPanel();
+    }
+  });
+}
+
+// ══════════════════════════════════════
+//  PLACE / DEMOLISH
+// ══════════════════════════════════════
+function placeBuilding(gx,gy){
+  if(!selectedBldg) return;
+  const b=BMAP[selectedBldg];
+  if(!inGrid(gx,gy,b.w,b.h)){addNews('⚠️ Out of bounds','warn');return;}
+  if(!isCellFree(gx,gy,b.w,b.h)){addNews('⚠️ Tile occupied','warn');return;}
+  if(population<b.unlockPop){addNews(`🔒 ${b.name} requires ${b.unlockPop.toLocaleString()} population`,'warn');return;}
+  let cost=b.cost;
+  if(activePolicies.has('greeninit')&&b.cat==='nature') cost=Math.round(cost*.8);
+  if(gold<cost){addNews(`💸 Need $${cost.toLocaleString()} — only have $${gold.toLocaleString()}`,'bad');return;}
+  gold-=cost;
+  placed.push({gx,gy,bldg:b});
+  addNews(`🏗️ ${b.emoji} ${b.name} built!`, 'good');
+  updateHUD();
+  renderStatsPanel();
+  renderBuildMenu();
+  checkMilestones();
+}
+
+function demolishAt(gx,gy){
+  const idx=placed.findIndex(p=>gx>=p.gx&&gx<p.gx+p.bldg.w&&gy>=p.gy&&gy<p.gy+p.bldg.h);
+  if(idx<0) return;
+  const p=placed[idx];
+  const refund=Math.round(p.bldg.cost*.3);
+  gold+=refund;
+  placed.splice(idx,1);
+  addNews(`🔨 ${p.bldg.emoji} ${p.bldg.name} demolished. Refund: $${refund.toLocaleString()}`, 'info');
+  updateHUD();
+  renderStatsPanel();
+  renderBuildMenu();
+}
+
+function toggleDemolish(){
+  demolishMode=!demolishMode;
+  const btn=document.getElementById('demolishBtn');
+  btn.classList.toggle('active-demo',demolishMode);
+  btn.textContent=demolishMode?'🔨 Exit Demolish Mode':'🔨 Demolish Mode';
+  canvas.style.cursor=demolishMode?'not-allowed':'crosshair';
+}
+
+// ══════════════════════════════════════
+//  CANVAS INTERACTION
+// ══════════════════════════════════════
+canvas.addEventListener('mousedown',e=>{
+  if(e.button===2){selectedBldg=null;demolishMode=false;renderBuildMenu();return;}
+  isDragging=false; wasDragging=false;
+  dragStart={x:e.clientX,y:e.clientY}; dragOff={x:offsetX,y:offsetY};
+  canvas.addEventListener('mousemove',onDragMove={
+    handleEvent(ev){
+      if(!isDragging&&(Math.abs(ev.clientX-dragStart.x)>4||Math.abs(ev.clientY-dragStart.y)>4)) isDragging=true;
+      if(isDragging){ offsetX=dragOff.x+(ev.clientX-dragStart.x); offsetY=dragOff.y+(ev.clientY-dragStart.y); wasDragging=true; }
+    }
+  });
+});
+let onDragMove=null;
+window.addEventListener('mouseup',e=>{
+  if(onDragMove){canvas.removeEventListener('mousemove',onDragMove);onDragMove=null;}
+  if(!wasDragging){
+    const rect=canvas.getBoundingClientRect();
+    const {gx,gy}=screenToCell(e.clientX-rect.left,e.clientY-rect.top);
+    if(demolishMode) demolishAt(gx,gy);
+    else placeBuilding(gx,gy);
+  }
+  isDragging=false;
+});
+
+canvas.addEventListener('mousemove',e=>{
+  const rect=canvas.getBoundingClientRect();
+  const {gx,gy}=screenToCell(e.clientX-rect.left,e.clientY-rect.top);
+  mouseCell={gx,gy};
+  // place tip
+  const tip=document.getElementById('placeTip');
+  if(selectedBldg&&!demolishMode&&gx>=0&&gy>=0&&gx<COLS&&gy<ROWS){
+    const b=BMAP[selectedBldg];
+    const canPlace=inGrid(gx,gy,b.w,b.h)&&isCellFree(gx,gy,b.w,b.h)&&gold>=b.cost&&population>=b.unlockPop;
+    tip.textContent=canPlace?`Place ${b.name} — $${b.cost.toLocaleString()}`:`Can't place here`;
+    tip.style.left=(e.clientX-canvas.getBoundingClientRect().left+14)+'px';
+    tip.style.top=(e.clientY-canvas.getBoundingClientRect().top-30)+'px';
+    tip.classList.add('show');
+  } else { tip.classList.remove('show'); }
+});
+canvas.addEventListener('mouseleave',()=>{mouseCell={gx:-1,gy:-1};document.getElementById('placeTip').classList.remove('show');});
+canvas.addEventListener('wheel',e=>{
+  const delta=e.deltaY>0?.92:1.08;
+  const mx=e.offsetX, my=e.offsetY;
+  offsetX=mx-(mx-offsetX)*delta; offsetY=my-(my-offsetY)*delta;
+  e.preventDefault();
+},{passive:false});
+canvas.addEventListener('contextmenu',e=>e.preventDefault());
+
+// ══════════════════════════════════════
+//  SPEED
+// ══════════════════════════════════════
+function setSpeed(s){
+  gameSpeed=s;
+  clearInterval(tickTimer);
+  if(s>0){
+    const delays=[0,2500,900,300];
+    tickTimer=setInterval(gameTick,delays[s]);
+  }
+  [0,1,2,3].forEach(n=>document.getElementById('spd'+n).classList.toggle('on',n===s));
+}
+
+// ══════════════════════════════════════
+//  NEWS
+// ══════════════════════════════════════
+function addNews(msg,type='info'){
+  newsLog.unshift({msg,type,year:gameYear});
+  if(newsLog.length>60) newsLog.pop();
+  const nw=document.getElementById('newsWrap');
+  const d=document.createElement('div');
+  d.className='news-item '+type;
+  d.textContent=`[${gameYear}] ${msg}`;
+  nw.prepend(d);
+  if(nw.children.length>50) nw.removeChild(nw.lastChild);
+  updateNotifBar(msg,type);
+}
+
+function updateNotifBar(msg,type){
+  const nb=document.getElementById('notifBar');
+  const span=document.getElementById('notif1');
+  span.textContent=msg;
+  span.className=`notif-item ${type}`;
+}
+
+// ══════════════════════════════════════
+//  HUD & PANELS
+// ══════════════════════════════════════
+function updateHUD(){
+  const s=recalc();
+  document.getElementById('hudGold').textContent='$'+gold.toLocaleString();
+  document.getElementById('hudPop').textContent=population.toLocaleString();
+  document.getElementById('hudHap').textContent=happiness+'%';
+  const net=s.net; const netCol=net>=0?'var(--green2)':'var(--red2)';
+  document.getElementById('hudNet').textContent=(net>=0?'+':'')+'$'+net.toLocaleString();
+  document.getElementById('hudNet').style.color=netCol;
+  document.getElementById('hudYear').textContent='Year '+(gameYear-2024);
+  const seasons=['🌸 Spring','☀️ Summer','🍂 Autumn','❄️ Winter'];
+  document.getElementById('hudSeason').textContent=seasons[gameSeason];
+  document.getElementById('hudCityName').textContent=cityName;
+}
+
+function renderStatsPanel(){
+  const s=recalc();
+  document.getElementById('rs-gold').textContent='$'+gold.toLocaleString();
+  document.getElementById('rs-pop').textContent=population.toLocaleString();
+  document.getElementById('rs-land').textContent=`${placed.length} / ${COLS*ROWS} tiles`;
+  document.getElementById('rs-bld').textContent=placed.length;
+  document.getElementById('rs-yr').textContent=gameYear;
+  document.getElementById('rs-inc').textContent='$'+s.income.toLocaleString();
+  document.getElementById('rs-cost').textContent='$'+s.upkeep.toLocaleString();
+  const net=s.net;
+  document.getElementById('rs-net').textContent=(net>=0?'+':'')+' $'+net.toLocaleString();
+  document.getElementById('rs-net').className='sr-v '+(net>=0?'g':'r');
+  document.getElementById('rs-tax').textContent=taxRate+'%';
+  document.getElementById('rs-rescap').textContent=s.popCap.toLocaleString();
+  document.getElementById('rs-jobs').textContent=s.jobs.toLocaleString();
+  document.getElementById('rs-roads').textContent=s.roads;
+  document.getElementById('rs-grn').textContent=s.green;
+  // bars
+  const bars=[
+    ['hap',happiness,'var(--blue2)'],
+    ['pwr',metrics.power,'var(--gold2)'],
+    ['wtr',metrics.water,'var(--cyan2)'],
+    ['eco',metrics.eco,'var(--green2)'],
+    ['edu',metrics.edu,'var(--purple2)'],
+    ['hlth',metrics.health,'var(--red2)'],
+    ['sft',metrics.safety,'var(--orange2)'],
+  ];
+  bars.forEach(([id,val,color])=>{
+    document.getElementById('br-'+id).style.width=Math.min(100,val)+'%';
+    document.getElementById('br-'+id).style.background=color;
+    document.getElementById('bv-'+id).textContent=Math.round(val)+'%';
+  });
+  // sparkline
+  drawSparkline();
+  // growth rate
+  if(popHistory.length>=2){
+    const recent=popHistory.slice(-8);
+    const diff=recent[recent.length-1]-(recent[0]||0);
+    const perYear=Math.round(diff/Math.min(8,recent.length)*4);
+    document.getElementById('growthRate').textContent=`Growth: ${perYear>=0?'+':''}${perYear}/yr · Pop capacity: ${s.popCap.toLocaleString()}`;
+  }
+}
+
+function drawSparkline(){
+  const c=document.getElementById('sparkline');
+  const dpr=window.devicePixelRatio||1;
+  c.width=c.clientWidth*dpr; c.height=60*dpr;
+  const ctx2=c.getContext('2d'); ctx2.scale(dpr,dpr);
+  const W=c.clientWidth, H=60;
+  ctx2.clearRect(0,0,W,H);
+  if(popHistory.length<2) return;
+  const max=Math.max(...popHistory)||1, min=0;
+  const area=ctx2.createLinearGradient(0,0,0,H);
+  area.addColorStop(0,'rgba(46,160,67,0.2)'); area.addColorStop(1,'rgba(46,160,67,0)');
+  ctx2.beginPath();
+  popHistory.forEach((v,i)=>{
+    const x=W*i/(popHistory.length-1);
+    const y=H-H*(v-min)/(max-min)*.85-4;
+    i===0?ctx2.moveTo(x,y):ctx2.lineTo(x,y);
+  });
+  ctx2.lineTo(W,H); ctx2.lineTo(0,H); ctx2.closePath();
+  ctx2.fillStyle=area; ctx2.fill();
+  ctx2.beginPath();
+  popHistory.forEach((v,i)=>{
+    const x=W*i/(popHistory.length-1);
+    const y=H-H*(v-min)/(max-min)*.85-4;
+    i===0?ctx2.moveTo(x,y):ctx2.lineTo(x,y);
+  });
+  ctx2.strokeStyle='#3fb950'; ctx2.lineWidth=2; ctx2.stroke();
+  // current value
+  const last=popHistory[popHistory.length-1];
+  const lx=W, ly=H-H*(last-min)/(max-min)*.85-4;
+  ctx2.fillStyle='#3fb950'; ctx2.beginPath(); ctx2.arc(lx,ly,3,0,Math.PI*2); ctx2.fill();
+  // labels
+  ctx2.font='8px Space Mono,monospace'; ctx2.fillStyle='rgba(255,255,255,0.3)'; ctx2.textAlign='left';
+  ctx2.fillText(max.toLocaleString(),2,10);
+  ctx2.textAlign='right'; ctx2.fillText(last.toLocaleString(),W-2,H-4);
+}
+
+function renderGoalsPanel(){
+  const c=document.getElementById('milestoneList');
+  const s=recalc();
+  c.innerHTML=MILESTONES.map(m=>{
+    const isDone=m.done;
+    const isNext=!isDone&&MILESTONES.filter(x=>!x.done)[0]===m;
+    const cls=isDone?'done':isNext?'next':'locked';
+    let prog=0;
+    if(m.req.pop) prog=Math.min(100,Math.round(population/m.req.pop*100));
+    if(m.req.happy) prog=Math.min(100,Math.round(happiness/m.req.happy*100));
+    if(m.req.gold) prog=Math.min(100,Math.round(gold/m.req.gold*100));
+    if(m.req.eco) prog=Math.min(100,Math.round(metrics.eco/m.req.eco*100));
+    if(m.req.bldg) prog=placed.some(p=>p.bldg.id===m.req.bldg)?100:0;
+    return `<div class="ms-item ${cls}">
+      <div class="ms-dot" style="background:${isDone?'#3fb950':isNext?'#f0b429':'#484f58'}"></div>
+      <div>
+        <div class="ms-label">${m.icon} ${m.label}</div>
+        ${m.reward>0?`<div style="font-size:9px;color:var(--gold2);font-family:'Space Mono',monospace">Reward: $${m.reward.toLocaleString()}</div>`:''}
+        ${!isDone?`<div class="ms-progress"><div class="ms-progress-fill" style="width:${prog}%"></div></div>`:''}
+      </div>
+      <div class="ms-val">${isDone?'✅':prog+'%'}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderPolicyPanel(){
+  const c=document.getElementById('policyList');
+  c.innerHTML=POLICIES.map(pol=>{
+    const locked=population<pol.unlockPop;
+    const active=activePolicies.has(pol.id);
+    const tagColors={Economy:'var(--gold2)',Ecology:'var(--green2)',Social:'var(--blue2)',Safety:'var(--orange2)',Health:'var(--red2)',Infra:'var(--cyan2)'};
+    return `<div class="policy-card${active?' active-p':''}" onclick="togglePolicy('${pol.id}')" style="opacity:${locked?.4:1};cursor:${locked?'not-allowed':'pointer'}">
+      <div class="pc-header">
+        <span class="pc-name">${pol.emoji} ${pol.name}</span>
+        <span class="pc-tag" style="background:rgba(255,255,255,.06);color:${tagColors[pol.tag]||'var(--muted2)'}">${pol.tag}</span>
+      </div>
+      <div class="pc-desc">${locked?`🔒 Requires ${pol.unlockPop.toLocaleString()} population`:pol.desc}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('activePolicies').textContent=activePolicies.size;
+}
+
+function togglePolicy(id){
+  const pol=POLICIES.find(p=>p.id===id);
+  if(!pol||population<pol.unlockPop) return;
+  if(activePolicies.has(id)){
+    activePolicies.delete(id);
+    addNews(`⚖️ Policy repealed: ${pol.name}`, 'info');
+  } else {
+    if(activePolicies.size>=3){addNews('⚠️ Max 3 policies active','warn');return;}
+    activePolicies.add(id);
+    addNews(`✅ Policy enacted: ${pol.name}`, 'good');
+  }
+  renderPolicyPanel();
+  updateHUD();
+}
+
+function setTax(){
+  const slider=document.getElementById('taxSlider');
+  // Respect tax cap policy
+  if(activePolicies.has('taxcut')) slider.max=8;
+  else slider.max=30;
+  taxRate=parseInt(slider.value);
+  document.getElementById('taxVal').textContent=taxRate+'%';
+  const note=taxRate<5?'Very low taxes — citizens love it but city income suffers.':
+    taxRate<12?'Balanced tax rate. Good mix of income and happiness.':
+    taxRate<20?'High taxes — solid income but happiness takes a hit.':
+    'Punishing tax rate — citizens are unhappy and may leave.';
+  document.getElementById('taxNote').textContent=note;
+  document.getElementById('rs-tax').textContent=taxRate+'%';
+  updateHUD();
+}
+
+// ══════════════════════════════════════
+//  BUILD MENU
+// ══════════════════════════════════════
+let activeCat = 'zone';
+
+function renderCatTabs(){
+  const c=document.getElementById('catTabs');
+  c.innerHTML=CATS.map(cat=>`
+    <button class="ct${cat.id===activeCat?' active':''}" onclick="setCat('${cat.id}')">
+      <span class="ct-icon">${cat.icon}</span>
+      <span class="ct-label">${cat.label}</span>
+    </button>
+  `).join('');
+}
+
+function setCat(id){
+  activeCat=id;
+  renderCatTabs();
+  renderBuildList();
+}
+
+function renderBuildList(){
+  const c=document.getElementById('buildScroll');
+  c.innerHTML='';
+  const bldgs=BUILDINGS.filter(b=>b.cat===activeCat);
+  bldgs.forEach(b=>{
+    const locked=population<b.unlockPop;
+    const canAfford=gold>=b.cost;
+    const isSel=selectedBldg===b.id;
+    const div=document.createElement('button');
+    div.className=`bldg-card${isSel?' sel':''}${locked?' locked':''}`;
+    div.style.setProperty('--hover-bg',hexToRgba(b.color,0.08));
+    div.innerHTML=`
+      <span class="bc-icon">${b.emoji}</span>
+      <div class="bc-info">
+        <div class="bc-name">${b.name}</div>
+        <div class="bc-sub">${b.w>1||b.h>1?`${b.w}×${b.h} · `:''} ${b.desc}</div>
+        <div class="bc-stats">
+          ${locked?`<span class="bc-badge badge-lock">🔒 ${b.unlockPop.toLocaleString()} pop</span>`:`<span class="bc-badge badge-cost">$${b.cost.toLocaleString()}</span>`}
+          ${!locked&&b.popCap>0?`<span class="bc-stat" style="background:rgba(46,160,67,.12);color:#3fb950">+${b.popCap} pop</span>`:''}
+          ${!locked&&b.income>0?`<span class="bc-stat" style="background:rgba(212,160,23,.1);color:#f0b429">+$${b.income}</span>`:''}
+          ${!locked&&b.jobs>0?`<span class="bc-stat" style="background:rgba(56,139,253,.1);color:#58a6ff">${b.jobs} jobs</span>`:''}
+        </div>
+      </div>
+    `;
+    if(!locked){
+      div.style.opacity=canAfford?1:.55;
+      div.onclick=()=>{
+        selectedBldg=b.id;
+        demolishMode=false;
+        renderBuildList();
+        showBldgPreview(b);
+      };
+    }
+    c.appendChild(div);
+  });
+}
+
+function showBldgPreview(b){
+  const pr=document.getElementById('selPreview');
+  pr.classList.add('show');
+  document.getElementById('spIcon').textContent=b.emoji;
+  document.getElementById('spName').textContent=b.name;
+  document.getElementById('spDesc').textContent=b.desc;
+  const stats=[
+    {k:'Cost',v:`$${b.cost.toLocaleString()}`,c:'var(--gold2)'},
+    {k:'Upkeep',v:`$${b.upkeep}/yr`,c:'var(--red2)'},
+    b.income?{k:'Income',v:`+$${b.income}/yr`,c:'var(--green2)'}:null,
+    b.popCap?{k:'Residents',v:`+${b.popCap}`,c:'var(--green2)'}:null,
+    b.jobs?{k:'Jobs',v:`${b.jobs}`,c:'var(--blue2)'}:null,
+    b.happy?{k:'Happiness',v:`${b.happy>0?'+':''}${b.happy}`,c:b.happy>0?'var(--blue2)':'var(--red2)'}:null,
+    b.eco?{k:'Ecology',v:`${b.eco>0?'+':''}${b.eco}`,c:b.eco>0?'var(--green2)':'var(--red2)'}:null,
+  ].filter(Boolean);
+  document.getElementById('spStats').innerHTML=stats.map(s=>`
+    <div class="sp-stat">
+      <div class="sp-stat-k">${s.k}</div>
+      <div class="sp-stat-v" style="color:${s.c}">${s.v}</div>
+    </div>
+  `).join('');
+}
+
+function renderBuildMenu(){
+  renderCatTabs();
+  renderBuildList();
+}
+
+// ══════════════════════════════════════
+//  RIGHT TABS
+// ══════════════════════════════════════
+function setRTab(id){
+  document.querySelectorAll('.rtab').forEach((b,i)=>b.classList.toggle('active',['stats','news','goals','policy'][i]===id));
+  document.querySelectorAll('.rpanel').forEach(p=>p.classList.toggle('active',p.id==='tab-'+id));
+  if(id==='goals') renderGoalsPanel();
+  if(id==='policy') renderPolicyPanel();
+}
+
+// ══════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════
+function hexToRgba(hex,a){
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+// City name from URL or random
+const adjectives=['New','Great','North','South','East','West','Golden','Silver','Blue','Green','Royal','Free'];
+const nouns=['Haven','Ridge','Falls','Port','Creek','Bay','Heights','Valley','Park','Grove','Stone','Wood'];
+cityName=adjectives[Math.floor(Math.random()*adjectives.length)]+nouns[Math.floor(Math.random()*nouns.length)];
+document.getElementById('cityName').textContent=cityName;
+document.getElementById('hudCityName').textContent=cityName;
+
+// ══════════════════════════════════════
+//  ANIMATE + INIT
+// ══════════════════════════════════════
+function animate(){ requestAnimationFrame(animate); draw(); }
+animate();
+
+renderBuildMenu();
+updateHUD();
+renderStatsPanel();
+renderGoalsPanel();
+renderPolicyPanel();
+setSpeed(1);
+addNews('🏙️ Your city has been founded! Build Roads first, then Zones.', 'good');
+addNews('💡 Tip: You need Power and Water coverage for population growth!', 'info');
+</script>
+</body>
+</html>
