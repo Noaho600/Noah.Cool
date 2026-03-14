@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Space Travel Time — Noah.cool</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#010208;--panel:rgba(6,10,28,0.96);--panel2:rgba(12,18,45,0.85);
+  --border:rgba(80,130,255,0.12);--border2:rgba(80,130,255,0.28);
+  --text:#cce0ff;--muted:#2d4a7a;--muted2:#4a6a9a;
+  --accent:#4a90f5;--accent2:#7ab4ff;--gold:#ffd060;
+  --red:#ff6060;--green:#50e3a4;--purple:#b078ff;
+}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden}
+
+.back{position:fixed;top:12px;left:12px;z-index:300;display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted2);text-decoration:none;background:var(--panel);border:1px solid var(--border);padding:6px 13px;border-radius:20px;transition:color .15s;font-family:'DM Mono',monospace;letter-spacing:.04em}
+.back:hover{color:var(--text)}
+
+/* star field */
+#starfield{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+.page{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:56px 20px 60px;display:flex;flex-direction:column;gap:24px}
+
+/* header */
+.page-header{text-align:center}
+h1{font-family:'Orbitron',monospace;font-size:clamp(20px,4vw,36px);font-weight:900;letter-spacing:.06em;background:linear-gradient(135deg,#7ab4ff 0%,#d0e8ff 50%,#ffd060 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.page-sub{font-size:11px;color:var(--muted2);letter-spacing:.12em;font-family:'DM Mono',monospace}
+
+/* journey visualizer */
+.journey-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.jc-header{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.jc-title{font-family:'Orbitron',monospace;font-size:11px;letter-spacing:.12em;color:var(--muted2);text-transform:uppercase}
+.jc-dest{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:var(--accent2)}
+#journey-canvas{width:100%;display:block;cursor:pointer}
+
+/* vehicle selector */
+.vehicle-section{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:18px}
+.vs-title{font-size:9px;font-family:'DM Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--muted2);margin-bottom:12px}
+.vehicle-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.vcard{border:1.5px solid var(--border);border-radius:10px;padding:12px 10px;cursor:pointer;text-align:center;background:rgba(255,255,255,0.02);transition:all .18s cubic-bezier(.22,1,.36,1)}
+.vcard:hover{border-color:var(--border2);transform:translateY(-2px)}
+.vcard.active{border-color:var(--accent);background:rgba(74,144,245,0.1);box-shadow:0 0 16px rgba(74,144,245,0.12)}
+.vc-icon{font-size:26px;display:block;margin-bottom:6px;line-height:1}
+.vc-name{font-size:10px;font-weight:600;color:var(--text);letter-spacing:.04em;margin-bottom:3px}
+.vc-speed{font-size:9px;color:var(--muted2);font-family:'DM Mono',monospace}
+
+/* speed slider */
+.speed-slider-wrap{display:flex;align-items:center;gap:14px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.ssl-label{font-size:11px;color:var(--muted2);font-family:'DM Mono',monospace;white-space:nowrap;flex-shrink:0}
+input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:3px;border-radius:2px;background:rgba(255,255,255,0.08);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;transition:transform .1s}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.25)}
+.ssl-val{font-size:11px;color:var(--accent2);font-family:'DM Mono',monospace;white-space:nowrap;min-width:130px;text-align:right}
+
+/* destination table */
+.dest-section{background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.dest-hdr{display:grid;grid-template-columns:44px 1fr 130px 130px 110px;gap:12px;padding:10px 16px;background:rgba(0,0,0,0.3);font-size:9px;font-family:'DM Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:var(--muted2)}
+.dest-row{display:grid;grid-template-columns:44px 1fr 130px 130px 110px;gap:12px;padding:12px 16px;border-top:1px solid var(--border);cursor:pointer;transition:background .12s;align-items:center}
+.dest-row:hover{background:rgba(74,144,245,0.05)}
+.dest-row.active{background:rgba(74,144,245,0.08);border-left:2px solid var(--accent)}
+.dr-icon{font-size:22px;text-align:center}
+.dr-info{}
+.dr-name{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:var(--text);margin-bottom:2px}
+.dr-dist{font-size:9px;color:var(--muted2);font-family:'DM Mono',monospace}
+.dr-time{font-size:13px;font-weight:700;font-family:'DM Mono',monospace;color:var(--accent2)}
+.dr-arrive{font-size:10px;color:var(--muted2);font-family:'DM Mono',monospace}
+.dr-badge{font-size:8px;padding:2px 7px;border-radius:3px;letter-spacing:.08em;text-transform:uppercase;font-family:'DM Mono',monospace;white-space:nowrap}
+.badge-fast{background:rgba(80,227,164,0.12);color:var(--green);border:1px solid rgba(80,227,164,0.25)}
+.badge-lifetime{background:rgba(255,208,96,0.12);color:var(--gold);border:1px solid rgba(255,208,96,0.25)}
+.badge-impossible{background:rgba(255,96,96,0.12);color:var(--red);border:1px solid rgba(255,96,96,0.25)}
+.badge-relativity{background:rgba(176,120,255,0.12);color:var(--purple);border:1px solid rgba(176,120,255,0.25)}
+
+/* info box */
+.info-box{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:16px 18px;border-left:3px solid var(--gold)}
+.info-box strong{color:var(--gold)}
+.info-box p{font-size:12px;color:var(--muted2);line-height:1.8;margin-top:4px}
+
+/* relativistic panel */
+.relativ-card{background:var(--panel);border:1px solid var(--border2);border-radius:16px;padding:18px;border-top:2px solid var(--purple)}
+.rel-title{font-family:'Orbitron',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);margin-bottom:12px}
+.rel-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rel-item{background:rgba(176,120,255,0.06);border:1px solid rgba(176,120,255,0.15);border-radius:8px;padding:12px}
+.rel-label{font-size:9px;font-family:'DM Mono',monospace;letter-spacing:.15em;text-transform:uppercase;color:var(--muted2);margin-bottom:5px}
+.rel-value{font-family:'Orbitron',monospace;font-size:16px;font-weight:700;color:var(--purple)}
+.rel-sub{font-size:9px;color:var(--muted2);margin-top:3px;font-family:'DM Mono',monospace}
+
+@keyframes shipMove{from{transform:translateX(0)}to{transform:translateX(1px)}}
+</style>
+</head>
+<body>
+<canvas id="starfield"></canvas>
+<a class="back" href="index.html">← noah.cool</a>
+
+<div class="page">
+  <div class="page-header">
+    <h1>Space Travel Time</h1>
+    <div class="page-sub">// how long would it actually take to get there?</div>
+  </div>
+
+  <!-- JOURNEY VISUALIZER -->
+  <div class="journey-card">
+    <div class="jc-header">
+      <span class="jc-title">Active Journey</span>
+      <span class="jc-dest" id="journeyDest">Select a destination below</span>
+    </div>
+    <canvas id="journey-canvas" height="90"></canvas>
+  </div>
+
+  <!-- VEHICLE SELECTOR -->
+  <div class="vehicle-section">
+    <div class="vs-title">Choose Your Vehicle</div>
+    <div class="vehicle-grid" id="vehicleGrid"></div>
+    <div class="speed-slider-wrap">
+      <span class="ssl-label">Custom speed:</span>
+      <input type="range" id="speedSlider" min="0.01" max="99.99" step="0.01" value="10" oninput="onSlider()"/>
+      <span class="ssl-val" id="sliderLabel">10.00% of light</span>
+    </div>
+  </div>
+
+  <!-- DESTINATION TABLE -->
+  <div class="dest-section">
+    <div class="dest-hdr">
+      <div></div>
+      <div>Destination</div>
+      <div>Travel Time</div>
+      <div>You Arrive</div>
+      <div>Status</div>
+    </div>
+    <div id="destTable"></div>
+  </div>
+
+  <!-- RELATIVISTIC EFFECTS -->
+  <div class="relativ-card" id="relativCard">
+    <div class="rel-title">⚛ Relativistic Effects (Einstein's Special Relativity)</div>
+    <div class="rel-grid" id="relativGrid"></div>
+    <div style="margin-top:12px;font-size:11px;color:var(--muted2);font-family:'DM Mono',monospace;line-height:1.7" id="relativNote"></div>
+  </div>
+
+  <!-- FACT BOX -->
+  <div class="info-box" id="factBox">
+    <strong>💡 Select a destination</strong>
+    <p>Click any destination to see detailed travel info and relativistic effects.</p>
+  </div>
+</div>
+
+<script>
+// ── CONSTANTS ──
+const C_KMH   = 1_079_252_850;   // km/h
+const C_KMS   = 299_792.458;     // km/s
+const LY_KM   = 9.461e12;        // km per light-year
+
+const VEHICLES = [
+  {id:'walk',   name:'Walking',      emoji:'🚶',speed:5,          label:'5 km/h'},
+  {id:'car',    name:'Car',          emoji:'🚗',speed:120,         label:'120 km/h'},
+  {id:'plane',  name:'Airplane',     emoji:'✈️',speed:900,         label:'900 km/h'},
+  {id:'rocket', name:'Rocket',       emoji:'🚀',speed:40_000,      label:'40,000 km/h'},
+  {id:'voyager',name:'Voyager 1',    emoji:'🛸',speed:61_200,      label:'61,200 km/h'},
+  {id:'solar',  name:'Solar Probe',  emoji:'🌞',speed:692_000,     label:'692,000 km/h'},
+  {id:'p01',    name:'1% Light',     emoji:'⚡',speed:C_KMH*.01,  label:'1% of c'},
+  {id:'p10',    name:'10% Light',    emoji:'🌟',speed:C_KMH*.10,  label:'10% of c'},
+  {id:'p50',    name:'50% Light',    emoji:'✨',speed:C_KMH*.50,  label:'50% of c'},
+  {id:'p90',    name:'90% Light',    emoji:'💫',speed:C_KMH*.90,  label:'90% of c'},
+  {id:'light',  name:'Light Speed',  emoji:'🔆',speed:C_KMH*.9999,label:'≈ 100% of c'},
+];
+
+const DESTS = [
+  {name:'Moon',              emoji:'🌕',km:384_400,           fact:'Light takes just 1.28 seconds to reach the Moon. Radio signals during Apollo took the same time.'},
+  {name:'Mars',              emoji:'🔴',km:225e6,             fact:'Mars distance varies from 54 million km (opposition) to 401 million km. This uses average distance.'},
+  {name:'Jupiter',           emoji:'🟠',km:779e6,             fact:'Jupiter is 318× Earth\'s mass. Its moon Io has hundreds of active volcanoes.'},
+  {name:'Saturn',            emoji:'🪐',km:1.427e9,           fact:'Saturn\'s rings are incredibly thin — only ~10 meters thick — yet span 282,000 km.'},
+  {name:'Uranus',            emoji:'🔵',km:2.871e9,           fact:'Uranus spins on its side with an axial tilt of 98°. Its poles get 42 years of continuous darkness.'},
+  {name:'Neptune',           emoji:'💙',km:4.498e9,           fact:'Neptune\'s winds reach 2,100 km/h — the fastest in the solar system.'},
+  {name:'Pluto',             emoji:'❄️',km:5.906e9,           fact:'New Horizons took 9.5 years to reach Pluto traveling at 58,000 km/h.'},
+  {name:'Oort Cloud',        emoji:'☄️',km:14.96e12,          fact:'The Oort Cloud marks the gravitational edge of the solar system — a vast spherical shell of frozen comets.'},
+  {name:'Proxima Centauri',  emoji:'⭐',km:4.01e13,           fact:'Our nearest stellar neighbor. Even at 10% light speed, the journey takes 44 years.'},
+  {name:'Alpha Centauri A',  emoji:'🌠',km:4.12e13,           fact:'A Sun-like star just 4.37 light-years away. Part of a triple star system with Proxima.'},
+  {name:'Sirius',            emoji:'✴️',km:8.14e13,           fact:'The brightest star in the night sky, 25× more luminous than the Sun. 8.6 light-years away.'},
+  {name:'Betelgeuse',        emoji:'🔴',km:5.5e15,            fact:'So large that if placed at our Sun, it would engulf the orbit of Jupiter. It may go supernova anytime in the next 100,000 years.'},
+  {name:'Galactic Center',   emoji:'🌌',km:2.46e17,           fact:'Sgr A*, a supermassive black hole 4 million times our Sun\'s mass, sits at the Milky Way\'s center.'},
+  {name:'Andromeda Galaxy',  emoji:'🌀',km:2.365e19,          fact:'The Milky Way and Andromeda are on a collision course — merging in ~4.5 billion years.'},
+  {name:'Observable Universe',emoji:'🔭',km:4.4e23,           fact:'The observable universe is 93 billion light-years in diameter — and expanding faster than light at its edges.'},
+];
+
+let activeVehicle = VEHICLES.find(v=>v.id==='rocket');
+let customSpeed   = null;
+let activeDest    = DESTS[1]; // Mars default
+let animT         = 0;
+
+// ── STARFIELD ──
+const sfCanvas = document.getElementById('starfield');
+const sfCtx    = sfCanvas.getContext('2d');
+let stars      = [];
+function initStars(){
+  sfCanvas.width=window.innerWidth; sfCanvas.height=window.innerHeight;
+  stars=[];
+  for(let i=0;i<400;i++) stars.push({x:Math.random(),y:Math.random(),r:Math.random()<.08?.9:.35,o:.2+Math.random()*.6});
+}
+function drawStars(){
+  sfCtx.clearRect(0,0,sfCanvas.width,sfCanvas.height);
+  stars.forEach(s=>{
+    sfCtx.fillStyle=`rgba(255,255,255,${s.o})`;
+    sfCtx.beginPath(); sfCtx.arc(s.x*sfCanvas.width, s.y*sfCanvas.height, s.r,0,Math.PI*2); sfCtx.fill();
+  });
+}
+initStars(); drawStars();
+window.addEventListener('resize',()=>{initStars();drawStars();});
+
+// ── JOURNEY CANVAS ──
+const jCanvas = document.getElementById('journey-canvas');
+const jCtx    = jCanvas.getContext('2d');
+
+function drawJourney(){
+  const dpr = window.devicePixelRatio||1;
+  jCanvas.width  = jCanvas.clientWidth * dpr;
+  jCanvas.height = 90 * dpr;
+  const W=jCanvas.clientWidth, H=90;
+  jCtx.save(); jCtx.scale(dpr,dpr);
+
+  // bg
+  const bg=jCtx.createLinearGradient(0,0,W,0);
+  bg.addColorStop(0,'#010212'); bg.addColorStop(1,'#050820');
+  jCtx.fillStyle=bg; jCtx.fillRect(0,0,W,H);
+
+  // stars
+  jCtx.fillStyle='rgba(255,255,255,0.3)';
+  for(let i=0;i<60;i++){
+    jCtx.beginPath(); jCtx.arc((i*137.5+animT*20)%W, (i*67.3)%H, i%5===0?.7:.3,0,Math.PI*2); jCtx.fill();
+  }
+
+  const speed = getSpeed();
+  const pct   = speed / C_KMH; // fraction of light
+  const hrs   = activeDest ? activeDest.km / speed : 0;
+
+  // progress: animate ship
+  const journeyPct = pct > .5 ? .85 : pct > .1 ? .65 : pct > .001 ? .4 : .15;
+  const shipX = 50 + (W - 120) * Math.min(1, journeyPct);
+
+  // path line
+  jCtx.strokeStyle='rgba(74,144,245,0.2)'; jCtx.lineWidth=1; jCtx.setLineDash([4,8]);
+  jCtx.beginPath(); jCtx.moveTo(50,H/2); jCtx.lineTo(W-50,H/2); jCtx.stroke();
+  jCtx.setLineDash([]);
+
+  // engine trail
+  if(pct > 0.001){
+    const trailGrad=jCtx.createLinearGradient(0,0,shipX,0);
+    trailGrad.addColorStop(0,'transparent'); trailGrad.addColorStop(1,'rgba(74,144,245,0.15)');
+    jCtx.fillStyle=trailGrad; jCtx.fillRect(50,H/2-2,shipX-50,4);
+  }
+
+  // ship emoji
+  jCtx.font=`${24}px serif`; jCtx.textAlign='center'; jCtx.textBaseline='middle';
+  jCtx.save();
+  if(pct>0.1){ jCtx.shadowColor='rgba(74,144,245,0.6)'; jCtx.shadowBlur=12; }
+  jCtx.fillText(activeVehicle.emoji, shipX, H/2);
+  jCtx.restore();
+
+  // origin label
+  jCtx.font='9px DM Mono,monospace'; jCtx.fillStyle='rgba(80,130,255,0.5)'; jCtx.textAlign='center';
+  jCtx.fillText('EARTH', 50, H-10);
+
+  // dest emoji + label
+  if(activeDest){
+    jCtx.font='20px serif'; jCtx.textAlign='center'; jCtx.textBaseline='middle';
+    jCtx.fillText(activeDest.emoji, W-38, H/2);
+    jCtx.font='9px DM Mono,monospace'; jCtx.fillStyle='rgba(80,130,255,0.5)';
+    jCtx.textAlign='center'; jCtx.textBaseline='alphabetic';
+    jCtx.fillText(activeDest.name.toUpperCase(), W-38, H-10);
+  }
+
+  // speed indicator
+  const pctStr = pct >= 0.001 ? (pct*100).toFixed(pct<.1?3:2)+'% c' : (speed/1000).toFixed(0)+'K km/h';
+  jCtx.font='10px DM Mono,monospace'; jCtx.fillStyle='rgba(122,180,255,0.7)'; jCtx.textAlign='center';
+  jCtx.textBaseline='alphabetic';
+  jCtx.fillText('⚡ '+pctStr, W/2, 16);
+
+  jCtx.restore();
+  animT+=0.015;
+  requestAnimationFrame(drawJourney);
+}
+drawJourney();
+
+// ── MATH ──
+function getSpeed(){ return customSpeed || activeVehicle.speed; }
+
+function gamma(speed){
+  const beta = speed / C_KMH;
+  if(beta >= 1) return Infinity;
+  return 1 / Math.sqrt(1 - beta*beta);
+}
+
+function formatTime(hours){
+  if(!isFinite(hours)||hours>1e40) return '∞ (impossible)';
+  if(hours<1/3600)        return `${(hours*3600*1000).toFixed(1)} ms`;
+  if(hours<1/60)          return `${(hours*3600).toFixed(2)} sec`;
+  if(hours<1)             return `${(hours*60).toFixed(1)} min`;
+  if(hours<24)            return `${hours.toFixed(1)} hrs`;
+  const d=hours/24;
+  if(d<365)               return `${d.toFixed(1)} days`;
+  const y=d/365.25;
+  if(y<1000)              return `${y.toFixed(2)} years`;
+  if(y<1e6)               return `${(y/1e3).toFixed(2)}K years`;
+  if(y<1e9)               return `${(y/1e6).toFixed(3)}M years`;
+  if(y<1e12)              return `${(y/1e9).toFixed(3)}B years`;
+  return `${(y/1e12).toFixed(2)}T years`;
+}
+
+function formatDistKm(km){
+  const ly=km/LY_KM;
+  if(km<1e6)              return `${km.toLocaleString()} km`;
+  if(km<1e9)              return `${(km/1e6).toFixed(2)}M km`;
+  if(ly<0.01)             return `${(km/1e9).toFixed(2)}B km`;
+  if(ly<1)                return `${(km/LY_KM).toFixed(4)} ly · ${(km/1e9).toFixed(1)}B km`;
+  if(ly<1000)             return `${ly.toFixed(2)} light-years`;
+  if(ly<1e6)              return `${(ly/1e3).toFixed(2)}K light-years`;
+  if(ly<1e9)              return `${(ly/1e6).toFixed(2)}M light-years`;
+  return `${(ly/1e9).toFixed(3)}B light-years`;
+}
+
+function arrivalYear(hours){
+  if(!isFinite(hours)||hours>9e14) return '∞';
+  const years=hours/8766;
+  const y=2025+years;
+  if(y>1e15) return '∞ (heat death of universe)';
+  if(y>1e12) return `Year ${(y/1e12).toFixed(2)} trillion`;
+  if(y>1e9)  return `Year ${(y/1e9).toFixed(3)}B`;
+  if(y>1e6)  return `Year ${(y/1e6).toFixed(3)}M`;
+  if(y>9999) return `Year ${Math.round(y).toLocaleString()}`;
+  return `Year ${Math.round(y)}`;
+}
+
+function getBadge(hours,speed){
+  const pct=speed/C_KMH;
+  if(pct>=0.5) return {cls:'badge-relativity',label:'⚛ Relativistic'};
+  if(hours<8760) return {cls:'badge-fast',label:'✓ < 1 Year'};
+  if(hours<8760*80) return {cls:'badge-lifetime',label:'⌛ Lifetime'};
+  return {cls:'badge-impossible',label:'∞ Impossible'};
+}
+
+// ── RENDER ──
+function renderVehicles(){
+  document.getElementById('vehicleGrid').innerHTML=VEHICLES.map(v=>`
+    <div class="vcard${v.id===activeVehicle.id&&!customSpeed?' active':''}" onclick="selectVehicle('${v.id}')">
+      <span class="vc-icon">${v.emoji}</span>
+      <div class="vc-name">${v.name}</div>
+      <div class="vc-speed">${v.label}</div>
+    </div>
+  `).join('');
+}
+
+function renderDestTable(){
+  const speed=getSpeed();
+  document.getElementById('destTable').innerHTML=DESTS.map(d=>{
+    const hrs=d.km/speed;
+    const badge=getBadge(hrs,speed);
+    const isActive=activeDest===d;
+    return `<div class="dest-row${isActive?' active':''}" onclick="selectDest_${d.name.replace(/\s/g,'_')}()">
+      <div class="dr-icon">${d.emoji}</div>
+      <div class="dr-info">
+        <div class="dr-name">${d.name}</div>
+        <div class="dr-dist">${formatDistKm(d.km)}</div>
+      </div>
+      <div class="dr-time">${formatTime(hrs)}</div>
+      <div class="dr-arrive">${arrivalYear(hrs)}</div>
+      <div><span class="dr-badge ${badge.cls}">${badge.label}</span></div>
+    </div>`;
+  }).join('');
+
+  // Attach click handlers
+  DESTS.forEach(d=>{
+    window[`selectDest_${d.name.replace(/\s/g,'_')}`] = ()=>selectDest(d);
+  });
+}
+
+function renderRelativity(){
+  const speed=getSpeed();
+  const beta=speed/C_KMH;
+  const g=gamma(speed);
+  const pct=(beta*100).toFixed(beta>.01?3:6);
+
+  if(beta<0.01){
+    document.getElementById('relativCard').style.opacity='0.4';
+    document.getElementById('relativGrid').innerHTML=`
+      <div class="rel-item" style="grid-column:1/-1"><div class="rel-label">Status</div><div class="rel-value" style="font-size:13px">No significant effects</div><div class="rel-sub">Below 1% of light speed — Newtonian physics applies</div></div>
+    `;
+    document.getElementById('relativNote').textContent='Relativistic effects only become significant above ~5% of light speed.';
+    return;
+  }
+  document.getElementById('relativCard').style.opacity='1';
+
+  const massFactor=g;
+  const timeDilated=activeDest?activeDest.km/speed/g:null; // proper time felt by traveler
+  const lengthContracted=activeDest?activeDest.km/g:null;
+
+  document.getElementById('relativGrid').innerHTML=`
+    <div class="rel-item"><div class="rel-label">Lorentz Factor (γ)</div><div class="rel-value">${isFinite(g)?g.toFixed(4):'∞'}</div><div class="rel-sub">Time / length distortion factor</div></div>
+    <div class="rel-item"><div class="rel-label">Relative Mass</div><div class="rel-value">${isFinite(massFactor)?massFactor.toFixed(3)+'×':'∞'}</div><div class="rel-sub">Your apparent mass to observers</div></div>
+    <div class="rel-item"><div class="rel-label">Traveler's Time${activeDest?` to ${activeDest.name}`:''}</div><div class="rel-value" style="font-size:13px">${timeDilated!==null?formatTime(timeDilated):'—'}</div><div class="rel-sub">Time felt onboard (proper time)</div></div>
+    <div class="rel-item"><div class="rel-label">Apparent Distance</div><div class="rel-value" style="font-size:13px">${lengthContracted!==null?formatDistKm(lengthContracted):'—'}</div><div class="rel-sub">Length-contracted distance (traveler frame)</div></div>
+  `;
+
+  const notes=[];
+  if(beta>.5) notes.push(`At ${pct}% of c, time passes ${g.toFixed(2)}× slower for you than for Earth observers.`);
+  if(beta>.9) notes.push(`Your apparent mass has increased ${g.toFixed(1)}× — reaching light speed would require infinite energy.`);
+  if(beta>.99) notes.push(`Extreme time dilation: for every year you experience, ${g.toFixed(0)} years pass on Earth.`);
+  if(timeDilated&&activeDest){
+    const outerHrs=activeDest.km/speed;
+    if(outerHrs>timeDilated*1.5) notes.push(`Earth time: ${formatTime(outerHrs)} · Your time: ${formatTime(timeDilated)} — you'd age far less than people on Earth.`);
+  }
+  document.getElementById('relativNote').textContent=notes.join(' ');
+}
+
+function renderFactBox(){
+  if(!activeDest) return;
+  const speed=getSpeed();
+  const hrs=activeDest.km/speed;
+  const pct=(speed/C_KMH*100).toFixed(4);
+  document.getElementById('factBox').innerHTML=`
+    <strong>${activeDest.emoji} ${activeDest.name}</strong>
+    <p>${activeDest.fact}<br/><br/>
+    At your current speed (<strong>${pct}% of c</strong>), you'd arrive in <strong>${formatTime(hrs)}</strong> — around <strong>${arrivalYear(hrs)}</strong>.</p>
+  `;
+}
+
+function renderAll(){
+  renderVehicles();
+  renderDestTable();
+  renderRelativity();
+  renderFactBox();
+  document.getElementById('journeyDest').textContent=activeDest?activeDest.name:'Select a destination';
+}
+
+// ── CONTROLS ──
+function selectVehicle(id){
+  activeVehicle=VEHICLES.find(v=>v.id===id);
+  customSpeed=null;
+  const pct=activeVehicle.speed/C_KMH*100;
+  document.getElementById('speedSlider').value=Math.min(99.99,pct);
+  document.getElementById('sliderLabel').textContent=`${Math.min(99.99,pct).toFixed(2)}% of light`;
+  renderAll();
+}
+
+function selectDest(d){
+  activeDest=d;
+  renderAll();
+}
+
+function onSlider(){
+  const pct=parseFloat(document.getElementById('speedSlider').value);
+  customSpeed=C_KMH*(pct/100);
+  document.getElementById('sliderLabel').textContent=`${pct.toFixed(2)}% of light`;
+  renderAll();
+}
+
+// init
+selectVehicle('rocket');
+selectDest(DESTS[1]);
+</script>
+</body>
+</html>
