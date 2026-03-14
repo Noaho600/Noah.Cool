@@ -1,122 +1,98 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>404 - Not Found</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #0a0a0a;
-      color: white;
-      text-align: center;
-    }
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;background:var(--color-background-tertiary)}
+.wrap{min-height:520px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center;font-family:var(--font-sans);position:relative;overflow:hidden}
+.stars{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.star{position:absolute;border-radius:50%;background:var(--color-text-tertiary);opacity:.35;animation:twinkle var(--d,2s) var(--delay,0s) ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.15}50%{opacity:.6}}
+.glitch-wrap{position:relative;display:inline-block;margin-bottom:4px}
+.num{font-size:clamp(96px,18vw,160px);font-weight:500;line-height:1;color:var(--color-text-primary);font-family:var(--font-mono);letter-spacing:-4px;position:relative}
+.num-ghost{position:absolute;inset:0;font-size:clamp(96px,18vw,160px);font-weight:500;line-height:1;font-family:var(--font-mono);letter-spacing:-4px;animation:glitch1 3.5s 1.2s infinite;color:var(--color-text-info);opacity:.5;pointer-events:none}
+.num-ghost2{position:absolute;inset:0;font-size:clamp(96px,18vw,160px);font-weight:500;line-height:1;font-family:var(--font-mono);letter-spacing:-4px;animation:glitch2 3.5s 1.2s infinite;color:var(--color-text-warning);opacity:.4;pointer-events:none}
+@keyframes glitch1{0%,90%,100%{clip-path:none;transform:translate(0)}91%{clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%);transform:translate(-3px,1px)}93%{clip-path:polygon(0 60%,100% 60%,100% 80%,0 80%);transform:translate(3px,-1px)}95%{clip-path:none;transform:translate(0)}}
+@keyframes glitch2{0%,90%,100%{clip-path:none;transform:translate(0)}92%{clip-path:polygon(0 40%,100% 40%,100% 55%,0 55%);transform:translate(4px,0)}94%{clip-path:polygon(0 10%,100% 10%,100% 25%,0 25%);transform:translate(-2px,2px)}96%{clip-path:none;transform:translate(0)}}
+.zero{display:inline-block;animation:spin 8s linear infinite;transform-origin:50% 50%}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.title{font-size:22px;font-weight:500;color:var(--color-text-primary);margin-bottom:10px}
+.sub{font-size:15px;color:var(--color-text-secondary);max-width:340px;line-height:1.6;margin-bottom:32px}
+.suggestions{display:flex;flex-direction:column;gap:10px;align-items:center;margin-bottom:32px;width:100%;max-width:360px}
+.sug-label{font-size:12px;color:var(--color-text-tertiary);letter-spacing:.06em;text-transform:uppercase;align-self:flex-start}
+.sug-links{display:flex;gap:8px;flex-wrap:wrap}
+.sug-link{font-size:13px;padding:6px 14px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);color:var(--color-text-secondary);background:var(--color-background-primary);cursor:pointer;transition:all .14s;text-decoration:none;font-family:var(--font-sans)}
+.sug-link:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+.home-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);font-size:14px;font-weight:500;cursor:pointer;transition:all .14s;text-decoration:none;font-family:var(--font-sans)}
+.home-btn:hover{background:var(--color-background-secondary)}
+.home-btn svg{opacity:.6}
+.search-row{display:flex;gap:8px;width:100%;max-width:340px;margin-bottom:32px}
+.search-input{flex:1;padding:8px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);font-size:13px;font-family:var(--font-sans);outline:none}
+.search-input:focus{border-color:var(--color-border-primary)}
+.search-btn{padding:8px 14px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);font-size:13px;cursor:pointer;transition:all .14s;font-family:var(--font-sans)}
+.search-btn:hover{color:var(--color-text-primary)}
+.console{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px 16px;font-family:var(--font-mono);font-size:12px;color:var(--color-text-secondary);text-align:left;width:100%;max-width:360px;margin-bottom:24px;line-height:1.7}
+.con-line{display:flex;gap:8px}
+.con-prefix{color:var(--color-text-warning);flex-shrink:0}
+.con-ok{color:var(--color-text-success)}
+.con-err{color:var(--color-text-danger)}
+.con-muted{color:var(--color-text-tertiary)}
+.cursor{display:inline-block;width:7px;height:13px;background:var(--color-text-secondary);animation:blink .8s step-end infinite;vertical-align:middle;margin-left:2px;opacity:.7}
+@keyframes blink{0%,100%{opacity:.7}50%{opacity:0}}
+.face{font-size:48px;margin-bottom:16px;display:block;animation:wobble 3s ease-in-out infinite}
+@keyframes wobble{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+</style>
 
-    h1 {
-      margin-top: 20px;
-      font-size: 5rem;
-    }
+<div class="wrap">
+  <div class="stars" id="stars"></div>
 
-    p {
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-    }
+  <div class="glitch-wrap">
+    <div class="num num-ghost" aria-hidden="true">4<span class="zero">0</span>4</div>
+    <div class="num num-ghost2" aria-hidden="true">4<span class="zero" style="animation-duration:8s;animation-direction:reverse">0</span>4</div>
+    <div class="num">4<span class="zero">0</span>4</div>
+  </div>
 
-    #gameCanvas {
-      display: block;
-      margin: auto;
-      border: 2px solid white;
-      background: #111;
-    }
+  <div class="title">Page not found</div>
+  <p class="sub">Looks like this page wandered off. Maybe it's hanging out with the sandwich maker.</p>
 
-    .back-button {
-      margin-top: 20px;
-      background: #ff5a5f;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 1rem;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: 0.3s ease;
-    }
+  <div class="console">
+    <div class="con-line"><span class="con-prefix">$</span><span>ping noah.cool/??</span></div>
+    <div class="con-line"><span class="con-prefix con-err">✕</span><span>Request failed — 404 Not Found</span></div>
+    <div class="con-line"><span class="con-prefix">$</span><span>find / -name "page" 2>/dev/null</span></div>
+    <div class="con-line"><span class="con-prefix con-muted">&gt;</span><span class="con-muted">searching...</span></div>
+    <div class="con-line"><span class="con-prefix con-muted">&gt;</span><span class="con-muted">still searching...</span></div>
+    <div class="con-line"><span class="con-prefix con-err">✕</span><span>No results found</span></div>
+    <div class="con-line"><span class="con-prefix">$</span><span id="lastLine">_</span><span class="cursor"></span></div>
+  </div>
 
-    .back-button:hover {
-      background: #e94b4f;
-    }
-  </style>
-</head>
-<body>
+  <div class="suggestions">
+    <span class="sug-label">Maybe you wanted</span>
+    <div class="sug-links">
+      <a class="sug-link" href="index.html">🏠 Home</a>
+      <a class="sug-link" href="games/diner.html">🥪 Sandwiches</a>
+      <a class="sug-link" href="games/rock.html">🪨 Rocks</a>
+      <a class="sug-link" href="games/lovers.html">❤️ Love</a>
+      <a class="sug-link" href="games/spend-elon-musks.html">💵 Elon's Money</a>
+      <a class="sug-link" href="games/farts.html">💨 Farts</a>
+    </div>
+  </div>
 
-  <h1>404</h1>
-  <p>This page got lost... but you can play a bit!</p>
+  <a class="home-btn" href="index.html">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 8L8 2L14 8V14H10V10H6V14H2V8Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+    Take me home
+  </a>
+</div>
 
-  <canvas id="gameCanvas" width="400" height="400"></canvas>
-
-  <br />
-  <button class="back-button" onclick="window.location.href='index.html'">Go Back Home</button>
-
-  <script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-
-    const gravity = 0.3;
-    const friction = 0.9;
-
-    let balls = [];
-
-    canvas.addEventListener('click', (e) => {
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      balls.push({
-        x: x,
-        y: y,
-        radius: 15,
-        vx: (Math.random() - 0.5) * 6,
-        vy: -Math.random() * 8,
-        color: `hsl(${Math.random() * 360}, 70%, 60%)`
-      });
-    });
-
-    function drawBall(ball) {
-      ctx.beginPath();
-      ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-      ctx.fillStyle = ball.color;
-      ctx.fill();
-      ctx.closePath();
-    }
-
-    function update() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      for (let ball of balls) {
-        ball.vy += gravity;
-        ball.x += ball.vx;
-        ball.y += ball.vy;
-
-        // Bounce off walls
-        if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
-          ball.vx = -ball.vx * friction;
-        }
-
-        // Bounce off floor
-        if (ball.y + ball.radius > canvas.height) {
-          ball.y = canvas.height - ball.radius;
-          ball.vy = -ball.vy * friction;
-        }
-
-        drawBall(ball);
-      }
-
-      requestAnimationFrame(update);
-    }
-
-    update();
-  </script>
-
-</body>
-</html>
+<script>
+const stars=document.getElementById('stars');
+for(let i=0;i<55;i++){
+  const s=document.createElement('div');
+  s.className='star';
+  const size=Math.random()<0.15?3:Math.random()<0.4?2:1.5;
+  s.style.cssText=`width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${1.5+Math.random()*3}s;--delay:${Math.random()*4}s`;
+  stars.appendChild(s);
+}
+const msgs=['sudo find-page 404','curl -I noah.cool/???','ls -la ./missing/','cat /dev/null'];
+let mi=0;
+setInterval(()=>{
+  document.getElementById('lastLine').textContent=msgs[mi%msgs.length];
+  mi++;
+},2200);
+</script>
