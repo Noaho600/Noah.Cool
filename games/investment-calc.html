@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>If You'd Invested — Noah.cool</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f8f7f4;--card:#fff;--card2:#f3f1ec;
+  --border:#e5e0d5;--border2:#c8c0b0;
+  --text:#18180f;--muted:#8a8070;--muted2:#b8b0a0;
+  --green:#15803d;--green-bg:#f0fdf4;--green-b:#bbf7d0;
+  --red:#b91c1c;--red-bg:#fef2f2;--red-b:#fecaca;
+  --gold:#92400e;--gold-bg:#fffbeb;--gold-b:#fde68a;
+  --blue:#1d4ed8;--blue-bg:#eff6ff;--blue-b:#bfdbfe;
+  --accent:#2d4a8a;
+}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif}
+
+.back{position:fixed;top:14px;left:14px;z-index:300;display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);text-decoration:none;background:rgba(248,247,244,.95);border:1px solid var(--border);padding:6px 13px;border-radius:20px;transition:color .15s;font-family:'DM Mono',monospace;backdrop-filter:blur(8px)}
+.back:hover{color:var(--text)}
+
+.page{max-width:960px;margin:0 auto;padding:60px 20px 60px;display:flex;flex-direction:column;gap:20px}
+
+/* header */
+h1{font-family:'Instrument Serif',serif;font-size:clamp(28px,5vw,52px);line-height:1.05;letter-spacing:-.02em;color:var(--text)}
+h1 em{font-style:italic;color:var(--accent)}
+.page-sub{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.06em}
+
+/* controls row */
+.controls{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:18px 20px;display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
+.ctrl-group{display:flex;flex-direction:column;gap:8px}
+.ctrl-label{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.12em;text-transform:uppercase}
+.pill-row{display:flex;gap:6px;flex-wrap:wrap}
+.pill{padding:7px 16px;border-radius:999px;border:1.5px solid var(--border);background:transparent;font-family:'DM Mono',monospace;font-size:12px;cursor:pointer;color:var(--muted);transition:all .13s}
+.pill:hover{border-color:var(--border2);color:var(--text)}
+.pill.act{border-color:var(--accent);background:var(--accent);color:#fff}
+
+/* toggle */
+.toggle-row{display:flex;gap:0;border:1.5px solid var(--border);border-radius:8px;overflow:hidden}
+.tgl{padding:7px 14px;border:none;background:transparent;font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;color:var(--muted);transition:all .13s}
+.tgl.act{background:var(--accent);color:#fff}
+
+/* chart */
+.chart-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;overflow:hidden}
+.chart-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.chart-title{font-family:'Instrument Serif',serif;font-size:18px;font-style:italic;color:var(--text)}
+.chart-legend{display:flex;gap:12px;flex-wrap:wrap}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;cursor:pointer}
+.leg-dot{width:10px;height:10px;border-radius:50%}
+.chart-wrap{position:relative;padding:4px 0 0}
+#mainChart{width:100%;display:block}
+.chart-tooltip{position:absolute;background:var(--card);border:1.5px solid var(--border2);border-radius:8px;padding:10px 14px;font-size:11px;pointer-events:none;opacity:0;transition:opacity .15s;box-shadow:0 4px 20px rgba(0,0,0,.1);z-index:10;font-family:'DM Mono',monospace;min-width:160px}
+.chart-tooltip.show{opacity:1}
+.ct-title{font-weight:700;font-size:12px;margin-bottom:6px;color:var(--text)}
+.ct-row{display:flex;justify-content:space-between;gap:12px;padding:2px 0;border-bottom:1px solid var(--border)}
+.ct-k{color:var(--muted)}.ct-v{font-weight:600}
+
+/* results grid */
+.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.rc{border:1.5px solid var(--border);border-radius:14px;padding:18px;background:var(--card);cursor:pointer;transition:all .18s cubic-bezier(.22,1,.36,1);position:relative;overflow:hidden}
+.rc:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.07);border-color:var(--border2)}
+.rc.winner{border-color:var(--green-b);background:var(--green-bg)}
+.rc.loser{border-color:var(--red-b);background:var(--red-bg)}
+.rc.hidden-asset{opacity:.3;pointer-events:none}
+.rc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.rc-icon{font-size:22px}
+.rc-badge{font-size:9px;font-family:'DM Mono',monospace;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:3px}
+.badge-w{background:var(--green-b);color:var(--green)}
+.badge-m{background:var(--blue-b);color:var(--blue)}
+.badge-l{background:var(--red-b);color:var(--red)}
+.badge-u{background:var(--gold-b);color:var(--gold)}
+.rc-name{font-size:15px;font-weight:700;letter-spacing:-.2px;margin-bottom:2px}
+.rc-desc{font-size:10px;color:var(--muted);margin-bottom:12px;font-family:'DM Mono',monospace}
+.rc-invested{font-size:10px;color:var(--muted);margin-bottom:4px;font-family:'DM Mono',monospace}
+.rc-value{font-family:'Instrument Serif',serif;font-size:32px;letter-spacing:-.3px;line-height:1}
+.rc-value.up{color:var(--green)}
+.rc-value.dn{color:var(--red)}
+.rc-pct{font-size:12px;font-weight:700;margin-top:3px}
+.rc-pct.up{color:var(--green)}.rc-pct.dn{color:var(--red)}
+.rc-cagr{font-size:10px;color:var(--muted);margin-top:4px;font-family:'DM Mono',monospace}
+
+/* progress bar on card */
+.rc-bar{height:3px;background:rgba(0,0,0,.06);border-radius:2px;margin-top:10px;overflow:hidden}
+.rc-bar-fill{height:100%;border-radius:2px;transition:width .6s cubic-bezier(.22,1,.36,1)}
+
+/* inflation note */
+.inflation-note{background:var(--gold-bg);border:1.5px solid var(--gold-b);border-radius:12px;padding:14px 18px;font-size:12px;color:var(--gold);line-height:1.7}
+.inflation-note strong{color:var(--gold)}
+
+/* fact box */
+.fact-box{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:16px 20px;border-left:4px solid var(--accent)}
+.fact-box strong{color:var(--accent)}
+.fact-box p{font-size:13px;color:var(--muted);line-height:1.75;margin-top:5px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp .3s ease both}
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← noah.cool</a>
+
+<div class="page">
+  <div>
+    <h1>If You'd Invested <em>$100…</em></h1>
+    <div class="page-sub">// see what your money would be worth today</div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <div class="ctrl-group">
+      <div class="ctrl-label">Investment Amount</div>
+      <div class="pill-row" id="amtRow"></div>
+    </div>
+    <div class="ctrl-group">
+      <div class="ctrl-label">Year Invested</div>
+      <div class="pill-row" id="yearRow"></div>
+    </div>
+    <div class="ctrl-group">
+      <div class="ctrl-label">Show Values</div>
+      <div class="toggle-row">
+        <button class="tgl act" id="tglNom" onclick="setAdjust('nominal')">Nominal</button>
+        <button class="tgl" id="tglReal" onclick="setAdjust('real')">Inflation-Adjusted</button>
+      </div>
+    </div>
+    <div class="ctrl-group">
+      <div class="ctrl-label">Category</div>
+      <div class="pill-row" id="catRow"></div>
+    </div>
+  </div>
+
+  <!-- CHART -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <div class="chart-title">Growth over time</div>
+      <div class="chart-legend" id="chartLegend"></div>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="mainChart" height="220"></canvas>
+      <div class="chart-tooltip" id="chartTip"></div>
+    </div>
+  </div>
+
+  <div class="inflation-note" id="inflationNote" style="display:none">
+    <strong>📊 Inflation-Adjusted mode:</strong> All values shown in today's dollars (2025 USD), accounting for ~3.3% average annual inflation. This shows real purchasing power, not just nominal gains.
+  </div>
+
+  <!-- RESULTS GRID -->
+  <div class="results-grid" id="resultsGrid"></div>
+
+  <!-- FACT BOX -->
+  <div class="fact-box" id="factBox">
+    <strong>💡 Click any card to learn more</strong>
+    <p>Each investment card shows the current value, total return, and annualized CAGR. Click to see the story behind the numbers.</p>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════
+//  ASSET DATA
+// ══════════════════════════
+const INFLATION = 0.033; // avg annual US CPI
+
+const ASSETS = [
+  {
+    id:'sp500',cat:'index',name:'S&P 500',emoji:'📈',desc:'US large-cap index',
+    startYear:1970,color:'#2563eb',
+    // Real CAGR ~7% after inflation; nominal ~10.5%
+    nominalCAGR:0.105,
+    facts:['The S&P 500 has delivered positive returns in ~75% of years since 1928.','It recovered from the 2008 crash within 4 years.','Includes companies like Apple, Microsoft, Nvidia, Amazon, and Google.'],
+    yearSnaps:{1970:100,1980:250,1990:750,2000:2200,2010:1100,2015:2100,2020:1800,2024:5800}, // index levels for S&P (rough)
+  },
+  {
+    id:'nasdaq',cat:'index',name:'NASDAQ 100',emoji:'💻',desc:'Tech-heavy US index',
+    startYear:1985,color:'#7c3aed',
+    nominalCAGR:0.135,
+    facts:['The NASDAQ-100 crashed 83% during the dot-com bust (2000–2002).','It took 15 years to recover to its 2000 peak.','Since 2010 it has returned over 1,000%.'],
+    yearSnaps:{1985:100,1990:200,2000:3500,2002:700,2010:1800,2015:4500,2020:9000,2024:20000},
+  },
+  {
+    id:'aapl',cat:'stocks',name:'Apple (AAPL)',emoji:'🍎',desc:'Consumer tech giant',
+    startYear:1984,color:'#374151',
+    nominalCAGR:0.245,
+    facts:['Apple was 90 days from bankruptcy in 1997 before Steve Jobs returned.','$100 at Apple\'s 1980 IPO = over $800,000 today.','Apple became the first $3 trillion company in 2023.'],
+    yearSnaps:{1984:100,1990:80,2000:300,2003:60,2007:1500,2010:3000,2015:8000,2020:14000,2024:35000},
+  },
+  {
+    id:'amzn',cat:'stocks',name:'Amazon (AMZN)',emoji:'📦',desc:'E-commerce & cloud',
+    startYear:1997,color:'#f59e0b',
+    nominalCAGR:0.37,
+    facts:['Amazon lost 95% of its value in the dot-com crash — from $107 to $5.51 per share.','$100 at Amazon\'s 1997 IPO is worth over $220,000 today.','AWS (cloud) now generates more profit than all of retail combined.'],
+    yearSnaps:{1997:100,2000:5000,2001:250,2005:1200,2010:4000,2015:12000,2020:28000,2024:22000},
+  },
+  {
+    id:'googl',cat:'stocks',name:'Google (GOOGL)',emoji:'🔍',desc:'Search & advertising',
+    startYear:2004,color:'#16a34a',
+    nominalCAGR:0.22,
+    facts:['Google\'s IPO was $85/share in August 2004. Today one share is worth ~$175.','Google now processes over 8.5 billion searches per day.','YouTube, acquired for $1.65B in 2006, is now worth an estimated $400 billion.'],
+    yearSnaps:{2004:100,2006:200,2010:350,2015:650,2020:850,2022:700,2024:900},
+  },
+  {
+    id:'tsla',cat:'stocks',name:'Tesla (TSLA)',emoji:'⚡',desc:'EVs & clean energy',
+    startYear:2010,color:'#dc2626',
+    nominalCAGR:0.52,
+    facts:['Tesla stock rose 743% in 2020 alone — the biggest year for any major automaker.','$100 at Tesla\'s 2010 IPO ($17/share) would be worth over $1,000 today (post-splits).','Tesla was added to the S&P 500 in December 2020, the largest company ever added at once.'],
+    yearSnaps:{2010:100,2013:600,2015:200,2019:400,2020:3400,2021:1900,2022:1100,2024:2200},
+  },
+  {
+    id:'msft',cat:'stocks',name:'Microsoft (MSFT)',emoji:'🖥️',desc:'Software & cloud',
+    startYear:1986,color:'#0284c7',
+    nominalCAGR:0.195,
+    facts:['Microsoft lost 60% of its value in the dot-com crash and spent a decade recovering.','$100 at Microsoft\'s 1986 IPO is worth over $500,000 today.','Under Satya Nadella (2014+), Microsoft\'s market cap grew from $300B to $3T.'],
+    yearSnaps:{1986:100,1990:700,2000:5000,2002:1500,2010:1200,2015:2500,2020:6000,2024:12000},
+  },
+  {
+    id:'nflx',cat:'stocks',name:'Netflix (NFLX)',emoji:'🎬',desc:'Streaming entertainment',
+    startYear:2003,color:'#e50914',
+    nominalCAGR:0.40,
+    facts:['Netflix\'s CEO Reed Hastings once pitched Blockbuster a merger for $50M. Blockbuster passed.','Netflix lost 75% of its value in 2022 before recovering to all-time highs in 2024.','$100 at the 2002 IPO is worth over $50,000 today.'],
+    yearSnaps:{2003:100,2006:300,2010:2000,2011:600,2015:4000,2020:8000,2022:2000,2024:8000},
+  },
+  {
+    id:'nvda',cat:'stocks',name:'Nvidia (NVDA)',emoji:'🟩',desc:'GPUs & AI chips',
+    startYear:1999,color:'#76b900',
+    nominalCAGR:0.34,
+    facts:['Nvidia\'s Jensen Huang founded the company in a Denny\'s diner booth in 1993.','Nvidia gained $1 trillion in market cap in just 60 days in 2023 on AI hype.','$100 at the 1999 IPO is worth over $400,000 today.'],
+    yearSnaps:{1999:100,2003:30,2007:200,2016:500,2020:2000,2022:1000,2024:15000},
+  },
+  {
+    id:'btc',cat:'crypto',name:'Bitcoin (BTC)',emoji:'₿',desc:'Digital gold / cryptocurrency',
+    startYear:2012,color:'#f7931a',
+    nominalCAGR:1.4,
+    facts:['Bitcoin\'s creator, Satoshi Nakamoto, has never been identified and holds ~1M BTC.','The famous "Bitcoin Pizza Day": 10,000 BTC was exchanged for two pizzas in 2010 — worth ~$700M today.','Bitcoin has lost 80%+ of its value three separate times and recovered each time.'],
+    yearSnaps:{2012:100,2013:7500,2014:1500,2017:120000,2018:15000,2021:120000,2022:25000,2024:120000},
+  },
+  {
+    id:'eth',cat:'crypto',name:'Ethereum (ETH)',emoji:'💎',desc:'Smart contract blockchain',
+    startYear:2016,color:'#627eea',
+    nominalCAGR:1.5,
+    facts:['Ethereum launched at $0.43 per ETH in 2015. Its peak was $4,800 in 2021.','Ethereum moved from Proof-of-Work to Proof-of-Stake in 2022, cutting energy use by 99.95%.','More than $100 billion in assets are locked in Ethereum smart contracts.'],
+    yearSnaps:{2016:100,2017:5000,2018:500,2020:2000,2021:30000,2022:6000,2024:18000},
+  },
+  {
+    id:'gold',cat:'commodity',name:'Gold',emoji:'🥇',desc:'Precious metal hedge',
+    startYear:1970,color:'#ca8a04',
+    nominalCAGR:0.078,
+    facts:['Gold has been used as money for 6,000 years.','During the 2008 financial crisis, gold rose 25% while stocks fell 50%.','All the gold ever mined in human history would fit in roughly 3.5 Olympic swimming pools.'],
+    yearSnaps:{1970:100,1980:1300,1990:450,2000:500,2010:1600,2015:1100,2020:1600,2024:1800},
+  },
+  {
+    id:'silver',cat:'commodity',name:'Silver',emoji:'🥈',desc:'Industrial precious metal',
+    startYear:1970,color:'#9ca3af',
+    nominalCAGR:0.055,
+    facts:['Silver is used in solar panels, electronics, and medical equipment — not just jewelry.','Silver had its famous "Silver Thursday" crash in 1980 when the Hunt Brothers tried to corner the market.'],
+    yearSnaps:{1970:100,1980:3000,1990:200,2000:200,2010:600,2015:300,2020:400,2024:500},
+  },
+  {
+    id:'bonds',cat:'safe',name:'10-Year T-Bonds',emoji:'🏛️',desc:'US government bonds',
+    startYear:1970,color:'#1e40af',
+    nominalCAGR:0.053,
+    facts:['US Treasury bonds are considered the safest investment in the world.','In the 1980s, 10-year bonds yielded up to 15%. In 2021, they fell below 1%.','Bonds lost money in 2022 for the first time in 40 years as rates spiked.'],
+    yearSnaps:{1970:100,1980:200,1990:400,2000:700,2010:900,2015:1000,2020:1100,2024:1050},
+  },
+  {
+    id:'savings',cat:'safe',name:'Savings Account',emoji:'🏦',desc:'Bank savings (avg rate)',
+    startYear:1970,color:'#059669',
+    nominalCAGR:0.025,
+    facts:['The average savings account rate in 2021 was just 0.06%.','High-yield savings accounts (2024) offer ~5% — the best in 16 years.','After inflation, a traditional savings account has lost real purchasing power since 2008.'],
+    yearSnaps:{1970:100,1980:250,1990:450,2000:600,2010:680,2020:710,2024:740},
+  },
+  {
+    id:'mattress',cat:'safe',name:'Under the Mattress',emoji:'🛏️',desc:'0% return, loses to inflation',
+    startYear:1970,color:'#6b7280',
+    nominalCAGR:0,
+    facts:['$100 in 1990 has the purchasing power of only ~$47 today due to inflation.','In 2021, inflation hit 9.1% — the highest since 1981.','Keeping cash under a mattress is statistically guaranteed to make you poorer.'],
+    yearSnaps:{1970:100,1980:100,1990:100,2000:100,2010:100,2020:100,2024:100},
+  },
+];
+
+const CATS = [
+  {id:'all',label:'All'},
+  {id:'index',label:'Indexes'},
+  {id:'stocks',label:'Stocks'},
+  {id:'crypto',label:'Crypto'},
+  {id:'commodity',label:'Commodities'},
+  {id:'safe',label:'Safe'},
+];
+const AMOUNTS = [100,500,1000,5000,10000,50000];
+const YEARS   = [1970,1980,1990,2000,2005,2010,2015,2020];
+
+let amount  = 100;
+let fromYear= 2010;
+let adjust  = 'nominal';
+let cat     = 'all';
+let highlighted = new Set(ASSETS.map(a=>a.id));
+
+// ── MATH ──
+function inflationMult(fromYr){
+  return Math.pow(1+INFLATION, 2025-fromYr);
+}
+
+function calcValue(asset, fromYr, amt){
+  if(fromYr < asset.startYear) return null;
+  const years = 2025 - fromYr;
+  // Use yearSnaps interpolation if available
+  let mult;
+  if(asset.nominalCAGR === 0){
+    mult = 1; // flat
+  } else {
+    const snaps = asset.yearSnaps;
+    if(snaps){
+      const keys = Object.keys(snaps).map(Number).sort((a,b)=>a-b);
+      const fromKey = keys.reduce((p,k)=>k<=fromYr?k:p, keys[0]);
+      const toKey   = keys[keys.length-1];
+      const fromVal = snaps[fromKey];
+      const toVal   = snaps[toKey];
+      // interpolate start
+      const startSnap = snaps[fromYr] || fromVal * Math.pow(1+asset.nominalCAGR, fromYr-fromKey);
+      mult = toVal / startSnap;
+    } else {
+      mult = Math.pow(1+asset.nominalCAGR, years);
+    }
+  }
+
+  let val = amt * mult;
+  if(adjust === 'real') val = val / inflationMult(fromYr);
+  return Math.max(0, Math.round(val * 100)/100);
+}
+
+function cagr(asset, fromYr){
+  if(fromYr < asset.startYear) return null;
+  const years = 2025 - fromYr;
+  const v = calcValue(asset, fromYr, 1);
+  if(!v || years === 0) return 0;
+  return Math.pow(v, 1/years) - 1;
+}
+
+function fmt(n){
+  if(n >= 1e9) return '$'+(n/1e9).toFixed(2)+'B';
+  if(n >= 1e6) return '$'+(n/1e6).toFixed(2)+'M';
+  if(n >= 1e3) return '$'+(n/1e3).toFixed(1)+'K';
+  if(n >= 1)   return '$'+n.toFixed(2);
+  return '$'+n.toFixed(4);
+}
+
+// ── CHART ──
+const chartCanvas = document.getElementById('mainChart');
+const chartCtx    = chartCanvas.getContext('2d');
+const tooltip     = document.getElementById('chartTip');
+
+const CHART_ASSETS = ['sp500','aapl','btc','gold','mattress','nvda'];
+const ASSET_COLORS = {sp500:'#2563eb',aapl:'#374151',btc:'#f7931a',gold:'#ca8a04',mattress:'#9ca3af',nvda:'#76b900',googl:'#16a34a',tsla:'#dc2626',msft:'#0284c7',nflx:'#e50914',eth:'#627eea'};
+
+function drawChart(){
+  const dpr = window.devicePixelRatio||1;
+  const W = chartCanvas.clientWidth;
+  const H = 220;
+  chartCanvas.width  = W * dpr;
+  chartCanvas.height = H * dpr;
+  chartCtx.scale(dpr, dpr);
+
+  chartCtx.clearRect(0,0,W,H);
+  chartCtx.fillStyle = '#fff';
+  chartCtx.fillRect(0,0,W,H);
+
+  const PAD = {l:64,r:20,t:14,b:28};
+  const CW = W - PAD.l - PAD.r;
+  const CH = H - PAD.t - PAD.b;
+
+  const years2 = 2025 - fromYear;
+  const pts    = Math.min(years2, 40);
+
+  // get data
+  const series = CHART_ASSETS
+    .map(id=>ASSETS.find(a=>a.id===id))
+    .filter(a=>a&&fromYear>=a.startYear&&highlighted.has(a.id));
+
+  if(series.length===0){
+    chartCtx.fillStyle='#999';chartCtx.font='13px DM Sans,sans-serif';chartCtx.textAlign='center';chartCtx.textBaseline='middle';
+    chartCtx.fillText('Select assets to compare',W/2,H/2);
+    return;
+  }
+
+  // calculate all values
+  let maxVal = amount, minVal = 0;
+  const seriesData = series.map(asset=>{
+    const vals = [];
+    for(let i=0;i<=pts;i++){
+      const yr = fromYear + Math.round(i/pts*years2);
+      const v  = calcValue(asset, Math.max(asset.startYear, fromYear + Math.round(i/pts*years2)), amount);
+      vals.push({yr, v: v||amount});
+    }
+    const m = Math.max(...vals.map(v=>v.v));
+    if(m>maxVal) maxVal=m;
+    return {asset, vals};
+  });
+
+  // log scale if range > 100x
+  const useLog = maxVal / Math.max(amount, 1) > 50;
+
+  function toY(v){
+    if(useLog){
+      const logMax=Math.log10(Math.max(maxVal,1));
+      const logMin=Math.log10(Math.max(amount*.5,1));
+      const logV  =Math.log10(Math.max(v,0.01));
+      return PAD.t + CH - CH*(logV-logMin)/(logMax-logMin);
+    }
+    return PAD.t + CH - CH*(v-minVal)/(maxVal-minVal);
+  }
+  function toX(i){ return PAD.l + CW*(i/pts); }
+
+  // Grid
+  const gridCount = 5;
+  chartCtx.strokeStyle='rgba(0,0,0,0.06)'; chartCtx.lineWidth=1;
+  for(let i=0;i<=gridCount;i++){
+    const y = PAD.t + i*(CH/gridCount);
+    chartCtx.beginPath(); chartCtx.moveTo(PAD.l,y); chartCtx.lineTo(W-PAD.r,y); chartCtx.stroke();
+    const v = useLog
+      ? Math.pow(10, Math.log10(Math.max(amount*.5,1)) + (gridCount-i)/gridCount*(Math.log10(Math.max(maxVal,1))-Math.log10(Math.max(amount*.5,1))))
+      : minVal + (gridCount-i)/gridCount*(maxVal-minVal);
+    chartCtx.fillStyle='rgba(0,0,0,0.35)'; chartCtx.font='9px DM Mono,monospace'; chartCtx.textAlign='right'; chartCtx.textBaseline='middle';
+    chartCtx.fillText(fmt(v), PAD.l-6, y);
+  }
+
+  // Baseline
+  const baseY = toY(amount);
+  chartCtx.strokeStyle='rgba(0,0,0,0.15)'; chartCtx.lineWidth=1; chartCtx.setLineDash([4,6]);
+  chartCtx.beginPath(); chartCtx.moveTo(PAD.l,baseY); chartCtx.lineTo(W-PAD.r,baseY); chartCtx.stroke();
+  chartCtx.setLineDash([]);
+  chartCtx.fillStyle='rgba(0,0,0,0.3)'; chartCtx.font='8px DM Mono,monospace'; chartCtx.textAlign='left'; chartCtx.textBaseline='middle';
+  chartCtx.fillText('invested', PAD.l+3, baseY-7);
+
+  // Lines
+  seriesData.forEach(({asset,vals})=>{
+    const color = ASSET_COLORS[asset.id] || '#666';
+    chartCtx.strokeStyle = color; chartCtx.lineWidth = 2; chartCtx.lineJoin='round';
+    chartCtx.beginPath();
+    vals.forEach((pt,i)=>{
+      const x=toX(i), y=toY(pt.v);
+      i===0 ? chartCtx.moveTo(x,y) : chartCtx.lineTo(x,y);
+    });
+    chartCtx.stroke();
+
+    // end dot
+    const last=vals[vals.length-1];
+    chartCtx.fillStyle=color;
+    chartCtx.beginPath(); chartCtx.arc(toX(pts),toY(last.v),3.5,0,Math.PI*2); chartCtx.fill();
+  });
+
+  // X axis labels
+  chartCtx.fillStyle='rgba(0,0,0,0.35)'; chartCtx.font='9px DM Mono,monospace'; chartCtx.textAlign='center'; chartCtx.textBaseline='top';
+  const xLabels=5;
+  for(let i=0;i<=xLabels;i++){
+    const t=i/xLabels;
+    const yr=Math.round(fromYear+t*years2);
+    chartCtx.fillText(yr, PAD.l+CW*t, H-PAD.b+6);
+  }
+
+  // hover line (store series data for tooltip)
+  chartCanvas._seriesData = seriesData;
+  chartCanvas._meta = {PAD,CW,CH,pts,years2,toX,toY};
+}
+
+// chart hover
+chartCanvas.addEventListener('mousemove', e=>{
+  if(!chartCanvas._seriesData) return;
+  const rect=chartCanvas.getBoundingClientRect();
+  const mx=e.clientX-rect.left;
+  const {PAD,CW,pts,years2}=chartCanvas._meta;
+  const t=Math.max(0,Math.min(1,(mx-PAD.l)/CW));
+  const yr=Math.round(fromYear+t*years2);
+
+  let html=`<div class="ct-title">${yr}</div>`;
+  chartCanvas._seriesData.forEach(({asset,vals})=>{
+    const nearest=vals.reduce((p,c)=>Math.abs(c.yr-yr)<Math.abs(p.yr-yr)?c:p,vals[0]);
+    const color=ASSET_COLORS[asset.id]||'#666';
+    const pct=((nearest.v-amount)/amount*100).toFixed(0);
+    html+=`<div class="ct-row"><span class="ct-k" style="color:${color}">${asset.emoji} ${asset.name}</span><span class="ct-v">${fmt(nearest.v)} <span style="color:${nearest.v>amount?'#15803d':'#b91c1c'}">${pct>0?'+':''}${pct}%</span></span></div>`;
+  });
+  tooltip.innerHTML=html;
+  tooltip.style.left=Math.min(e.clientX-rect.left+12,rect.width-180)+'px';
+  tooltip.style.top=Math.max(0,e.clientY-rect.top-60)+'px';
+  tooltip.classList.add('show');
+});
+chartCanvas.addEventListener('mouseleave',()=>tooltip.classList.remove('show'));
+
+// ── RENDER ──
+function renderControls(){
+  document.getElementById('amtRow').innerHTML=AMOUNTS.map(a=>`<button class="pill${a===amount?' act':''}" onclick="setAmt(${a})">$${a.toLocaleString()}</button>`).join('');
+  document.getElementById('yearRow').innerHTML=YEARS.map(y=>`<button class="pill${y===fromYear?' act':''}" onclick="setYear(${y})">${y}</button>`).join('');
+  document.getElementById('catRow').innerHTML=CATS.map(c=>`<button class="pill${c.id===cat?' act':''}" onclick="setCat('${c.id}')">${c.label}</button>`).join('');
+}
+
+function renderResults(){
+  const filtered = cat==='all' ? ASSETS : ASSETS.filter(a=>a.cat===cat);
+  const results  = filtered.map(a=>{
+    const val=calcValue(a,fromYear,amount);
+    const pct=val===null?null:((val-amount)/amount*100);
+    const c=cagr(a,fromYear);
+    return {a,val,pct,c};
+  }).filter(r=>r.val!==null).sort((a,b)=>(b.val||0)-(a.val||0));
+
+  const maxVal = results[0]?.val||amount;
+
+  document.getElementById('resultsGrid').innerHTML=results.map((r,i)=>{
+    const {a,val,pct,c}=r;
+    const isUp=val>amount;
+    const cls=pct>300?'winner':pct<-20?'loser':'';
+    const badge=pct>300?{cls:'badge-w',t:'🚀 Big Winner'}:pct<0?{cls:'badge-l',t:'📉 Lost value'}:pct>50?{cls:'badge-m',t:'✅ Beat inflation'}:{cls:'badge-u',t:'📊 Modest'};
+    const barPct=Math.min(100,Math.round((val/maxVal)*100));
+    return `<div class="rc ${cls}${!highlighted.has(a.id)?' hidden-asset':''} fu" style="animation-delay:${i*.025}s" onclick="highlightAsset('${a.id}')">
+      <div class="rc-top"><span class="rc-icon">${a.emoji}</span><span class="rc-badge ${badge.cls}">${badge.t}</span></div>
+      <div class="rc-name">${a.name}</div>
+      <div class="rc-desc">${a.desc}</div>
+      <div class="rc-invested">$${amount.toLocaleString()} → ${adjust==='real'?'(2025 USD)':''}</div>
+      <div class="rc-value ${isUp?'up':'dn'}">${fmt(val)}</div>
+      <div class="rc-pct ${isUp?'up':'dn'}">${pct>=0?'+':''}${pct.toFixed(0)}%</div>
+      <div class="rc-cagr">CAGR: ${c>=0?'+':''}${(c*100).toFixed(1)}%/yr · ${2025-Math.max(fromYear,a.startYear)} years</div>
+      <div class="rc-bar"><div class="rc-bar-fill" style="width:${barPct}%;background:${ASSET_COLORS[a.id]||'#888'}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderLegend(){
+  document.getElementById('chartLegend').innerHTML=CHART_ASSETS.map(id=>{
+    const a=ASSETS.find(x=>x.id===id);
+    if(!a) return '';
+    const color=ASSET_COLORS[id]||'#666';
+    const active=highlighted.has(id);
+    return `<div class="leg-item" onclick="toggleHighlight('${id}')" style="opacity:${active?1:.35}">
+      <div class="leg-dot" style="background:${color}"></div>${a.emoji} ${a.name}
+    </div>`;
+  }).join('');
+}
+
+function highlightAsset(id){
+  const a=ASSETS.find(x=>x.id===id);
+  if(!a) return;
+  const fact=a.facts[Math.floor(Math.random()*a.facts.length)];
+  const val=calcValue(a,fromYear,amount);
+  const pct=val?((val-amount)/amount*100).toFixed(0):0;
+  document.getElementById('factBox').innerHTML=`
+    <strong>${a.emoji} ${a.name}</strong>
+    <p>💡 ${fact}<br/><br/>
+    ${val?`$${amount.toLocaleString()} invested in ${Math.max(fromYear,a.startYear)} → <strong>${fmt(val)}</strong> (${pct>=0?'+':''}${pct}%) in 2025.`:'This asset didn\'t exist in the selected year.'}
+    ${adjust==='real'?'<em>Values in 2025 inflation-adjusted dollars.</em>':''}</p>
+  `;
+}
+
+function toggleHighlight(id){
+  if(highlighted.has(id)) highlighted.delete(id);
+  else highlighted.add(id);
+  renderLegend();
+  drawChart();
+}
+
+function setAmt(a){amount=a;renderControls();renderResults();drawChart();}
+function setYear(y){fromYear=y;renderControls();renderResults();drawChart();}
+function setCat(c){cat=c;renderControls();renderResults();}
+function setAdjust(a){
+  adjust=a;
+  document.getElementById('tglNom').classList.toggle('act',a==='nominal');
+  document.getElementById('tglReal').classList.toggle('act',a==='real');
+  document.getElementById('inflationNote').style.display=a==='real'?'block':'none';
+  renderResults();drawChart();
+}
+
+// init
+renderControls();
+renderResults();
+renderLegend();
+drawChart();
+highlightAsset('sp500');
+window.addEventListener('resize',()=>{drawChart();});
+</script>
+</body>
+</html>
