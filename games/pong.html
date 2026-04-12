@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Weird Pong — Noah.cool</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080808;--panel:#0f0f0f;
+  --border:rgba(255,255,255,0.08);
+  --text:#e8e8e8;--muted:#444;--muted2:#888;
+  --p1:#00ffaa;--p2:#ff4488;
+  --gold:#ffcc00;--red:#ff2244;--blue:#44aaff;--purple:#aa44ff;--green:#44ff88;--orange:#ff8844;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Press Start 2P',monospace;overflow:hidden}
+
+.back{position:fixed;top:10px;left:10px;z-index:400;font-size:9px;color:var(--muted2);text-decoration:none;background:rgba(8,8,8,.9);border:1px solid var(--border);padding:5px 11px;border-radius:20px;font-family:'DM Mono',monospace;letter-spacing:.04em;transition:color .15s}
+.back:hover{color:var(--text)}
+
+.layout{display:grid;grid-template-columns:180px 1fr 180px;height:100vh}
+
+/* panels */
+.side{background:var(--panel);border:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.left-side{border-left:none;border-top:none;border-bottom:none}
+.right-side{border-right:none;border-top:none;border-bottom:none}
+.side-inner{padding:12px 10px;flex:1;overflow-y:auto}
+.side-inner::-webkit-scrollbar{width:2px}
+.side-inner::-webkit-scrollbar-thumb{background:var(--border)}
+.side-title{font-size:8px;letter-spacing:.1em;color:var(--muted2);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+
+/* score display */
+.score-wrap{text-align:center;margin-bottom:12px}
+.score-name{font-size:7px;letter-spacing:.08em;margin-bottom:4px}
+.score-num{font-size:28px;line-height:1}
+.score-desc{font-size:6px;color:var(--muted2);margin-top:4px;line-height:1.6}
+
+/* modifier list */
+.mod-item{padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:6px;color:var(--muted2);line-height:1.6}
+.mod-item.active{color:var(--gold)}
+.mod-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:4px}
+
+/* powerup */
+.pu-item{padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:6px;line-height:1.6}
+.pu-name{color:var(--text);margin-bottom:1px}
+.pu-desc{color:var(--muted2)}
+
+/* CENTER */
+.center{position:relative;overflow:hidden;background:#050505;display:flex;flex-direction:column}
+#gameCanvas{width:100%;height:100%;display:block}
+
+/* HUD overlays */
+.hud-top{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:8px 16px;background:rgba(5,5,5,.9);border-bottom:1px solid var(--border);z-index:10}
+.hud-score{font-size:20px;color:var(--p1)}
+.hud-score.p2{color:var(--p2)}
+.hud-mid{text-align:center}
+.hud-round{font-size:8px;color:var(--muted2)}
+.hud-modifier{font-size:7px;color:var(--gold);margin-top:2px;max-width:200px;text-align:center;line-height:1.6;min-height:12px}
+
+/* overlay screens */
+.overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(5,5,5,.94);z-index:20;text-align:center;gap:16px}
+.overlay.hidden{display:none}
+.ov-title{font-size:clamp(16px,3vw,28px);letter-spacing:.08em;line-height:1.3}
+.ov-title.p1c{color:var(--p1)}.ov-title.p2c{color:var(--p2)}
+.ov-sub{font-size:9px;color:var(--muted2);line-height:1.8;max-width:320px}
+.ov-key{font-size:8px;color:var(--gold);animation:blink .8s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.ov-big{font-size:clamp(28px,6vw,52px);line-height:1}
+.ov-scores{display:flex;gap:40px;font-size:14px}
+.ov-s1{color:var(--p1)}.ov-s2{color:var(--p2)}
+.btn-grid{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.pong-btn{padding:10px 20px;border-radius:4px;border:2px solid var(--gold);background:transparent;color:var(--gold);font-family:'Press Start 2P',monospace;font-size:8px;cursor:pointer;transition:all .13s;letter-spacing:.06em}
+.pong-btn:hover{background:var(--gold);color:#000}
+.pong-btn.p1btn{border-color:var(--p1);color:var(--p1)}.pong-btn.p1btn:hover{background:var(--p1);color:#000}
+.pong-btn.p2btn{border-color:var(--p2);color:var(--p2)}.pong-btn.p2btn:hover{background:var(--p2);color:#000}
+
+/* round flash */
+.round-flash{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:15;opacity:0;transition:opacity .2s}
+.round-flash.show{opacity:1}
+.rf-text{font-size:clamp(20px,5vw,48px);color:#fff;text-shadow:0 0 20px rgba(255,255,255,.5)}
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← noah.cool</a>
+
+<div class="layout">
+<!-- LEFT — Player 1 -->
+<div class="side left-side">
+  <div class="side-inner">
+    <div class="side-title">PLAYER 1</div>
+    <div class="score-wrap">
+      <div class="score-name" style="color:var(--p1)">W / S to move</div>
+      <div class="score-num" style="color:var(--p1)" id="p1Score">0</div>
+      <div class="score-desc" id="p1Desc">Paddle: normal</div>
+    </div>
+    <div class="side-title">Active Mods</div>
+    <div id="p1Mods"></div>
+  </div>
+</div>
+
+<!-- CENTER -->
+<div class="center">
+  <div class="hud-top">
+    <div class="hud-score" id="hScore1">0</div>
+    <div class="hud-mid">
+      <div class="hud-round" id="hudRound">ROUND 1</div>
+      <div class="hud-modifier" id="hudMod">—</div>
+    </div>
+    <div class="hud-score p2" id="hScore2">0</div>
+  </div>
+  <canvas id="gameCanvas"></canvas>
+  <div class="round-flash" id="roundFlash"><div class="rf-text" id="rfText"></div></div>
+  <div class="overlay" id="menuOverlay">
+    <div class="ov-title">⚡ WEIRD PONG ⚡</div>
+    <div class="ov-sub">Every round something changes. Paddles grow, shrink, speed up, reverse, go invisible. First to 10 wins.</div>
+    <div class="btn-grid">
+      <button class="pong-btn" onclick="startGame('1p')">▶ vs CPU</button>
+      <button class="pong-btn" onclick="startGame('2p')">👥 2 Players</button>
+    </div>
+    <div class="ov-sub" style="font-size:7px">P1: W/S · P2: ↑/↓ · CPU: automatic</div>
+  </div>
+  <div class="overlay hidden" id="roundOverlay">
+    <div class="ov-title" id="roTitle">Round Over</div>
+    <div class="ov-big" id="roEmoji">🏓</div>
+    <div class="ov-scores"><span class="ov-s1" id="roS1">0</span><span style="color:var(--muted2)">—</span><span class="ov-s2" id="roS2">0</span></div>
+    <div class="ov-sub" id="roMod">Next round modifier:</div>
+    <div class="ov-key">PRESS SPACE OR CLICK TO CONTINUE</div>
+  </div>
+  <div class="overlay hidden" id="gameOverOverlay">
+    <div class="ov-title" id="goTitle">WINNER!</div>
+    <div class="ov-big" id="goEmoji">🏆</div>
+    <div class="ov-scores"><span class="ov-s1" id="goS1">0</span><span style="color:var(--muted2)">—</span><span class="ov-s2" id="goS2">0</span></div>
+    <div class="btn-grid">
+      <button class="pong-btn" onclick="startGame(gameMode)">▶ Rematch</button>
+      <button class="pong-btn" onclick="showMenu()">Menu</button>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT — Player 2 / CPU -->
+<div class="side right-side">
+  <div class="side-inner">
+    <div class="side-title">PLAYER 2</div>
+    <div class="score-wrap">
+      <div class="score-name" style="color:var(--p2)" id="p2Name">↑ / ↓ to move</div>
+      <div class="score-num" style="color:var(--p2)" id="p2Score">0</div>
+      <div class="score-desc" id="p2Desc">Paddle: normal</div>
+    </div>
+    <div class="side-title">Power-ups</div>
+    <div id="puList"></div>
+  </div>
+</div>
+</div>
+
+<script>
+const canvas=document.getElementById('gameCanvas');
+const ctx=canvas.getContext('2d');
+const DPR=()=>devicePixelRatio;
+function resize(){canvas.width=canvas.clientWidth*DPR();canvas.height=canvas.clientHeight*DPR();}
+resize();window.addEventListener('resize',()=>{resize();});
+const W=()=>canvas.clientWidth, H=()=>canvas.clientHeight;
+function s(x){return x*DPR();}
+
+// ── MODIFIERS ──
+const MODIFIERS=[
+  {id:'big_paddle',    name:'Big Paddles',        desc:'Both paddles are massive',      apply:g=>{g.p1.h=130;g.p2.h=130;},  color:'#44ff88'},
+  {id:'tiny_paddle',   name:'Tiny Paddles',        desc:'Both paddles are tiny',         apply:g=>{g.p1.h=30;g.p2.h=30;},   color:'#ff4488'},
+  {id:'fast_ball',     name:'Speed Ball',          desc:'The ball moves 2× faster',      apply:g=>{g.ball.speed*=2;},        color:'#ff8844'},
+  {id:'slow_ball',     name:'Slow-Mo',             desc:'The ball moves half speed',     apply:g=>{g.ball.speed*=0.5;},      color:'#44aaff'},
+  {id:'ghost_ball',    name:'Ghost Ball',          desc:'Ball is invisible sometimes',   apply:g=>{g.ghostBall=true;},       color:'#aa44ff'},
+  {id:'reverse_p1',    name:'P1 Reversed',         desc:'Player 1 controls are reversed',apply:g=>{g.p1.reversed=true;},    color:'#ff4488'},
+  {id:'reverse_p2',    name:'P2 Reversed',         desc:'Player 2 controls are reversed',apply:g=>{g.p2.reversed=true;},    color:'#ff4488'},
+  {id:'wobble',        name:'Wobbly Paddles',      desc:'Paddles drift up and down',     apply:g=>{g.wobble=true;},         color:'#ffcc00'},
+  {id:'shrink_rally',  name:'Shrink on Hit',       desc:'Paddles shrink with each hit',  apply:g=>{g.shrinkOnHit=true;},    color:'#ff4488'},
+  {id:'grow_rally',    name:'Grow on Hit',         desc:'Paddles grow with each hit',    apply:g=>{g.growOnHit=true;},      color:'#44ff88'},
+  {id:'multi_ball',    name:'Multiball',           desc:'Two balls at once',             apply:g=>{spawnExtraBall(g);},     color:'#ffcc00'},
+  {id:'teleport',      name:'Teleport Zone',       desc:'Ball teleports at center',      apply:g=>{g.teleport=true;},       color:'#aa44ff'},
+  {id:'gravity',       name:'Gravity',             desc:'Ball curves downward',          apply:g=>{g.gravity=0.15;},        color:'#44aaff'},
+  {id:'bouncy',        name:'Super Bouncy',        desc:'Ball angles go wild on bounce', apply:g=>{g.superBounce=true;},    color:'#ff8844'},
+  {id:'fast_paddle',   name:'Turbo Paddles',       desc:'Paddles move 2× faster',        apply:g=>{g.p1.speed=12;g.p2.speed=12;},color:'#44ff88'},
+  {id:'drunk_ball',    name:'Drunk Ball',          desc:'Ball randomly changes direction',apply:g=>{g.drunkBall=true;},    color:'#ff4488'},
+  {id:'invisible_p',   name:'Ghost Paddles',       desc:'Paddles invisible for 2s bursts',apply:g=>{g.ghostPaddles=true;}, color:'#aa44ff'},
+  {id:'fat_ball',      name:'Huge Ball',           desc:'Ball is enormous',              apply:g=>{g.ball.r=28;},           color:'#ff8844'},
+  {id:'tiny_ball',     name:'Pixel Ball',          desc:'Ball is microscopic',           apply:g=>{g.ball.r=4;},            color:'#44aaff'},
+  {id:'zigzag',        name:'Zigzag Ball',         desc:'Ball bounces in weird angles',  apply:g=>{g.zigzag=true;},        color:'#ffcc00'},
+];
+
+const POWERUPS=[
+  {id:'freeze',    name:'Freeze Foe',   emoji:'🧊', desc:'Freeze opponent for 2s',      apply:(g,who)=>{(who==='p1'?g.p2:g.p1).frozen=120;}},
+  {id:'speedup',   name:'Turbo You',    emoji:'⚡', desc:'Your speed 2× for 5s',        apply:(g,who)=>{const p=who==='p1'?g.p1:g.p2;p.tempSpeed=p.speed*2;p.speedTimer=300;}},
+  {id:'grow',      name:'Grow',         emoji:'🔮', desc:'Your paddle grows',           apply:(g,who)=>{const p=who==='p1'?g.p1:g.p2;p.h=Math.min(200,p.h+40);}},
+  {id:'shrink_foe',name:'Shrink Foe',   emoji:'🎯', desc:'Opponent paddle shrinks',     apply:(g,who)=>{const p=who==='p1'?g.p2:g.p1;p.h=Math.max(20,p.h-30);}},
+  {id:'slowball',  name:'Slow Ball',    emoji:'🐌', desc:'Ball slows for 3s',          apply:(g,who)=>{g.ball.slowTimer=180;}},
+];
+
+// ── GAME STATE ──
+let G=null, gameMode='1p', animId=null, round=1, totalScore={p1:0,p2:0};
+let keys={}, activeModifiers=[], pendingMod=null;
+let wobbleT=0, ghostT=0, ghostPaddleT=0;
+
+function newBall(w,h,speed){
+  const angle=(Math.random()*.6-.3)+(Math.random()<.5?0:Math.PI);
+  return {x:w/2,y:h/2,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,r:10,speed,slowTimer:0};
+}
+
+function spawnExtraBall(g){
+  g.balls.push(newBall(W(),H(),g.ball.speed));
+}
+
+function initGame(){
+  const w=W(),h=H(),SPEED=5+round*0.3;
+  G={
+    p1:{x:20,y:h/2,h:80,speed:7,score:0,reversed:false,frozen:0,tempSpeed:0,speedTimer:0,pu:[],puCooldown:0},
+    p2:{x:w-32,y:h/2,h:80,speed:7,score:0,reversed:false,frozen:0,tempSpeed:0,speedTimer:0,pu:[],puCooldown:0},
+    ball:newBall(w,h,SPEED),
+    balls:[],
+    ghostBall:false,wobble:false,shrinkOnHit:false,growOnHit:false,
+    teleport:false,gravity:0,superBounce:false,drunkBall:false,
+    ghostPaddles:false,zigzag:false,
+    puOnField:null,rallies:0,paused:false,
+  };
+  G.balls=[G.ball];
+  // Apply modifiers
+  activeModifiers.forEach(m=>m.apply(G));
+  wobbleT=0;ghostT=0;ghostPaddleT=0;
+}
+
+function startGame(mode){
+  gameMode=mode;totalScore={p1:0,p2:0};round=1;activeModifiers=[];pendingMod=null;
+  document.getElementById('p2Name').textContent=mode==='1p'?'CPU':'↑ / ↓ to move';
+  showOverlay('none');
+  initGame();
+  if(animId)cancelAnimationFrame(animId);
+  loop();
+  updateSidePanel();
+}
+
+function showMenu(){showOverlay('menu');}
+
+function showOverlay(which){
+  document.getElementById('menuOverlay').classList.toggle('hidden',which!=='menu');
+  document.getElementById('roundOverlay').classList.toggle('hidden',which!=='round');
+  document.getElementById('gameOverOverlay').classList.toggle('hidden',which!=='gameover');
+}
+
+// ── INPUT ──
+document.addEventListener('keydown',e=>{
+  keys[e.code]=true;
+  if((e.code==='Space'||e.code==='Enter')&&!document.getElementById('roundOverlay').classList.contains('hidden')){
+    nextRound();
+  }
+  if(e.code==='KeyZ'&&G) usePowerup('p1');
+  if(e.code==='Slash'&&G) usePowerup('p2');
+  e.preventDefault();
+});
+document.addEventListener('keyup',e=>{keys[e.code]=false;});
+document.getElementById('roundOverlay').addEventListener('click',nextRound);
+document.getElementById('gameOverOverlay').addEventListener('click',()=>{});
+
+function usePowerup(who){
+  const p=who==='p1'?G.p1:G.p2;
+  if(!p.pu.length||p.puCooldown>0) return;
+  const pu=p.pu.shift();
+  pu.apply(G,who);
+  p.puCooldown=120;
+}
+
+// ── PHYSICS ──
+function update(){
+  if(!G||G.paused) return;
+  const w=W(),h=H(), hh=h-50;
+  wobbleT+=0.06;ghostT+=0.04;ghostPaddleT+=0.03;
+
+  // Paddle AI (CPU)
+  if(gameMode==='1p'){
+    const target=G.balls.reduce((b,ball)=>Math.abs(ball.vx)>0?ball:b,G.ball);
+    const diff=target.y-G.p2.y;
+    const aispeed=Math.min(G.p2.speed*(0.8+round*.04),14);
+    G.p2.y+=Math.sign(diff)*Math.min(Math.abs(diff),aispeed);
+  }
+
+  // Move paddles
+  ['p1','p2'].forEach(who=>{
+    const p=G[who];
+    const spd=p.tempSpeed>0?p.tempSpeed:p.speed;
+    let dy=0;
+    if(p.frozen>0){p.frozen--;return;}
+    if(who==='p1'&&!G.p2.reversed||who==='p2'&&G.p1.reversed){
+      if(keys['KeyW']||keys['ArrowUp']&&who==='p1') dy=-spd;
+      if(keys['KeyS']||keys['ArrowDown']&&who==='p1') dy=spd;
+    }
+    if(who==='p1'&&!G.p1.reversed){
+      if(keys['KeyW']) dy=-spd;
+      if(keys['KeyS']) dy=spd;
+    } else if(who==='p1'&&G.p1.reversed){
+      if(keys['KeyW']) dy=spd;
+      if(keys['KeyS']) dy=-spd;
+    }
+    if(who==='p2'&&!G.p2.reversed&&gameMode==='2p'){
+      if(keys['ArrowUp']) dy=-spd;
+      if(keys['ArrowDown']) dy=spd;
+    }
+    if(G.wobble) dy+=Math.sin(wobbleT+(who==='p2'?Math.PI:0))*2;
+    p.y=Math.max(p.h/2,Math.min(hh-p.h/2,p.y+dy));
+    if(p.speedTimer>0){p.speedTimer--;if(p.speedTimer<=0)p.tempSpeed=0;}
+    if(p.puCooldown>0) p.puCooldown--;
+  });
+
+  // Move balls
+  G.balls.forEach(ball=>{
+    if(G.gravity) ball.vy+=G.gravity;
+    if(G.drunkBall&&Math.random()<.02) ball.vy+=(Math.random()-.5)*3;
+    if(ball.slowTimer>0){ball.slowTimer--;ball.x+=ball.vx*.4;ball.y+=ball.vy*.4;}
+    else{ball.x+=ball.vx;ball.y+=ball.vy;}
+
+    // Wall bounce
+    if(ball.y-ball.r<50){ball.y=50+ball.r;ball.vy=Math.abs(ball.vy);}
+    if(ball.y+ball.r>h-10){ball.y=h-10-ball.r;ball.vy=-Math.abs(ball.vy);}
+
+    // Teleport
+    if(G.teleport&&Math.abs(ball.x-w/2)<8&&Math.random()<.05){
+      ball.y=Math.random()*(hh-100)+50;
+    }
+
+    // Zigzag
+    if(G.zigzag&&G.rallies%3===0&&Math.abs(ball.x-w/2)<20) ball.vy*=-1;
+
+    // Paddle collisions
+    const paddles=[{p:G.p1,side:'left'},{p:G.p2,side:'right'}];
+    paddles.forEach(({p,side})=>{
+      const px=side==='left'?p.x+12:p.x-12;
+      const py=p.y;
+      const hw=12,hh2=p.h/2;
+      const hit=side==='left'
+        ?ball.x-ball.r<px&&ball.x>p.x-5&&ball.y>py-hh2-ball.r&&ball.y<py+hh2+ball.r
+        :ball.x+ball.r>px&&ball.x<p.x+5&&ball.y>py-hh2-ball.r&&ball.y<py+hh2+ball.r;
+      if(hit){
+        ball.vx=side==='left'?Math.abs(ball.vx):-Math.abs(ball.vx);
+        const relY=(ball.y-py)/(hh2);
+        ball.vy=relY*(G.superBounce?8:5);
+        // Speed up slightly
+        const spMult=1+0.05*Math.min(G.rallies,10);
+        ball.vx*=spMult;ball.vy*=spMult;
+        G.rallies++;
+        if(G.shrinkOnHit){p.h=Math.max(20,p.h-5);}
+        if(G.growOnHit){p.h=Math.min(200,p.h+4);}
+        // Spawn powerup
+        if(G.rallies%5===0&&!G.puOnField){
+          G.puOnField={pu:POWERUPS[Math.floor(Math.random()*POWERUPS.length)],x:w/2+(Math.random()*200-100),y:100+Math.random()*(hh-200)};
+        }
+      }
+    });
+
+    // Powerup collection
+    if(G.puOnField){
+      const d=Math.hypot(ball.x-G.puOnField.x,ball.y-G.puOnField.y);
+      if(d<24){
+        const who=ball.vx>0?'p1':'p2';
+        G[who].pu.push(G.puOnField.pu);
+        G.puOnField=null;
+      }
+    }
+
+    // Score
+    if(ball.x-ball.r<0){
+      G.p2.score++;totalScore.p2++;
+      checkRoundEnd();return;
+    }
+    if(ball.x+ball.r>w){
+      G.p1.score++;totalScore.p1++;
+      checkRoundEnd();return;
+    }
+  });
+}
+
+function checkRoundEnd(){
+  if(G.p1.score>=3||G.p2.score>=3){
+    const winner=G.p1.score>G.p2.score?'P1':'P2';
+    if(totalScore.p1>=10||totalScore.p2>=10){
+      showGameOver();return;
+    }
+    showRoundEnd(winner);
+  } else {
+    resetBall();
+  }
+}
+
+function resetBall(){
+  G.ball=newBall(W(),H(),5+round*0.3);
+  activeModifiers.forEach(m=>{if(m.id==='fast_ball'||m.id==='slow_ball')m.apply(G);});
+  G.balls=[G.ball];
+  G.p1.score=0;G.p2.score=0;G.rallies=0;
+}
+
+function showRoundEnd(winner){
+  G.paused=true;
+  // Pick next modifier
+  const pool=MODIFIERS.filter(m=>!activeModifiers.find(a=>a.id===m.id));
+  pendingMod=pool[Math.floor(Math.random()*pool.length)];
+  const wColor=winner==='P1'?'p1c':'p2c';
+  document.getElementById('roTitle').textContent=`${winner} wins the round!`;
+  document.getElementById('roTitle').className=`ov-title ${wColor}`;
+  document.getElementById('roEmoji').textContent=winner==='P1'?'💚':'💗';
+  document.getElementById('roS1').textContent=totalScore.p1;
+  document.getElementById('roS2').textContent=totalScore.p2;
+  document.getElementById('roMod').innerHTML=`<span style="color:${pendingMod.color}">Next: ${pendingMod.name}</span><br/><span style="font-size:7px;color:#888">${pendingMod.desc}</span>`;
+  showOverlay('round');
+}
+
+function nextRound(){
+  if(!pendingMod) return;
+  activeModifiers.push(pendingMod);
+  pendingMod=null;round++;
+  showOverlay('none');
+  initGame();
+  updateSidePanel();
+  flashRound(`ROUND ${round}`);
+}
+
+function flashRound(txt){
+  const f=document.getElementById('roundFlash');
+  document.getElementById('rfText').textContent=txt;
+  f.classList.add('show');
+  setTimeout(()=>f.classList.remove('show'),1500);
+}
+
+function showGameOver(){
+  G.paused=true;
+  const winner=totalScore.p1>totalScore.p2?'P1':'P2';
+  const wColor=winner==='P1'?'p1c':'p2c';
+  document.getElementById('goTitle').textContent=`${winner} WINS THE GAME!`;
+  document.getElementById('goTitle').className=`ov-title ${wColor}`;
+  document.getElementById('goEmoji').textContent=winner==='P1'?'🏆💚':'🏆💗';
+  document.getElementById('goS1').textContent=totalScore.p1;
+  document.getElementById('goS2').textContent=totalScore.p2;
+  showOverlay('gameover');
+}
+
+// ── DRAW ──
+function draw(){
+  const w=W(),h=H();
+  ctx.save();ctx.scale(DPR(),DPR());
+  ctx.fillStyle='#040404';ctx.fillRect(0,0,w,h);
+
+  // Center line
+  ctx.setLineDash([8,8]);ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(w/2,50);ctx.lineTo(w/2,h-10);ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Scores on court
+  ctx.font='bold 40px "Press Start 2P",monospace';
+  ctx.textAlign='center';ctx.textBaseline='top';
+  ctx.fillStyle='rgba(0,255,170,.08)';ctx.fillText(G.p1.score,w/4,60);
+  ctx.fillStyle='rgba(255,68,136,.08)';ctx.fillText(G.p2.score,w*3/4,60);
+
+  // Powerup on field
+  if(G.puOnField){
+    const pu=G.puOnField;
+    const pulse=.5+.5*Math.sin(wobbleT*6);
+    ctx.fillStyle=`rgba(255,200,50,${pulse*.5})`;
+    ctx.beginPath();ctx.arc(pu.x,pu.y,18,0,Math.PI*2);ctx.fill();
+    ctx.font='18px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(pu.pu.emoji,pu.x,pu.y);
+  }
+
+  // Paddles
+  const ghostPaddleVisible=!G.ghostPaddles||Math.sin(ghostPaddleT*4)>.2;
+  ['p1','p2'].forEach(who=>{
+    const p=G[who];
+    const c=who==='p1'?'var(--p1)':'var(--p2)';
+    ctx.globalAlpha=ghostPaddleVisible?(p.frozen>0?.4:1):.12;
+    // Glow
+    const grd=ctx.createLinearGradient(p.x-8,0,p.x+16,0);
+    grd.addColorStop(0,'transparent');
+    grd.addColorStop(.5,who==='p1'?'rgba(0,255,170,.3)':'rgba(255,68,136,.3)');
+    grd.addColorStop(1,'transparent');
+    ctx.fillStyle=grd;ctx.fillRect(p.x-16,p.y-p.h/2-4,40,p.h+8);
+    // Paddle body
+    ctx.fillStyle=who==='p1'?'#00ffaa':'#ff4488';
+    ctx.beginPath();ctx.roundRect(p.x,p.y-p.h/2,12,p.h,6);ctx.fill();
+    // PU indicator
+    if(p.pu.length>0){
+      ctx.font='14px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.globalAlpha=1;
+      ctx.fillText(p.pu[0].emoji,p.x+6,p.y);
+    }
+    ctx.globalAlpha=1;
+  });
+
+  // Balls
+  G.balls.forEach((ball,bi)=>{
+    const vis=!G.ghostBall||Math.sin(ghostT*8+bi)>.0;
+    ctx.globalAlpha=vis?1:.15;
+    // Glow
+    const bg=ctx.createRadialGradient(ball.x,ball.y,0,ball.x,ball.y,ball.r*2.5);
+    bg.addColorStop(0,'rgba(255,255,255,.4)');bg.addColorStop(1,'transparent');
+    ctx.fillStyle=bg;ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r*2.5,0,Math.PI*2);ctx.fill();
+    // Ball
+    ctx.fillStyle='#ffffff';
+    ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);ctx.fill();
+    ctx.globalAlpha=1;
+    // Trail
+    ctx.fillStyle='rgba(255,255,255,.1)';
+    ctx.beginPath();ctx.arc(ball.x-ball.vx*2,ball.y-ball.vy*2,ball.r*.7,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(ball.x-ball.vx*4,ball.y-ball.vy*4,ball.r*.4,0,Math.PI*2);ctx.fill();
+  });
+
+  ctx.restore();
+
+  // Update HUD
+  document.getElementById('hScore1').textContent=totalScore.p1;
+  document.getElementById('hScore2').textContent=totalScore.p2;
+  document.getElementById('hudRound').textContent=`ROUND ${round}`;
+  const modNames=activeModifiers.map(m=>`<span style="color:${m.color}">${m.name}</span>`).join(' · ');
+  document.getElementById('hudMod').innerHTML=modNames||'—';
+}
+
+function updateSidePanel(){
+  // P1 mods
+  const p1mods=document.getElementById('p1Mods');
+  p1mods.innerHTML=activeModifiers.map(m=>`<div class="mod-item active"><span class="mod-dot" style="background:${m.color}"></span>${m.name}</div>`).join('')||'<div class="mod-item">None yet</div>';
+  // Powerup list
+  const puList=document.getElementById('puList');
+  puList.innerHTML=POWERUPS.map(p=>`<div class="pu-item"><div class="pu-name">${p.emoji} ${p.name}</div><div class="pu-desc">${p.desc}</div></div>`).join('');
+}
+
+function loop(){
+  animId=requestAnimationFrame(loop);
+  if(G&&!G.paused){update();draw();}
+}
+
+flashRound('WEIRD PONG');
+updateSidePanel();
+</script>
+</body>
+</html>
