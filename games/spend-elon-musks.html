@@ -1,324 +1,887 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <link rel="icon" type="image/png" href="/assets/money.png" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spend Elon Musks Money</title>
-  <link rel="icon" type="image/x-icon" href="/assets/money.png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Spend Elon's Money — Noah.cool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --amz-yellow:  #FF9900;
+      --amz-yellow2: #F0A500;
+      --amz-dark:    #131921;
+      --amz-mid:     #232F3E;
+      --amz-blue:    #146EB4;
+      --amz-blue2:   #1a91e8;
+      --amz-red:     #B12704;
+      --amz-green:   #067D62;
+      --amz-light:   #EAEDED;
+      --amz-border:  #DDD;
+      --amz-card:    #FFFFFF;
+      --amz-bg:      #F3F3F3;
+      --amz-text:    #0F1111;
+      --amz-muted:   #565959;
+      --amz-star:    #FF9900;
+      --amz-prime:   #00A8E1;
+      --sidebar-w:   340px;
+    }
+
     body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      margin: 0;
-      background: #f5f5f5;
-      color: #333;
+      font-family: 'Inter', sans-serif;
+      background: var(--amz-bg);
+      color: var(--amz-text);
+      min-height: 100vh;
     }
 
-    header {
-      background: white;
-      padding: 20px 40px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    /* ── TOPBAR ── */
+    .topbar {
+      background: var(--amz-dark);
+      padding: 0;
+      position: sticky; top: 0; z-index: 200;
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 22px;
-      font-weight: bold;
-      color: #222;
+    .topbar-main {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 16px;
+      height: 56px;
     }
 
-    header button {
-      padding: 10px 20px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: 0.3s;
-      font-size: 16px;
+    .back-btn {
+      color: white; text-decoration: none; font-size: 12px;
+      border: 1px solid rgba(255,255,255,0.25); border-radius: 3px;
+      padding: 5px 10px; white-space: nowrap;
+      transition: border-color 0.15s;
+    }
+    .back-btn:hover { border-color: var(--amz-yellow); color: var(--amz-yellow); }
+
+    .logo-wrap { display: flex; align-items: center; gap: 3px; flex-shrink: 0; }
+    .logo-text {
+      font-size: 22px; font-weight: 800; color: white;
+      letter-spacing: -1px; line-height: 1;
+    }
+    .logo-smile { color: var(--amz-yellow); font-size: 10px; display: block; margin-top: -4px; margin-left: 2px; }
+
+    .deliver-box {
+      display: flex; flex-direction: column; color: white; font-size: 11px;
+      line-height: 1.3; padding: 0 6px; flex-shrink: 0;
+    }
+    .deliver-box .d1 { color: #CCC; }
+    .deliver-box .d2 { font-weight: 700; font-size: 12px; }
+
+    .search-bar {
+      flex: 1; display: flex; border-radius: 4px; overflow: hidden;
+      border: 2px solid var(--amz-yellow);
     }
 
-    header button:hover {
-      background: #0056b3;
+    .search-cat {
+      background: var(--amz-light); border: none; padding: 0 10px;
+      font-size: 11px; color: var(--amz-text); cursor: pointer;
+      border-right: 1px solid var(--amz-border);
+      font-family: 'Inter', sans-serif;
     }
 
-    .container {
-      max-width: 1000px;
-      margin: 40px auto;
-      padding: 0 20px;
+    .search-input {
+      flex: 1; padding: 8px 12px; border: none; font-size: 14px;
+      font-family: 'Inter', sans-serif; color: var(--amz-text);
+      outline: none;
+    }
+
+    .search-btn {
+      background: var(--amz-yellow); border: none; padding: 0 16px;
+      cursor: pointer; font-size: 18px;
+      transition: background 0.15s;
+    }
+    .search-btn:hover { background: var(--amz-yellow2); }
+
+    .cart-btn {
+      display: flex; align-items: center; gap: 4px; color: white;
+      font-size: 12px; cursor: pointer; flex-shrink: 0;
+      position: relative; padding: 0 8px;
+    }
+    .cart-count {
+      position: absolute; top: -4px; right: 0px;
+      background: var(--amz-yellow); color: var(--amz-dark);
+      border-radius: 50%; width: 18px; height: 18px;
+      font-size: 11px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* nav bar */
+    .topbar-nav {
+      background: var(--amz-mid);
+      padding: 6px 16px;
+      display: flex; gap: 0; align-items: center;
+      overflow-x: auto;
+    }
+    .topbar-nav::-webkit-scrollbar { display: none; }
+
+    .nav-item {
+      color: white; font-size: 13px; font-weight: 500;
+      padding: 4px 12px; border-radius: 3px; cursor: pointer;
+      white-space: nowrap; border: 1px solid transparent;
+      transition: border-color 0.1s;
+      background: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .nav-item:hover { border-color: white; }
+    .nav-item.active { border-color: white; }
+
+    /* ── ELON BANNER ── */
+    .elon-banner {
+      background: linear-gradient(135deg, #131921 0%, #1a2a3a 50%, #131921 100%);
+      padding: 14px 20px;
+      display: flex; align-items: center; gap: 16px;
+      border-bottom: 2px solid var(--amz-yellow);
+    }
+
+    .elon-avatar {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--amz-yellow);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; flex-shrink: 0;
+      border: 2px solid rgba(255,153,0,0.5);
+    }
+
+    .elon-info { flex: 1; min-width: 0; }
+    .elon-name { color: var(--amz-yellow); font-weight: 800; font-size: 15px; }
+    .elon-title { color: #8a9bb0; font-size: 11px; margin-top: 1px; }
+
+    .net-worth-wrap { text-align: right; flex-shrink: 0; }
+    .nw-label { color: #8a9bb0; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .nw-amount {
+      font-size: 22px; font-weight: 800; color: #4ade80;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+    }
+    .nw-remaining { font-size: 12px; color: #8a9bb0; margin-top: 2px; }
+
+    /* progress bar */
+    .spend-bar-wrap {
+      background: var(--amz-dark); padding: 8px 20px 10px;
+    }
+    .spend-bar-label {
+      display: flex; justify-content: space-between;
+      font-size: 11px; color: #8a9bb0; margin-bottom: 5px;
+    }
+    .spend-bar-track {
+      height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;
+    }
+    .spend-bar-fill {
+      height: 100%; border-radius: 4px;
+      background: linear-gradient(90deg, #4ade80, var(--amz-yellow), #f87171);
+      transition: width 0.5s cubic-bezier(.22,.68,0,1.2);
+      width: 0%;
+    }
+
+    /* ── MAIN LAYOUT ── */
+    .main-layout {
+      display: flex; align-items: flex-start;
+      max-width: 1400px; margin: 0 auto;
+      padding: 16px;
+      gap: 16px;
+    }
+
+    /* ── PRODUCT AREA ── */
+    .product-area { flex: 1; min-width: 0; }
+
+    .section-header {
+      background: white; border: 1px solid var(--amz-border);
+      border-radius: 8px 8px 0 0; padding: 12px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .section-title {
+      font-size: 18px; font-weight: 700; color: var(--amz-text);
+    }
+
+    .result-count { font-size: 13px; color: var(--amz-muted); }
+    .result-count span { color: var(--amz-blue); font-weight: 600; }
+
+    .product-grid {
       display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 30px;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1px;
+      background: var(--amz-border);
+      border: 1px solid var(--amz-border);
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      overflow: hidden;
     }
 
-    .balance {
+    /* ── PRODUCT CARD ── */
+    .product-card {
       background: white;
-      padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      text-align: center;
-      font-size: 22px;
-      margin-bottom: 30px;
-    }
-
-    .tile-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 20px;
-    }
-
-    .tile {
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      padding: 20px;
-      text-align: center;
-      transition: transform 0.2s;
-    }
-
-    .tile:hover {
-      transform: scale(1.03);
-    }
-
-    .tile img {
-      width: 100%;
-      height: 140px;
-      object-fit: cover;
-      border-radius: 12px;
-      margin-bottom: 15px;
-    }
-
-    .tile h3 {
-      margin: 10px 0;
-      font-size: 18px;
-      color: #222;
-    }
-
-    .tile p {
-      margin: 5px 0 15px;
-      font-size: 16px;
-      color: #555;
-    }
-
-    .tile button {
-      padding: 10px 18px;
-      background: #28a745;
-      color: white;
-      border: none;
-      border-radius: 10px;
+      padding: 16px 14px;
+      display: flex; flex-direction: column;
+      gap: 6px;
+      transition: background 0.1s;
       cursor: pointer;
-      transition: 0.3s;
-      font-size: 15px;
+      position: relative;
+    }
+    .product-card:hover { background: #FAFAFA; }
+
+    .product-badge {
+      position: absolute; top: 10px; left: 10px;
+      font-size: 9px; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 2px 6px; border-radius: 3px;
+    }
+    .badge-prime { background: var(--amz-prime); color: white; }
+    .badge-deal  { background: var(--amz-red);  color: white; }
+    .badge-weird { background: #7c3aed; color: white; }
+    .badge-new   { background: var(--amz-green); color: white; }
+
+    .product-emoji {
+      font-size: 52px; text-align: center;
+      height: 80px; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
     }
 
-    .tile button:hover {
-      background: #218838;
+    .product-name {
+      font-size: 13px; font-weight: 500; color: var(--amz-blue);
+      line-height: 1.4;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
-    .receipt {
-      background: white;
-      padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      max-height: 600px;
-      overflow-y: auto;
+    .product-stars {
+      display: flex; align-items: center; gap: 3px; font-size: 12px;
+    }
+    .stars { color: var(--amz-star); letter-spacing: -1px; }
+    .review-count { color: var(--amz-blue); font-size: 12px; }
+
+    .product-price {
+      font-size: 18px; font-weight: 700; color: var(--amz-red);
+    }
+    .price-cents { font-size: 12px; vertical-align: super; font-weight: 400; }
+    .price-whole { font-size: 24px; }
+
+    .prime-tag {
+      display: flex; align-items: center; gap: 3px; font-size: 11px;
+    }
+    .prime-logo { color: var(--amz-prime); font-weight: 800; font-size: 12px; }
+
+    .add-btn {
+      width: 100%; margin-top: 4px;
+      background: var(--amz-yellow);
+      border: none; border-radius: 20px;
+      padding: 8px 12px; font-size: 12px; font-weight: 600;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: background 0.12s, transform 0.1s;
+      color: var(--amz-dark);
+    }
+    .add-btn:hover { background: var(--amz-yellow2); }
+    .add-btn:active { transform: scale(0.97); }
+    .add-btn.added {
+      background: #e8f4ec; color: var(--amz-green);
+      border: 1px solid var(--amz-green);
     }
 
-    .receipt h2 {
-      margin-top: 0;
-      font-size: 20px;
-      border-bottom: 2px solid #eee;
-      padding-bottom: 10px;
+    /* ── RECEIPT SIDEBAR ── */
+    .receipt-sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      position: sticky; top: 100px;
+      max-height: calc(100vh - 120px);
+      display: flex; flex-direction: column;
+      gap: 12px;
     }
+
+    .receipt-card {
+      background: white; border: 1px solid var(--amz-border);
+      border-radius: 8px; overflow: hidden;
+    }
+
+    .receipt-header {
+      background: var(--amz-dark); color: white;
+      padding: 12px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .receipt-title { font-size: 14px; font-weight: 700; }
+    .receipt-subtitle { font-size: 11px; color: #8a9bb0; }
+
+    .receipt-items {
+      overflow-y: auto; max-height: 320px;
+      padding: 8px 0;
+    }
+    .receipt-items::-webkit-scrollbar { width: 3px; }
+    .receipt-items::-webkit-scrollbar-thumb { background: var(--amz-border); }
+
+    .receipt-empty {
+      padding: 32px 16px; text-align: center;
+      color: var(--amz-muted); font-size: 13px;
+    }
+    .receipt-empty .emo { font-size: 32px; display: block; margin-bottom: 8px; }
 
     .receipt-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px solid #eee;
-      font-size: 15px;
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 14px;
+      border-bottom: 1px solid #F5F5F5;
+      animation: slideIn 0.25s cubic-bezier(.22,.68,0,1.2) both;
     }
 
-    .receipt-total {
-      font-weight: bold;
-      margin-top: 15px;
-      font-size: 18px;
-      text-align: right;
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(12px); }
+      to   { opacity: 1; transform: translateX(0); }
     }
 
-    footer {
-      margin-top: 50px;
-      text-align: center;
-      padding: 20px;
-      color: #777;
-      font-size: 14px;
+    .ri-emoji { font-size: 22px; flex-shrink: 0; }
+    .ri-info { flex: 1; min-width: 0; }
+    .ri-name { font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ri-qty  { font-size: 10px; color: var(--amz-muted); }
+    .ri-price { font-size: 12px; font-weight: 700; color: var(--amz-red); flex-shrink: 0; text-align: right; }
+
+    .ri-remove {
+      background: none; border: none; cursor: pointer;
+      color: #AAA; font-size: 14px; padding: 0 4px;
+      transition: color 0.1s;
+    }
+    .ri-remove:hover { color: var(--amz-red); }
+
+    .receipt-totals {
+      padding: 12px 14px;
+      border-top: 1px solid var(--amz-border);
+      background: #FAFAFA;
+    }
+
+    .total-row {
+      display: flex; justify-content: space-between;
+      font-size: 12px; margin-bottom: 4px; color: var(--amz-muted);
+    }
+    .total-row.big {
+      font-size: 16px; font-weight: 700; color: var(--amz-text);
+      margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--amz-border);
+    }
+
+    .remaining-box {
+      background: linear-gradient(135deg, #0d1b0f, #0a1a0a);
+      border: 1px solid rgba(74,222,128,0.2);
+      border-radius: 6px; padding: 10px 12px; margin-top: 10px;
+    }
+    .rem-label { font-size: 10px; color: #4ade80; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 3px; }
+    .rem-amount { font-size: 20px; font-weight: 800; color: #4ade80; font-variant-numeric: tabular-nums; }
+    .rem-sub { font-size: 10px; color: rgba(74,222,128,0.5); margin-top: 1px; }
+
+    .checkout-btn {
+      width: 100%; background: var(--amz-yellow);
+      border: none; border-radius: 20px; padding: 10px;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      font-family: 'Inter', sans-serif; margin-top: 10px;
+      transition: background 0.12s;
+      color: var(--amz-dark);
+    }
+    .checkout-btn:hover { background: var(--amz-yellow2); }
+
+    .clear-btn {
+      width: 100%; background: none;
+      border: 1px solid var(--amz-border); border-radius: 20px; padding: 7px;
+      font-size: 12px; cursor: pointer; font-family: 'Inter', sans-serif;
+      color: var(--amz-muted); margin-top: 6px;
+      transition: border-color 0.12s, color 0.12s;
+    }
+    .clear-btn:hover { border-color: var(--amz-red); color: var(--amz-red); }
+
+    /* fun fact card */
+    .funfact-card {
+      background: white; border: 1px solid var(--amz-border);
+      border-radius: 8px; padding: 14px 16px;
+    }
+    .ff-title { font-size: 11px; font-weight: 700; color: var(--amz-text); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .ff-text { font-size: 12px; color: var(--amz-muted); line-height: 1.6; }
+    .ff-text strong { color: var(--amz-text); }
+
+    /* categories bar below section header */
+    .cat-bar {
+      display: flex; gap: 0; overflow-x: auto; margin-bottom: -1px;
+      background: white; border: 1px solid var(--amz-border); border-top: none;
+    }
+    .cat-bar::-webkit-scrollbar { display: none; }
+
+    .cat-btn {
+      font-size: 12px; font-weight: 500; padding: 8px 16px;
+      border: none; background: none; cursor: pointer;
+      color: var(--amz-muted); font-family: 'Inter', sans-serif;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap; transition: all 0.1s;
+    }
+    .cat-btn:hover { color: var(--amz-text); }
+    .cat-btn.active { color: var(--amz-text); border-bottom-color: var(--amz-yellow); font-weight: 700; }
+
+    /* milestone toast */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: var(--amz-dark); color: white;
+      padding: 12px 24px; border-radius: 8px;
+      font-size: 13px; font-weight: 600;
+      border: 1px solid var(--amz-yellow);
+      z-index: 500; display: none;
+      animation: toastIn 0.3s cubic-bezier(.22,.68,0,1.2) both;
+      white-space: nowrap;
+    }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    /* responsive */
+    @media (max-width: 900px) {
+      .main-layout { flex-direction: column; }
+      .receipt-sidebar { width: 100%; position: static; max-height: none; }
+      .elon-banner { flex-wrap: wrap; }
+    }
+
+    @media (max-width: 600px) {
+      .product-grid { grid-template-columns: repeat(2, 1fr); }
+      .topbar-main { gap: 6px; }
+      .deliver-box { display: none; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1 onclick="window.location.href='../index.html'">Spend Elon Musk's Money</h1>
-    <button onclick="resetGame()">Reset</button>
-  </header>
 
-  <div class="container">
-    <div>
-      <div class="balance">💰 Balance: <span id="balance">839,000,000,000</span></div>
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-main">
+    <a class="back-btn" href="../index.html">← noah.cool</a>
+    <div class="logo-wrap">
+      <div>
+        <div class="logo-text">ElonMart</div>
+        <div class="logo-smile">⌣.money</div>
+      </div>
+    </div>
+    <div class="deliver-box">
+      <span class="d1">Deliver to</span>
+      <span class="d2">Anywhere on Earth 🌍</span>
+    </div>
+    <div class="search-bar">
+      <select class="search-cat">
+        <option>All</option>
+        <option>Rockets</option>
+        <option>Islands</option>
+        <option>Weird Stuff</option>
+      </select>
+      <input class="search-input" type="text" placeholder="Search 800 billion dollars worth of stuff..." readonly/>
+      <button class="search-btn">🔍</button>
+    </div>
+    <div class="cart-btn" onclick="scrollToReceipt()">
+      🛒 Cart
+      <span class="cart-count" id="cartCount">0</span>
+    </div>
+  </div>
+  <div class="topbar-nav" id="topbarNav">
+    <button class="nav-item active" onclick="filterCat('all',this)">All Departments</button>
+    <button class="nav-item" onclick="filterCat('space',this)">🚀 Space</button>
+    <button class="nav-item" onclick="filterCat('real_estate',this)">🏠 Real Estate</button>
+    <button class="nav-item" onclick="filterCat('vehicles',this)">🚗 Vehicles</button>
+    <button class="nav-item" onclick="filterCat('food',this)">🍕 Food & Drink</button>
+    <button class="nav-item" onclick="filterCat('weird',this)">🎲 Weird & Wild</button>
+    <button class="nav-item" onclick="filterCat('tech',this)">💻 Tech</button>
+    <button class="nav-item" onclick="filterCat('luxury',this)">💎 Luxury</button>
+  </div>
+</div>
 
-      <div class="tile-grid">
-        <div class="tile">
-          <img src="https://s7d1.scene7.com/is/image/mcdonalds/mcdonalds-big-mac-1:1-3-product-tile-desktop?wid=829&hei=515&dpr=off" alt="Big Mac">
-          <h3>Big Mac</h3>
-          <p>$6.83</p>
-          <button onclick="buy('Big Mac', 6.83)">Buy</button>
-        </div>
-      <div class="tile">
-          <img src="https://d1w7312wesee68.cloudfront.net/DYtGjQ18ekBJDoGMEkstx8IgT2_xVOh1OFVe15JwIcs/resize:fit:720:720/plain/s3://toasttab/restaurants/restaurant-80382000000000000/menu/items/6/item-400000012735991676_1707367757.jpg" alt="Lobster Dinner">
-          <h3>1LB Lobster Dinner</h3>
-          <p>$35</p>
-          <button onclick="buy('Lobster Dinner', 35)">Buy</button>
-       </div>
-    <div class="tile">
-          <img src="https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/airpods-4-anc-select-202409_FMT_WHH?wid=1200&hei=630&fmt=jpeg&qlt=95&.v=1725502639798" alt="Airpods">
-          <h3>Airpods 4</h3>
-          <p>$129</p>
-          <button onclick="buy('iPhone', 129)">Buy</button>
-        </div>
-      <div class="tile">
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTA96QVeKzDFp506Wc52oUbB2fdncFGSlBaww&s" alt="iPhone">
-          <h3>iPhone 17 Pro Max</h3>
-          <p>$1199</p>
-          <button onclick="buy('iPhone', 1199)">Buy</button>
-        </div>
-        <div class="tile">
-          <img src="https://media-cldnry.s-nbcnews.com/image/upload/t_social_share_1200x630_center,f_auto,q_auto:best/rockcms/2024-07/mcdonalds-ice-cream-machines-jp-240711-6389f0.jpg" alt="McDonalds Ice Cream Machine">
-          <h3>McDonalds Ice Cream Machine - Broken</h3>
-          <p>$18,000</p>
-          <button onclick="buy('McDonalds Ice Cream Machine', 18000)">Buy</button>
-        </div>
-        <div class="tile">
-          <img src="https://hips.hearstapps.com/hmg-prod/images/2025-tesla-cybertruck-3-672e75cce7814.jpg?crop=0.531xw:0.398xh;0.137xw,0.462xh&resize=1200:*" alt="Cybertruck">
-          <h3>Tesla Cybertruck</h3>
-          <p>$72,490</p>
-          <button onclick="buy('Tesla Cybertruck', 72490)">Buy</button>
-        </div>
-        <div class="tile">
-          <img src="https://lizziemandler.com/cdn/shop/products/B1304WD-W_2000x.jpg?v=1719510293" alt="Bracelet">
-          <h3>Lunar Éclat White Gold Diamond Bracelet</h3>
-          <p>$238,000</p>
-          <button onclick="buy('Lunar Éclat White Gold Diamond Bracelet', 238000)">Buy</button>
-        </div>
-        <div class="tile">
-          <img src="https://www.livehome3d.com/assets/img/articles/design-house/how-to-design-a-house.jpg" alt="House">
-          <h3>House</h3>
-          <p>$360,656</p>
-          <button onclick="buy('House', 360656)">Buy</button>
-        </div>
-        <div class="tile">
-          <img src="https://image.yachtbuyer.com/w1440/h755/qh/ca/kebe48108/cms/photo/3074578.jpg" alt="Mega Yacht">
-          <h3>Mega Yacht</h3>
-          <p>$321,848</p>
-          <button onclick="buy('Mega Yacht', 321848)">Buy</button>
-        </div>
-        <div class="tile">
-          <img src="https://images.ctfassets.net/n2ifzifcqscw/2qhxwsp5hOBghbdEOOLSux/ef05c74d95b6b4540fc0d563dbbd7d26/P1753785.jpg" alt="Mansion">
-          <h3>Mansion</h3>
-          <p>$1,400,000</p>
-          <button onclick="buy('Mansion', 1400000)">Buy</button>
-        </div>
-        <div class="tile">
-          <img src="https://static0.simpleflyingimages.com/wordpress/wp-content/uploads/2023/09/shutterstock_2117327324-1.jpg" alt="Boeing Triple 7x">
-          <h3>Boeing 777x</h3>
-          <p>$442,000,000</p>
-          <button onclick="buy('Boeing 777x', 400000000)">Buy</button>
-        </div>
-        <div class="tile">
-          <img src="https://media.cnn.com/api/v1/images/stellar/prod/200124094330-mona-lisa-copy-sothebys.jpg?q=w_2000,c_fill" alt="Mona Lisa">
-          <h3>Mona Lisa</h3>
-          <p>$870,000,000</p>
-          <button onclick="buy('Mona lisa', 870000000)">Buy</button>
+<!-- ELON BANNER -->
+<div class="elon-banner">
+  <div class="elon-avatar">🤑</div>
+  <div class="elon-info">
+    <div class="elon-name">Elon Musk — Customer #1</div>
+    <div class="elon-title">CEO of Tesla, SpaceX, xAI, X · World's Richest Person · Rocket Enthusiast</div>
+  </div>
+  <div class="net-worth-wrap">
+    <div class="nw-label">Net Worth</div>
+    <div class="nw-amount" id="netWorthDisplay">$839,000,000,000</div>
+    <div class="nw-remaining" id="remainingDisplay">$839B remaining</div>
+  </div>
+</div>
+
+<!-- SPEND BAR -->
+<div class="spend-bar-wrap">
+  <div class="spend-bar-label">
+    <span id="spentLabel">$0 spent (0.00%)</span>
+    <span id="remainLabel">$347,000,000,000 remaining</span>
+  </div>
+  <div class="spend-bar-track">
+    <div class="spend-bar-fill" id="spendBarFill"></div>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="main-layout">
+
+  <!-- PRODUCT AREA -->
+  <div class="product-area">
+    <div class="section-header">
+      <div class="section-title" id="sectionTitle">All Departments</div>
+      <div class="result-count">Showing <span id="showCount">0</span> items</div>
+    </div>
+    <div class="product-grid" id="productGrid"></div>
+  </div>
+
+  <!-- RECEIPT SIDEBAR -->
+  <div class="receipt-sidebar" id="receiptSidebar">
+    <div class="receipt-card">
+      <div class="receipt-header">
         <div>
-        <div class="tile">
-          <img src="https://miro.medium.com/v2/resize:fit:1400/1*X_UUsGlQGQHz3k0kVYAHOw.jpeg" alt="Mega Yacht">
-          <h3>NBA Team</h3>
-          <p>$5,510,000,000</p>
-          <button onclick="buy('NBA Team', 5510000000)">Buy</button>
+          <div class="receipt-title">🛒 Your Cart</div>
+          <div class="receipt-subtitle">Elon's Credit Card™</div>
         </div>
-       <div class="tile">
-          <img src="https://www.esa.int/var/esa/storage/images/esa_multimedia/images/2010/06/iss2/18901111-1-eng-GB/ISS.jpg" alt="ISS">
-          <h3>ISS</h3>
-          <p>$150,000,000,000</p>
-          <button onclick="buy('ISS', 150000000000)">Buy</button>
-       </div>
+        <div style="font-size:11px;color:#8a9bb0;">FREE Shipping</div>
+      </div>
+
+      <div class="receipt-items" id="receiptItems">
+        <div class="receipt-empty">
+          <span class="emo">🛒</span>
+          Add items to start spending!<br/>
+          <span style="font-size:11px;margin-top:4px;display:block;color:#999">You have $839B to burn</span>
+        </div>
+      </div>
+
+      <div class="receipt-totals">
+        <div class="total-row"><span>Subtotal</span><span id="totalSubtotal">$0</span></div>
+        <div class="total-row"><span>Shipping</span><span style="color:var(--amz-green)">FREE</span></div>
+        <div class="total-row"><span>Tax (0%)</span><span>$0 <span style="font-size:9px">(he doesn't pay)</span></span></div>
+        <div class="total-row big"><span>Total Spent</span><span id="totalSpent">$0</span></div>
+
+        <div class="remaining-box">
+          <div class="rem-label">💰 Still Remaining</div>
+          <div class="rem-amount" id="remainingAmt">$839,000,000,000</div>
+          <div class="rem-sub" id="remainingPct">0.000% spent</div>
+        </div>
+
+        <button class="checkout-btn" onclick="checkout()">Proceed to Checkout 🚀</button>
+        <button class="clear-btn" onclick="clearCart()">Remove All Items</button>
       </div>
     </div>
 
-    <!-- Receipt section -->
-    <div class="receipt">
-      <h2>🧾 Receipt</h2>
-      <div id="receipt-list"></div>
-      <div class="receipt-total">Total Spent: $<span id="total-spent">0</span></div>
+    <div class="funfact-card">
+      <div class="ff-title">💡 Fun Fact</div>
+      <div class="ff-text" id="funFact">Loading...</div>
     </div>
   </div>
 
-  <footer>
-    © 2025 Noah.Cool — Built for fun 🎮
-  </footer>
+</div>
 
-  <script>
-    let balance = 839000000000;
-    let totalSpent = 0;
-    let receipt = {};
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
-    function updateBalance() {
-      document.getElementById("balance").innerText = balance.toLocaleString();
-      document.getElementById("total-spent").innerText = totalSpent.toLocaleString();
+<script>
+// ── ELON'S NET WORTH ──
+const NET_WORTH = 347_000_000_000; // $347 Billion (as of 2025)
+
+// ── PRODUCTS ──
+const PRODUCTS = [
+  // SPACE
+  { id:42,  cat:'space',       name:'ISS',             emoji:'🛰️', price:150_000_000_000,   stars:4.9, reviews:290,  badge:'prime',  prime:true,  desc:'Experiment in Space' },
+  { id:1,  cat:'space',       name:'Falcon 9 Rocket Launch',             emoji:'🚀', price:62_000_000,   stars:4.8, reviews:2847,  badge:'prime',  prime:true,  desc:'One-way trip to orbit. Reusable.' },
+  { id:2,  cat:'space',       name:'SpaceX Starship (Full Stack)',        emoji:'🛸', price:3_000_000_000, stars:4.9, reviews:412,   badge:'new',    prime:false, desc:'The biggest rocket ever built.' },
+  { id:3,  cat:'space',       name:'Satellite Constellation (12 units)',  emoji:'🛰️',price:1_200_000_000, stars:4.7, reviews:891,   badge:'deal',   prime:true,  desc:'Your own Starlink-style network.' },
+  { id:4,  cat:'space',       name:'Mars Rover (Custom)',                 emoji:'🌑', price:2_500_000_000, stars:4.6, reviews:203,   badge:'weird',  prime:false, desc:'Explore Mars before Elon gets there.' },
+  { id:5,  cat:'space',       name:'Private Space Suit',                  emoji:'👨‍🚀', price:12_000_000,  stars:4.5, reviews:1204,  badge:'prime',  prime:true,  desc:'Rated for 6hrs EVA. Looks cool.' },
+  { id:6,  cat:'space',       name:'Moon Naming Rights',                  emoji:'🌕', price:50_000,        stars:3.9, reviews:8902,  badge:null,     prime:false, desc:'Name a crater after yourself. Why not.' },
+  // REAL ESTATE
+  { id:7,  cat:'real_estate', name:'Private Island (Caribbean)',          emoji:'🏝️', price:85_000_000,   stars:4.9, reviews:34,    badge:'prime',  prime:true,  desc:'Your own island. Includes two beaches.' },
+  { id:8,  cat:'real_estate', name:'Manhattan Skyscraper',                emoji:'🏙️', price:500_000_000,  stars:4.7, reviews:19,    badge:'deal',   prime:false, desc:'One Empire-State-Building-sized tower.' },
+  { id:9,  cat:'real_estate', name:'Buckingham Palace (Replica)',         emoji:'🏰', price:4_900_000_000, stars:4.4, reviews:7,     badge:'weird',  prime:false, desc:'Built brick by brick. Same vibes.' },
+  { id:10, cat:'real_estate', name:'Antarctic Research Base',             emoji:'🧊', price:150_000_000,  stars:4.2, reviews:44,    badge:null,     prime:true,  desc:'Own a piece of the most remote continent.' },
+  { id:11, cat:'real_estate', name:'Underground Bunker (Luxury)',         emoji:'⛏️', price:35_000_000,   stars:4.6, reviews:312,   badge:'prime',  prime:true,  desc:'Doomsday-ready. Gold-plated toilet.' },
+  // VEHICLES
+  { id:41, cat:'vehicles',    name:'Tesla Cybertruck',            emoji:'🚛', price:99990,  stars:2.8, reviews:18204, badge:'prime',   prime:true,  desc:'Its a CyberBeast' },
+  { id:12, cat:'vehicles',    name:'Tesla Cybertruck (x1000)',            emoji:'🚛', price:499_000_000,  stars:4.3, reviews:18204, badge:'deal',   prime:true,  desc:'Bulk order. One for every week of your life.' },
+  { id:13, cat:'vehicles',    name:'Custom Submarine Yacht',              emoji:'🛥️', price:300_000_000,  stars:4.8, reviews:28,    badge:'prime',  prime:false, desc:'Goes underwater. Has a hot tub.' },
+  { id:14, cat:'vehicles',    name:'Private Boeing 747',                  emoji:'✈️', price:403_000_000,  stars:4.9, reviews:156,   badge:'prime',  prime:true,  desc:'Your own jumbo jet. WiFi included.' },
+  { id:15, cat:'vehicles',    name:'Bugatti Chiron Super Sport',          emoji:'🏎️', price:3_900_000,    stars:5.0, reviews:892,   badge:'deal',   prime:true,  desc:'0-60 in 2.3 seconds. Worth it.' },
+  { id:16, cat:'vehicles',    name:'Nuclear-Powered Icebreaker Ship',     emoji:'⛴️', price:1_700_000_000, stars:4.1, reviews:6,     badge:'weird',  prime:false, desc:'Break through Arctic ice in style.' },
+  // FOOD
+  { id:39, cat:'food',        name:'Big Mac',   emoji:'🍟', price:6.83,stars:4.5, reviews:94212, badge:'deal',  prime:false, desc:'A Hamburger' },
+  { id:17, cat:'food',        name:'McDonald\'s (Buy the whole chain)',   emoji:'🍟', price:212_000_000_000,stars:4.5, reviews:94212, badge:'deal',  prime:false, desc:'All 40,000 locations. Worldwide.' },
+  { id:18, cat:'food',        name:'Michelin 3-Star Dinner for 1000',     emoji:'🍽️', price:2_500_000,    stars:5.0, reviews:43,    badge:'prime',  prime:true,  desc:'Per person cost × 1000. Extra truffle.' },
+  { id:19, cat:'food',        name:'World\'s Most Expensive Pizza',       emoji:'🍕', price:12_000,        stars:4.8, reviews:2109,  badge:null,     prime:true,  desc:'Gold leaf, caviar, truffle. Still pizza.' },
+  { id:20, cat:'food',        name:'1 Year of Avg American\'s Groceries', emoji:'🛒', price:5_703,         stars:4.2, reviews:330294,badge:null,     prime:true,  desc:'61 million years of groceries with $350B.' },
+  { id:21, cat:'food',        name:'Kopi Luwak Coffee (1kg)',             emoji:'☕', price:700,           stars:3.8, reviews:45021, badge:'deal',   prime:true,  desc:'World\'s most expensive coffee. Pooped out by civets.' },
+  // WEIRD
+  { id:43,  cat:'weird',       name:'NBA Team',             emoji:'🚀', price:5_510_000_000,   stars:4.0, reviews:30,  badge:'prime',  prime:true,  desc:'IDK its a NBA Team' },
+  { id:22, cat:'weird',       name:'Buy Twitter Again',                   emoji:'🐦', price:44_000_000_000,stars:2.1, reviews:284012,badge:'weird',  prime:false, desc:'Then rename it to X. Classic.' },
+  { id:23, cat:'weird',       name:'Name a Hurricane After Yourself',     emoji:'🌪️', price:1_000_000,    stars:4.0, reviews:203,   badge:'weird',  prime:false, desc:'Legally. WMO will hate this.' },
+  { id:24, cat:'weird',       name:'Hire Army of Butlers (100 people)',   emoji:'🤵', price:10_000_000,    stars:4.9, reviews:54,    badge:'prime',  prime:true,  desc:'One for every room. Plus weekends.' },
+  { id:25, cat:'weird',       name:'Commission Michelangelo-Style Ceiling',emoji:'🎨',price:5_000_000,    stars:4.7, reviews:129,   badge:'weird',  prime:false, desc:'But it\'s you, as an astronaut, on Mars.' },
+  { id:26, cat:'weird',       name:'Gold-Plated Tesla Cybertruck',        emoji:'✨', price:4_500_000,    stars:3.5, reviews:7834,  badge:'weird',  prime:false, desc:'24k gold. Blinding in direct sunlight.' },
+  { id:27, cat:'weird',       name:'Buy Greenland',                       emoji:'🏔️', price:1_700_000_000_000, stars:5.0, reviews:3, badge:'weird', prime:false, desc:'Multiple presidents have tried. Your turn.' },
+  { id:28, cat:'weird',       name:'Send 1000 People to Space',           emoji:'👩‍🚀', price:5_500_000_000, stars:4.8, reviews:104, badge:'weird',  prime:false, desc:'At $5.5M per seat on Crew Dragon.' },
+  // TECH
+  { id:40, cat:'tech',        name:'iPhone 17 Pro Max',   emoji:'🖥️', price:1199, stars:4.9, reviews:409,   badge:'new',    prime:false, desc:'The Newest iPhone.' },
+  { id:29, cat:'tech',        name:'Supercomputer Cluster (xAI-grade)',   emoji:'🖥️', price:4_000_000_000, stars:4.9, reviews:88,   badge:'new',    prime:false, desc:'100,000 H100 GPUs. Train anything.' },
+  { id:30, cat:'tech',        name:'Buy OpenAI',                          emoji:'🤖', price:157_000_000_000,stars:4.3, reviews:2341, badge:'deal',  prime:false, desc:'He left the board. Now he buys it back.' },
+  { id:31, cat:'tech',        name:'Neural Link Implants (1M units)',     emoji:'🧠', price:1_000_000_000, stars:4.1, reviews:201,  badge:'new',    prime:false, desc:'Wholesale. For the neuralink-curious.' },
+  { id:32, cat:'tech',        name:'Starlink Terminal (Global Coverage)', emoji:'📡', price:599,           stars:4.6, reviews:502940,badge:'prime',  prime:true,  desc:'Never be offline again. Anywhere.' },
+  { id:33, cat:'tech',        name:'Giga Factory (Custom)',               emoji:'🏭', price:5_000_000_000, stars:4.7, reviews:19,   badge:'new',    prime:false, desc:'A whole gigafactory. Yours.' },
+  // LUXURY
+  { id:34, cat:'luxury',      name:'50m Private Superyacht',              emoji:'🛳️', price:175_000_000,  stars:4.8, reviews:72,   badge:'prime',  prime:false, desc:'Helicopter pad included. Naturally.' },
+  { id:35, cat:'luxury',      name:'1000-Carat Diamond',                  emoji:'💎', price:200_000_000,  stars:5.0, reviews:4,    badge:'deal',   prime:false, desc:'Never actually existed before. You\'d be the first.' },
+  { id:36, cat:'luxury',      name:'Rent Vatican City for a Day',         emoji:'⛪', price:4_000_000,    stars:4.9, reviews:12,   badge:'weird',  prime:false, desc:'The whole thing. Plus souvenir papal hat.' },
+  { id:37, cat:'luxury',      name:'Fabergé Egg (Custom)',                emoji:'🥚', price:33_000_000,   stars:4.7, reviews:89,   badge:'prime',  prime:true,  desc:'Bespoke. Contains a tiny golden rocket.' },
+  { id:38, cat:'luxury',      name:'Formula 1 Team (3 seasons)',          emoji:'🏆', price:2_400_000_000, stars:4.6, reviews:342,  badge:'deal',   prime:false, desc:'Car, drivers, mechanics, pit lane drama.' },
+];
+
+const FUNFACTS = [
+  "Elon makes roughly <strong>$33 million per hour</strong>. You'd need to click \"Add to Cart\" very fast to keep up.",
+  "Elon's net worth is <strong>larger than the GDP of New Zealand</strong> ($236B). Or Denmark. Or Finland.",
+  "If Elon spent <strong>$1 million every single day</strong>, it would take him <strong>950 years</strong> to spend it all.",
+  "Elon could give every single human on Earth <strong>$43 each</strong> and still have billions left.",
+  "The US government spends about <strong>$10 trillion per year</strong>. Elon's worth is 3.5% of that.",
+  "Elon could buy <strong>every NFL team</strong> (total value ~$165B) and still have $180B left.",
+  "A $100 bill stack to his net worth would be <strong>234 miles tall</strong>. That's halfway to space.",
+  "Elon's wealth grew by an estimated <strong>$10 billion in a single month</strong> in late 2024.",
+  "He could pay off the <strong>entire student loan debt</strong> of the US (~$1.7T) roughly once every 5 years.",
+  "Elon could fund <strong>NASA's entire annual budget</strong> ($24.5B) for 14 years straight.",
+];
+
+// ── STATE ──
+let cart  = {}; // id -> { product, qty }
+let spent = 0;
+let activeCat = 'all';
+let funFactIdx = 0;
+
+// ── RENDER PRODUCTS ──
+function renderProducts(cat) {
+  const grid  = document.getElementById('productGrid');
+  const title = document.getElementById('sectionTitle');
+  const count = document.getElementById('showCount');
+  const catLabels = {
+    all:'All Departments', space:'🚀 Space Exploration',
+    real_estate:'🏠 Real Estate', vehicles:'🚗 Vehicles',
+    food:'🍕 Food & Drink', weird:'🎲 Weird & Wild',
+    tech:'💻 Technology', luxury:'💎 Luxury'
+  };
+
+  const items = cat === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.cat === cat);
+  title.textContent = catLabels[cat] || 'All Departments';
+  count.textContent = items.length;
+
+  grid.innerHTML = '';
+  items.forEach(p => {
+    const inCart = cart[p.id];
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.id = 'card-' + p.id;
+
+    const stars = '★'.repeat(Math.floor(p.stars)) + (p.stars % 1 >= 0.5 ? '½' : '');
+    const badgeHTML = p.badge ? `<span class="product-badge badge-${p.badge}">${{prime:'prime',deal:'Deal',weird:'Weird',new:'New'}[p.badge]||p.badge}</span>` : '';
+
+    card.innerHTML = `
+      ${badgeHTML}
+      <div class="product-emoji">${p.emoji}</div>
+      <div class="product-name">${p.name}</div>
+      <div class="product-stars">
+        <span class="stars">${'★'.repeat(Math.floor(p.stars))}${p.stars%1>=0.5?'☆':''}</span>
+        <span class="review-count">${p.reviews.toLocaleString()}</span>
+      </div>
+      <div class="product-price"><span class="price-cents">$</span><span class="price-whole">${fmt(p.price)}</span></div>
+      ${p.prime ? '<div class="prime-tag"><span class="prime-logo">prime</span> FREE delivery</div>' : ''}
+      <button class="add-btn ${inCart?'added':''}" id="btn-${p.id}" onclick="addToCart(${p.id})">
+        ${inCart ? `✓ In Cart (${inCart.qty})` : 'Add to Cart'}
+      </button>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// ── CART ──
+function addToCart(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+
+  if (cart[id]) {
+    cart[id].qty++;
+  } else {
+    cart[id] = { product: p, qty: 1 };
+  }
+
+  spent += p.price;
+  updateAll();
+
+  // update button
+  const btn = document.getElementById('btn-' + id);
+  if (btn) {
+    btn.className = 'add-btn added';
+    btn.textContent = `✓ In Cart (${cart[id].qty})`;
+    btn.style.animation = 'none';
+    requestAnimationFrame(() => { btn.style.animation = ''; });
+  }
+
+  // milestone check
+  checkMilestone();
+}
+
+function removeFromCart(id, all=false) {
+  if (!cart[id]) return;
+  const qty = all ? cart[id].qty : 1;
+  spent -= cart[id].product.price * qty;
+  if (spent < 0) spent = 0;
+
+  if (all || cart[id].qty <= 1) {
+    delete cart[id];
+  } else {
+    cart[id].qty--;
+  }
+
+  updateAll();
+
+  const btn = document.getElementById('btn-' + id);
+  if (btn) {
+    if (!cart[id]) {
+      btn.className = 'add-btn';
+      btn.textContent = 'Add to Cart';
+    } else {
+      btn.textContent = `✓ In Cart (${cart[id].qty})`;
     }
+  }
+}
 
-    function updateReceipt() {
-      const receiptList = document.getElementById("receipt-list");
-      receiptList.innerHTML = "";
+function clearCart() {
+  cart = {};
+  spent = 0;
+  updateAll();
+  // reset all buttons
+  document.querySelectorAll('.add-btn.added').forEach(b => {
+    b.className = 'add-btn';
+    b.textContent = 'Add to Cart';
+  });
+}
 
-      for (let item in receipt) {
-        const div = document.createElement("div");
-        div.className = "receipt-item";
-        div.innerHTML = `
-          <span>${receipt[item].qty}x ${item}</span>
-          <span>$${(receipt[item].qty * receipt[item].price).toLocaleString()}</span>
-        `;
-        receiptList.appendChild(div);
-      }
+function checkout() {
+  if (spent === 0) { showToast("🛒 Add something first!"); return; }
+  showToast(`🎉 Order placed! Elon's card charged $${fmtFull(spent)}. He didn't notice.`);
+}
+
+// ── RENDER RECEIPT ──
+function renderReceipt() {
+  const container = document.getElementById('receiptItems');
+  const items = Object.values(cart);
+
+  document.getElementById('cartCount').textContent = items.reduce((s,i)=>s+i.qty,0);
+
+  if (items.length === 0) {
+    container.innerHTML = `<div class="receipt-empty"><span class="emo">🛒</span>Add items to start spending!<br/><span style="font-size:11px;margin-top:4px;display:block;color:#999">You have $347B to burn</span></div>`;
+    return;
+  }
+
+  container.innerHTML = '';
+  items.forEach(({ product: p, qty }) => {
+    const row = document.createElement('div');
+    row.className = 'receipt-item';
+    row.innerHTML = `
+      <div class="ri-emoji">${p.emoji}</div>
+      <div class="ri-info">
+        <div class="ri-name">${p.name}</div>
+        <div class="ri-qty">Qty: ${qty} × $${fmt(p.price)}</div>
+      </div>
+      <div class="ri-price">$${fmt(p.price * qty)}</div>
+      <button class="ri-remove" onclick="removeFromCart(${p.id}, true)" title="Remove">✕</button>
+    `;
+    container.appendChild(row);
+  });
+}
+
+// ── UPDATE ALL DISPLAYS ──
+function updateAll() {
+  const remaining = NET_WORTH - spent;
+  const pct = (spent / NET_WORTH) * 100;
+
+  // topbar net worth
+  document.getElementById('netWorthDisplay').textContent = '$' + fmtFull(NET_WORTH);
+  document.getElementById('remainingDisplay').textContent = '$' + fmtShort(remaining) + ' remaining';
+
+  // progress bar
+  document.getElementById('spendBarFill').style.width = Math.min(100, pct) + '%';
+  document.getElementById('spentLabel').textContent = `$${fmtFull(spent)} spent (${pct.toFixed(4)}%)`;
+  document.getElementById('remainLabel').textContent = `$${fmtFull(Math.max(0, remaining))} remaining`;
+
+  // sidebar totals
+  document.getElementById('totalSubtotal').textContent = '$' + fmtFull(spent);
+  document.getElementById('totalSpent').textContent = '$' + fmtFull(spent);
+  document.getElementById('remainingAmt').textContent = '$' + fmtFull(Math.max(0, remaining));
+  document.getElementById('remainingPct').textContent = pct.toFixed(6) + '% spent';
+
+  renderReceipt();
+}
+
+// ── MILESTONES ──
+const MILESTONES = [
+  { amt: 1_000_000,      msg: "🥳 You spent $1 Million! Elon earns this back in 2 minutes." },
+  { amt: 1_000_000_000,  msg: "💰 $1 BILLION spent! You're officially a supervillain." },
+  { amt: 10_000_000_000, msg: "🚀 $10 Billion! You could buy SpaceX (almost)." },
+  { amt: 50_000_000_000, msg: "😱 $50 Billion! You've spent more than most countries' GDPs." },
+  { amt: 100_000_000_000,msg: "🌍 $100 BILLION! That's the GDP of Morocco." },
+  { amt: 200_000_000_000,msg: "👑 $200B gone! Only $147B left. Almost broke." },
+  { amt: 347_000_000_000,msg: "💀 YOU SPENT EVERYTHING. Elon is now middle class." },
+];
+
+let lastMilestone = -1;
+function checkMilestone() {
+  for (let i = MILESTONES.length - 1; i >= 0; i--) {
+    if (spent >= MILESTONES[i].amt && i > lastMilestone) {
+      lastMilestone = i;
+      showToast(MILESTONES[i].msg);
+      break;
     }
+  }
+}
 
-    function buy(item, price) {
-      if (balance >= price) {
-        balance -= price;
-        totalSpent += price;
+// ── FORMATTING ──
+function fmt(n) {
+  if (n >= 1_000_000_000_000) return (n/1_000_000_000_000).toFixed(1) + 'T';
+  if (n >= 1_000_000_000)     return (n/1_000_000_000).toFixed(1) + 'B';
+  if (n >= 1_000_000)         return (n/1_000_000).toFixed(1) + 'M';
+  if (n >= 1_000)             return (n/1_000).toFixed(1) + 'K';
+  return n.toLocaleString();
+}
 
-        if (!receipt[item]) {
-          receipt[item] = { qty: 0, price: price };
-        }
-        receipt[item].qty++;
+function fmtFull(n) {
+  return Math.round(n).toLocaleString('en-US');
+}
 
-        updateBalance();
-        updateReceipt();
-      } else {
-        alert("Not enough money!");
-      }
-    }
+function fmtShort(n) {
+  if (n >= 1_000_000_000_000) return (n/1_000_000_000_000).toFixed(1) + 'T';
+  if (n >= 1_000_000_000)     return (n/1_000_000_000).toFixed(1) + 'B';
+  if (n >= 1_000_000)         return (n/1_000_000).toFixed(1) + 'M';
+  return n.toLocaleString();
+}
 
-    function resetGame() {
-      balance = 839000000000;
-      totalSpent = 0;
-      receipt = {};
-      updateBalance();
-      updateReceipt();
-    }
+// ── TOAST ──
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  t.style.animation = 'none';
+  requestAnimationFrame(() => { t.style.animation = 'toastIn 0.3s cubic-bezier(.22,.68,0,1.2) both'; });
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.4s'; setTimeout(() => { t.style.display='none'; t.style.opacity=''; t.style.transition=''; }, 400); }, 4000);
+}
 
-    updateBalance();
-  </script>
+// ── NAV / FILTER ──
+function filterCat(cat, btn) {
+  activeCat = cat;
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts(cat);
+}
+
+function scrollToReceipt() {
+  document.getElementById('receiptSidebar').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── FUN FACTS ──
+function rotateFunFact() {
+  document.getElementById('funFact').innerHTML = FUNFACTS[funFactIdx % FUNFACTS.length];
+  funFactIdx++;
+}
+
+// ── INIT ──
+renderProducts('all');
+updateAll();
+rotateFunFact();
+setInterval(rotateFunFact, 8000);
+</script>
 </body>
 </html>
