@@ -2,916 +2,146 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>EcoDesk 98</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Webdows 98</title>
   <style>
-    /* Base reset */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    :root{
+      --desktop:#008080;
+      --win:#c0c0c0;
+      --win-dark:#808080;
+      --win-darker:#404040;
+      --win-light:#ffffff;
+      --title:#000080;
+      --title2:#1084d0;
+      --text:#000;
+      --shadow:#000;
+      --taskbar-h:28px;
+      --ui-font: "MS Sans Serif", Tahoma, sans-serif;
     }
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      font-family: "MS Sans Serif", Tahoma, sans-serif;
-      background: #008080; /* Win98 teal */
-      color: #000000;
-      -webkit-font-smoothing: none;
-      image-rendering: pixelated;
-    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{width:100%;height:100%;overflow:hidden;background:var(--desktop);font-family:var(--ui-font);color:var(--text);user-select:none}
+    button,input,select,textarea{font-family:inherit;font-size:12px}
+    button{background:var(--win);border-top:2px solid var(--win-light);border-left:2px solid var(--win-light);border-right:2px solid var(--win-darker);border-bottom:2px solid var(--win-darker);padding:2px 8px;cursor:pointer;min-height:23px}
+    button:active,.pressed{border-top:2px solid var(--win-darker);border-left:2px solid var(--win-darker);border-right:2px solid var(--win-light);border-bottom:2px solid var(--win-light)}
+    input,select,textarea{background:#fff;border-top:2px solid var(--win-darker);border-left:2px solid var(--win-darker);border-right:2px solid var(--win-light);border-bottom:2px solid var(--win-light);padding:2px 4px}
+    .sunken{border-top:2px solid var(--win-darker);border-left:2px solid var(--win-darker);border-right:2px solid var(--win-light);border-bottom:2px solid var(--win-light);background:#fff}
+    .raised{border-top:2px solid var(--win-light);border-left:2px solid var(--win-light);border-right:2px solid var(--win-darker);border-bottom:2px solid var(--win-darker);background:var(--win)}
+    .hidden{display:none!important}
 
-    /* Desktop */
-    #desktop {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      padding-bottom: 28px; /* space for taskbar */
-      overflow: hidden;
-    }
+    #boot,#desktop-wrap,#start-menu{position:fixed;inset:0}
+    #boot{z-index:5000;background:#000;color:#0f0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;font:14px monospace}
+    #boot .bar{width:min(420px,80vw);height:20px;background:#111;border:1px solid #0f0;padding:2px}
+    #boot .fill{height:100%;width:10%;background:linear-gradient(90deg,#0f0,#9f9)}
+    #desktop{position:absolute;inset:0;padding-bottom:var(--taskbar-h);overflow:hidden}
+    #desktop-bg{position:absolute;inset:0;background:
+      radial-gradient(circle at 20% 20%, rgba(255,255,255,.08), transparent 0 20%),
+      radial-gradient(circle at 80% 30%, rgba(255,255,255,.06), transparent 0 18%),
+      linear-gradient(180deg, rgba(255,255,255,.05), transparent 40%),
+      var(--desktop)}
+    #desktop-icons{position:absolute;inset:0;padding:10px;display:grid;grid-template-columns:repeat(auto-fill,72px);grid-auto-rows:84px;align-content:start;gap:6px}
+    .icon{width:72px;height:84px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;color:#fff;text-shadow:1px 1px 0 #000;cursor:default}
+    .icon .glyph{width:32px;height:32px;font-size:28px;line-height:32px;margin-top:2px}
+    .icon .label{font-size:11px;line-height:1.15;margin-top:4px;max-width:68px;word-break:break-word}
+    .icon.selected .label{background:#000080;color:#fff}
 
-    /* Taskbar */
-    #taskbar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 28px;
-      background: #c0c0c0;
-      border-top: 2px solid #ffffff;
-      box-shadow:
-        inset 0 1px 0 #ffffff,
-        inset 0 -1px 0 #808080;
-      display: flex;
-      align-items: center;
-      padding: 2px;
-      gap: 4px;
-      z-index: 1000;
-    }
+    #taskbar{position:fixed;left:0;right:0;bottom:0;height:var(--taskbar-h);background:var(--win);border-top:2px solid var(--win-light);box-shadow:inset 0 1px 0 #fff;display:flex;align-items:center;gap:4px;padding:2px;z-index:3000}
+    #start-btn{min-width:72px;display:flex;align-items:center;gap:4px;font-weight:bold;padding:2px 8px}
+    #tasks{flex:1;display:flex;gap:2px;overflow:hidden}
+    .task{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 8px;font-size:11px}
+    .task.active{background:#9a9a9a}
+    #clock{width:72px;text-align:center;font-size:11px;padding:2px 4px}
 
-    #start-button {
-      min-width: 70px;
-      padding: 2px 6px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      background: #c0c0c0;
-      border-top: 2px solid #ffffff;
-      border-left: 2px solid #ffffff;
-      border-right: 2px solid #404040;
-      border-bottom: 2px solid #404040;
-      cursor: pointer;
-      font-size: 12px;
-    }
+    #start-menu{z-index:3200;display:none;pointer-events:none}
+    #start-panel{position:absolute;left:0;bottom:var(--taskbar-h);width:240px;background:var(--win);border-top:2px solid var(--win-light);border-left:2px solid var(--win-light);border-right:2px solid var(--win-darker);border-bottom:2px solid var(--win-darker);box-shadow:2px 2px 0 #000;pointer-events:auto}
+    #start-top{height:44px;background:linear-gradient(90deg,#000080,#1084d0);color:#fff;padding:6px 8px;display:flex;align-items:end;font-size:18px;font-weight:bold}
+    .start-item{padding:6px 10px;font-size:12px;cursor:pointer}
+    .start-item:hover{background:#000080;color:#fff}
+    .divider{height:1px;background:#fff;border-top:1px solid #808080;margin:4px 0}
 
-    #start-button:active {
-      border-top: 2px solid #404040;
-      border-left: 2px solid #404040;
-      border-right: 2px solid #ffffff;
-      border-bottom: 2px solid #ffffff;
-      padding-top: 3px;
-      padding-left: 7px;
-      padding-bottom: 1px;
-      padding-right: 5px;
-    }
+    .window{position:absolute;background:var(--win);border-top:2px solid var(--win-light);border-left:2px solid var(--win-light);border-right:2px solid var(--win-darker);border-bottom:2px solid var(--win-darker);box-shadow:2px 2px 0 #000;overflow:hidden;min-width:260px;min-height:180px}
+    .titlebar{height:20px;background:linear-gradient(90deg,var(--title),var(--title2));color:#fff;display:flex;align-items:center;justify-content:space-between;padding:2px 3px 2px 5px;cursor:move}
+    .titlebar.inactive{background:#808080}
+    .title-text{font-size:12px;font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .controls{display:flex;gap:2px}
+    .wbtn{width:16px;height:14px;padding:0;display:grid;place-items:center;font-size:10px}
+    .content{height:calc(100% - 20px);padding:6px;display:flex;flex-direction:column;gap:6px;overflow:hidden;background:var(--win)}
+    .statusbar{display:flex;height:20px}
+    .statusbar .sb{flex:1;padding:2px 6px;font-size:11px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+    .statusbar .sb + .sb{border-left:1px solid #808080}
+    .field-border{border-top:2px solid var(--win-darker);border-left:2px solid var(--win-darker);border-right:2px solid var(--win-light);border-bottom:2px solid var(--win-light);background:#fff;overflow:hidden}
+    .field-border .inner{padding:6px}
 
-    #taskbar-apps {
-      flex: 1;
-      display: flex;
-      gap: 2px;
-      padding: 0 4px;
-    }
+    #game-toolbar,#paint-toolbar,#settings-grid{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+    .tool.active{background:#9a9a9a}
+    .sep{width:1px;height:20px;background:#808080;border-right:1px solid #fff;margin:0 2px}
+    .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .grow{flex:1}
+    .small{font-size:11px}
+    #game-wrap{display:grid;grid-template-columns:1fr 180px;gap:6px;min-height:0;flex:1}
+    #grid{display:grid;grid-template-columns:repeat(18,1fr);grid-auto-rows:1fr;gap:1px;background:#000;padding:4px;min-height:0}
+    .cell{background:#222;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:crosshair}
+    .t0{background:#1f1f1f}.t1{background:#004a7a}.t2{background:#5a3a1a}.t3{background:#0a6c1a}.t4{background:#666}.t5{background:#8a5a00}.t6{background:#7a005a}
+    .sidepanel{display:flex;flex-direction:column;gap:6px;min-width:0}
+    .panelbox{padding:6px}
+    .list{display:flex;flex-direction:column;gap:2px}
+    .list button{text-align:left}
 
-    .taskbar-button {
-      min-width: 90px;
-      background: #c0c0c0;
-      border-top: 2px solid #ffffff;
-      border-left: 2px solid #ffffff;
-      border-right: 2px solid #404040;
-      border-bottom: 2px solid #404040;
-      padding: 2px 6px;
-      font-size: 11px;
-      cursor: pointer;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    #paint-canvas{flex:1;background:#fff;display:grid;grid-template-columns:repeat(16,1fr);grid-auto-rows:1fr;gap:1px;min-height:0}
+    .px{background:#fff;cursor:crosshair}
+    .px.on{background:#000}
+    .color-swatch{width:18px;height:18px;border:1px solid #000;cursor:pointer}
+    .color-swatch.sel{outline:2px solid #000080}
+    .toggle{display:flex;align-items:center;gap:6px}
 
-    .taskbar-button.active {
-      background: #808080;
-      border-top: 2px solid #404040;
-      border-left: 2px solid #404040;
-      border-right: 2px solid #ffffff;
-      border-bottom: 2px solid #ffffff;
-    }
+    #about-body{display:grid;grid-template-columns:1fr 150px;gap:6px;min-height:0}
+    #about-portrait{display:grid;place-items:center;font-size:60px}
+    #desktop-note{position:absolute;right:8px;top:8px;color:#fff;text-shadow:1px 1px 0 #000;font-size:12px}
 
-    #taskbar-clock {
-      width: 70px;
-      text-align: center;
-      font-size: 11px;
-      border-top: 2px solid #ffffff;
-      border-left: 2px solid #ffffff;
-      border-right: 2px solid #404040;
-      border-bottom: 2px solid #404040;
-      background: #c0c0c0;
-      padding: 2px 4px;
-    }
-
-    /* Start menu */
-    #start-menu {
-      position: fixed;
-      bottom: 28px;
-      left: 0;
-      width: 180px;
-      background: #c0c0c0;
-      border-top: 2px solid #ffffff;
-      border-left: 2px solid #ffffff;
-      border-right: 2px solid #404040;
-      border-bottom: 2px solid #404040;
-      box-shadow: 2px 2px 0 #000000;
-      display: none;
-      z-index: 999;
-    }
-
-    .start-menu-item {
-      padding: 4px 8px;
-      font-size: 12px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .start-menu-item:hover {
-      background: #000080;
-      color: #ffffff;
-    }
-
-    .start-menu-separator {
-      border-top: 1px solid #808080;
-      border-bottom: 1px solid #ffffff;
-      margin: 2px 0;
-    }
-
-    /* Window */
-    .window {
-      position: absolute;
-      width: 480px;
-      min-width: 260px;
-      min-height: 180px;
-      background: #c0c0c0;
-      border-top: 2px solid #ffffff;
-      border-left: 2px solid #ffffff;
-      border-right: 2px solid #404040;
-      border-bottom: 2px solid #404040;
-      box-shadow: 2px 2px 0 #000000;
-      overflow: hidden;
-    }
-
-    .window.inactive {
-      opacity: 0.96;
-    }
-
-    .window-titlebar {
-      height: 20px;
-      background: linear-gradient(to right, #000080, #1084d0);
-      color: #ffffff;
-      font-size: 12px;
-      padding: 2px 4px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: move;
-      user-select: none;
-    }
-
-    .window-titlebar.inactive {
-      background: #808080;
-    }
-
-    .window-title {
-      font-weight: bold;
-    }
-
-    .window-controls {
-      display: flex;
-      gap: 2px;
-    }
-
-    .window-button {
-      width: 16px;
-      height: 14px;
-      background: #c0c0c0;
-      border-top: 2px solid #ffffff;
-      border-left: 2px solid #ffffff;
-      border-right: 2px solid #404040;
-      border-bottom: 2px solid #404040;
-      font-size: 10px;
-      text-align: center;
-      line-height: 10px;
-      cursor: pointer;
-      color: #000000;
-    }
-
-    .window-button:active {
-      border-top: 2px solid #404040;
-      border-left: 2px solid #404040;
-      border-right: 2px solid #ffffff;
-      border-bottom: 2px solid #ffffff;
-    }
-
-    .window-content {
-      padding: 6px;
-      font-size: 12px;
-      background: #c0c0c0;
-      height: calc(100% - 20px);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    /* EcoDesk game layout */
-    #game-toolbar {
-      display: flex;
-      gap: 4px;
-      margin-bottom: 4px;
-      align-items: center;
-    }
-
-    .tool-button {
-      padding: 2px 6px;
-      background: #c0c0c0;
-      border-top: 2px solid #ffffff;
-      border-left: 2px solid #ffffff;
-      border-right: 2px solid #404040;
-      border-bottom: 2px solid #404040;
-      font-size: 11px;
-      cursor: pointer;
-    }
-
-    .tool-button.active {
-      background: #808080;
-      border-top: 2px solid #404040;
-      border-left: 2px solid #404040;
-      border-right: 2px solid #ffffff;
-      border-bottom: 2px solid #ffffff;
-      color: #ffffff;
-    }
-
-    #game-status {
-      font-size: 11px;
-      padding: 2px 6px;
-      border-top: 2px solid #ffffff;
-      border-left: 2px solid #ffffff;
-      border-right: 2px solid #404040;
-      border-bottom: 2px solid #404040;
-      background: #c0c0c0;
-      margin-top: 2px;
-    }
-
-    #game-grid {
-      flex: 1;
-      background: #000000;
-      border-top: 2px solid #808080;
-      border-left: 2px solid #808080;
-      border-right: 2px solid #ffffff;
-      border-bottom: 2px solid #ffffff;
-      display: grid;
-      grid-template-columns: repeat(16, 1fr);
-      grid-template-rows: repeat(10, 1fr);
-      gap: 1px;
-      padding: 4px;
-    }
-
-    .cell {
-      width: 100%;
-      height: 100%;
-      background: #202020;
-      cursor: crosshair;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .cell-content {
-      width: 100%;
-      height: 100%;
-      font-size: 11px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #ffffff;
-    }
-
-    /* Tile colors */
-    .tile-empty {
-      background: #202020;
-    }
-
-    .tile-water {
-      background: #004488;
-    }
-
-    .tile-soil {
-      background: #553311;
-    }
-
-    .tile-plant {
-      background: #006600;
-    }
-
-    .tile-rock {
-      background: #555555;
-    }
-
-    .tile-critter {
-      background: #884400;
-    }
-
-    /* Simple About window text */
-    #about-content {
-      font-size: 12px;
-      line-height: 1.4;
-    }
-
-    #about-content p {
-      margin-bottom: 6px;
-    }
-
-    /* Desktop icons (optional placeholder) */
-    .desktop-label {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      font-size: 12px;
-      color: #ffffff;
-      text-shadow: 1px 1px 0 #000000;
-      user-select: none;
-    }
-
-    @media (max-width: 700px) {
-      .window {
-        width: 95%;
-        left: 2.5% !important;
-      }
+    @media (max-width: 900px){
+      .window{width:min(96vw,680px)!important;height:min(84vh,520px)!important;left:2vw!important;top:5vh!important}
+      #game-wrap,#about-body{grid-template-columns:1fr}
     }
   </style>
 </head>
 <body>
-  <div id="desktop">
-    <div class="desktop-label">EcoDesk 98</div>
+  <div id="boot">
+    <div style="font-size:28px">Webdows 98</div>
+    <div>Starting retro shell...</div>
+    <div class="bar"><div class="fill" id="boot-fill"></div></div>
   </div>
 
-  <!-- Taskbar -->
-  <div id="taskbar">
-    <div id="start-button">
-      <span>Start</span>
+  <div id="desktop-wrap" class="hidden">
+    <div id="desktop">
+      <div id="desktop-bg"></div>
+      <div id="desktop-note">Right-click not implemented. Double-click icons.</div>
+      <div id="desktop-icons"></div>
     </div>
-    <div id="taskbar-apps"></div>
-    <div id="taskbar-clock"></div>
-  </div>
 
-  <!-- Start menu -->
-  <div id="start-menu">
-    <div class="start-menu-item" data-open="game">EcoDesk</div>
-    <div class="start-menu-item" data-open="about">About EcoDesk 98</div>
-    <div class="start-menu-separator"></div>
-    <div class="start-menu-item" id="start-reset">Reset world</div>
+    <div id="start-menu">
+      <div id="start-panel">
+        <div id="start-top">Webdows 98</div>
+        <div class="start-item" data-open="game">🪴  EcoDesk</div>
+        <div class="start-item" data-open="files">📁  My Files</div>
+        <div class="start-item" data-open="paint">🎨  Paint Pad</div>
+        <div class="start-item" data-open="settings">⚙️  Settings</div>
+        <div class="start-item" data-open="about">ℹ️  About</div>
+        <div class="divider"></div>
+        <div class="start-item" id="restart-world">🔄  Reset world</div>
+      </div>
+    </div>
+
+    <div id="taskbar">
+      <button id="start-btn">⊞ Start</button>
+      <div id="tasks"></div>
+      <div id="clock"></div>
+    </div>
   </div>
 
   <script>
-    // Basic z-index tracking
-    let topZ = 10;
-
-    // Window registry
-    const windows = {};
-
-    // Utility to create windows
-    function createWindow(id, title, contentBuilder, opts = {}) {
-      if (windows[id]) {
-        focusWindow(id);
-        return windows[id].element;
-      }
-
-      const desktop = document.getElementById('desktop');
-      const win = document.createElement('div');
-      win.className = 'window';
-      win.style.left = (60 + Object.keys(windows).length * 30) + 'px';
-      win.style.top = (40 + Object.keys(windows).length * 20) + 'px';
-      win.style.zIndex = ++topZ;
-
-      const titlebar = document.createElement('div');
-      titlebar.className = 'window-titlebar';
-      const titleSpan = document.createElement('span');
-      titleSpan.className = 'window-title';
-      titleSpan.textContent = title;
-
-      const controls = document.createElement('div');
-      controls.className = 'window-controls';
-
-      const closeBtn = document.createElement('div');
-      closeBtn.className = 'window-button';
-      closeBtn.textContent = '×';
-
-      closeBtn.addEventListener('click', () => {
-        desktop.removeChild(win);
-        removeTaskbarButton(id);
-        delete windows[id];
-      });
-
-      controls.appendChild(closeBtn);
-
-      titlebar.appendChild(titleSpan);
-      titlebar.appendChild(controls);
-
-      const content = document.createElement('div');
-      content.className = 'window-content';
-
-      win.appendChild(titlebar);
-      win.appendChild(content);
-
-      desktop.appendChild(win);
-
-      // Make draggable
-      makeDraggable(win, titlebar);
-
-      // Add to registry
-      windows[id] = {
-        element: win,
-        titlebar,
-        content,
-        id
-      };
-
-      // Build content
-      if (typeof contentBuilder === 'function') {
-        contentBuilder(content);
-      }
-
-      // Create taskbar button
-      addTaskbarButton(id, title);
-
-      focusWindow(id);
-      return win;
-    }
-
-    function focusWindow(id) {
-      Object.values(windows).forEach(w => {
-        w.element.classList.add('inactive');
-        w.titlebar.classList.add('inactive');
-      });
-      const w = windows[id];
-      if (!w) return;
-      w.element.classList.remove('inactive');
-      w.titlebar.classList.remove('inactive');
-      w.element.style.zIndex = ++topZ;
-      activateTaskbarButton(id);
-    }
-
-    function makeDraggable(win, handle) {
-      let offsetX = 0;
-      let offsetY = 0;
-      let dragging = false;
-
-      handle.addEventListener('mousedown', (e) => {
-        dragging = true;
-        focusWindowByElement(win);
-        offsetX = e.clientX - win.offsetLeft;
-        offsetY = e.clientY - win.offsetTop;
-        document.body.style.userSelect = 'none';
-      });
-
-      window.addEventListener('mousemove', (e) => {
-        if (!dragging) return;
-        const x = e.clientX - offsetX;
-        const y = e.clientY - offsetY;
-        win.style.left = x + 'px';
-        win.style.top = y + 'px';
-      });
-
-      window.addEventListener('mouseup', () => {
-        dragging = false;
-        document.body.style.userSelect = '';
-      });
-
-      win.addEventListener('mousedown', () => {
-        focusWindowByElement(win);
-      });
-    }
-
-    function focusWindowByElement(el) {
-      for (const id in windows) {
-        if (windows[id].element === el) {
-          focusWindow(id);
-          break;
-        }
-      }
-    }
-
-    // Taskbar integration
-    const taskbarApps = document.getElementById('taskbar-apps');
-
-    function addTaskbarButton(id, title) {
-      const btn = document.createElement('div');
-      btn.className = 'taskbar-button active';
-      btn.textContent = title;
-      btn.dataset.winId = id;
-      btn.addEventListener('click', () => {
-        focusWindow(id);
-      });
-      taskbarApps.appendChild(btn);
-    }
-
-    function removeTaskbarButton(id) {
-      const btn = taskbarApps.querySelector('[data-win-id="' + id + '"]');
-      if (btn) taskbarApps.removeChild(btn);
-    }
-
-    function activateTaskbarButton(id) {
-      taskbarApps.querySelectorAll('.taskbar-button').forEach(b => {
-        b.classList.remove('active');
-      });
-      const btn = taskbarApps.querySelector('[data-win-id="' + id + '"]');
-      if (btn) btn.classList.add('active');
-    }
-
-    // Taskbar clock
-    function updateClock() {
-      const clock = document.getElementById('taskbar-clock');
-      const now = new Date();
-      const h = now.getHours();
-      const m = now.getMinutes().toString().padStart(2, '0');
-      const ampm = h >= 12 ? 'PM' : 'AM';
-      const hh = ((h + 11) % 12 + 1);
-      clock.textContent = hh + ':' + m + ' ' + ampm;
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-
-    // Start menu behavior
-    const startButton = document.getElementById('start-button');
-    const startMenu = document.getElementById('start-menu');
-
-    let startOpen = false;
-    startButton.addEventListener('click', () => {
-      startOpen = !startOpen;
-      startMenu.style.display = startOpen ? 'block' : 'none';
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!startButton.contains(e.target) && !startMenu.contains(e.target)) {
-        startOpen = false;
-        startMenu.style.display = 'none';
-      }
-    });
-
-    // Start menu actions
-    startMenu.addEventListener('click', (e) => {
-      const item = e.target.closest('.start-menu-item');
-      if (!item) return;
-      const open = item.dataset.open;
-      if (open === 'game') {
-        openGame();
-      } else if (open === 'about') {
-        openAbout();
-      }
-    });
-
-    document.getElementById('start-reset').addEventListener('click', () => {
-      resetGame();
-    });
-
-    // EcoDesk game state
-    const GRID_W = 16;
-    const GRID_H = 10;
-
-    const TILE_EMPTY = 0;
-    const TILE_WATER = 1;
-    const TILE_SOIL = 2;
-    const TILE_PLANT = 3;
-    const TILE_ROCK = 4;
-    const TILE_CRITTER = 5;
-
-    let grid = [];
-    let plantsHealth = [];
-    let critters = [];
-    let currentTool = TILE_PLANT;
-    let gameStatusEl = null;
-    let gameGridEl = null;
-    let gameInterval = null;
-    let tickCount = 0;
-
-    function initGrid() {
-      grid = [];
-      plantsHealth = [];
-      critters = [];
-      for (let y = 0; y < GRID_H; y++) {
-        const row = [];
-        const healthRow = [];
-        for (let x = 0; x < GRID_W; x++) {
-          row.push(TILE_EMPTY);
-          healthRow.push(0);
-        }
-        grid.push(row);
-        plantsHealth.push(healthRow);
-      }
-      tickCount = 0;
-    }
-
-    function openGame() {
-      createWindow('game', 'EcoDesk - Orb Garden', (content) => {
-        content.innerHTML = '';
-
-        const toolbar = document.createElement('div');
-        toolbar.id = 'game-toolbar';
-
-        const tools = [
-          { id: TILE_PLANT, label: 'Plant' },
-          { id: TILE_WATER, label: 'Water' },
-          { id: TILE_SOIL, label: 'Soil' },
-          { id: TILE_ROCK, label: 'Rock' },
-          { id: TILE_CRITTER, label: 'Critter' },
-          { id: TILE_EMPTY, label: 'Erase' }
-        ];
-
-        tools.forEach(t => {
-          const btn = document.createElement('button');
-          btn.className = 'tool-button' + (t.id === currentTool ? ' active' : '');
-          btn.textContent = t.label;
-          btn.dataset.tool = t.id;
-          btn.addEventListener('click', () => {
-            currentTool = parseInt(btn.dataset.tool, 10);
-            toolbar.querySelectorAll('.tool-button').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-          });
-          toolbar.appendChild(btn);
-        });
-
-        const status = document.createElement('div');
-        status.id = 'game-status';
-        status.textContent = 'Click to place tiles. Keep plants alive by giving them water and soil. Critters wander and help spread seeds.';
-
-        const gridEl = document.createElement('div');
-        gridEl.id = 'game-grid';
-
-        gameStatusEl = status;
-        gameGridEl = gridEl;
-
-        content.appendChild(toolbar);
-        content.appendChild(gridEl);
-        content.appendChild(status);
-
-        buildGridDOM();
-        if (!gameInterval) {
-          gameInterval = setInterval(gameTick, 900);
-        }
-      });
-    }
-
-    function openAbout() {
-      createWindow('about', 'About EcoDesk 98', (content) => {
-        const div = document.createElement('div');
-        div.id = 'about-content';
-        div.innerHTML = `
-          <p><b>EcoDesk 98</b> is a tiny sandbox world living inside a fake Windows 98 desktop.</p>
-          <p>Place water, soil, plants, rocks, and critters. Plants like moist soil, critters roam and sometimes spread seeds.</p>
-          <p>There is no strict win condition. Just build a stable little orb-world and watch it evolve.</p>
-        `;
-        content.appendChild(div);
-      });
-    }
-
-    function buildGridDOM() {
-      if (!gameGridEl) return;
-      gameGridEl.innerHTML = '';
-      for (let y = 0; y < GRID_H; y++) {
-        for (let x = 0; x < GRID_W; x++) {
-          const cell = document.createElement('div');
-          cell.className = 'cell';
-          cell.dataset.x = x;
-          cell.dataset.y = y;
-
-          const inner = document.createElement('div');
-          inner.className = 'cell-content';
-          cell.appendChild(inner);
-
-          cell.addEventListener('mousedown', (e) => {
-            placeTile(x, y, currentTool);
-          });
-
-          gameGridEl.appendChild(cell);
-        }
-      }
-      renderGrid();
-    }
-
-    function tileClass(t) {
-      switch (t) {
-        case TILE_EMPTY: return 'tile-empty';
-        case TILE_WATER: return 'tile-water';
-        case TILE_SOIL: return 'tile-soil';
-        case TILE_PLANT: return 'tile-plant';
-        case TILE_ROCK: return 'tile-rock';
-        case TILE_CRITTER: return 'tile-critter';
-        default: return 'tile-empty';
-      }
-    }
-
-    function tileGlyph(t) {
-      switch (t) {
-        case TILE_WATER: return '~';
-        case TILE_SOIL: return '.';
-        case TILE_PLANT: return '*';
-        case TILE_ROCK: return '#';
-        case TILE_CRITTER: return '@';
-        default: return '';
-      }
-    }
-
-    function renderGrid() {
-      if (!gameGridEl) return;
-      const cells = gameGridEl.querySelectorAll('.cell');
-      let idx = 0;
-      for (let y = 0; y < GRID_H; y++) {
-        for (let x = 0; x < GRID_W; x++) {
-          const t = grid[y][x];
-          const cell = cells[idx++];
-          const inner = cell.querySelector('.cell-content');
-          cell.className = 'cell ' + tileClass(t);
-          inner.textContent = tileGlyph(t);
-        }
-      }
-
-      // Update status
-      if (gameStatusEl) {
-        const stats = calculateStats();
-        gameStatusEl.textContent =
-          `Plants: ${stats.plants}  |  Critters: ${stats.critters}  |  Water: ${stats.water}  |  Tick: ${tickCount}`;
-      }
-    }
-
-    function calculateStats() {
-      let plants = 0, water = 0, crit = 0;
-      for (let y = 0; y < GRID_H; y++) {
-        for (let x = 0; x < GRID_W; x++) {
-          const t = grid[y][x];
-          if (t === TILE_PLANT) plants++;
-          if (t === TILE_WATER) water++;
-          if (t === TILE_CRITTER) crit++;
-        }
-      }
-      return { plants, water, critters: crit };
-    }
-
-    function placeTile(x, y, type) {
-      if (x < 0 || x >= GRID_W || y < 0 || y >= GRID_H) return;
-
-      // Basic placement rules
-      if (type === TILE_PLANT) {
-        // Plant needs soil (or water-adjacent soil) to thrive, but can be placed anywhere
-        grid[y][x] = TILE_PLANT;
-        plantsHealth[y][x] = 5; // initial health
-      } else if (type === TILE_CRITTER) {
-        grid[y][x] = TILE_CRITTER;
-        plantsHealth[y][x] = 0;
-      } else {
-        grid[y][x] = type;
-        plantsHealth[y][x] = 0;
-      }
-
-      renderGrid();
-    }
-
-    function neighbors(x, y) {
-      const result = [];
-      const dirs = [
-        [1, 0], [-1, 0], [0, 1], [0, -1],
-        [1, 1], [1, -1], [-1, 1], [-1, -1]
-      ];
-      for (const [dx, dy] of dirs) {
-        const nx = x + dx;
-        const ny = y + dy;
-        if (nx >= 0 && nx < GRID_W && ny >= 0 && ny < GRID_H) {
-          result.push([nx, ny]);
-        }
-      }
-      return result;
-    }
-
-    function gameTick() {
-      tickCount++;
-
-      // New arrays for plants health so we don't mutate mid-iteration
-      const newHealth = plantsHealth.map(row => row.slice());
-
-      // 1. Plant health updates & spreading
-      for (let y = 0; y < GRID_H; y++) {
-        for (let x = 0; x < GRID_W; x++) {
-          if (grid[y][x] === TILE_PLANT) {
-            const neigh = neighbors(x, y);
-            let waterNearby = 0;
-            let soilBelow = 0;
-            let critterNearby = 0;
-
-            for (const [nx, ny] of neigh) {
-              const t = grid[ny][nx];
-              if (t === TILE_WATER) waterNearby++;
-              if (t === TILE_SOIL) soilBelow++;
-              if (t === TILE_CRITTER) critterNearby++;
-            }
-
-            let health = newHealth[y][x];
-
-            // Base decay
-            health -= 1;
-
-            // Water & soil help
-            if (waterNearby > 0) health += 1;
-            if (soilBelow > 0) health += 1;
-
-            // Critters help a bit
-            if (critterNearby > 0 && Math.random() < 0.5) {
-              health += 1;
-            }
-
-            // Chance to spread if healthy and water nearby
-            if (health > 6 && waterNearby > 0) {
-              const possible = neigh.filter(([nx, ny]) => grid[ny][nx] === TILE_SOIL || grid[ny][nx] === TILE_EMPTY);
-              if (possible.length > 0 && Math.random() < 0.25) {
-                const [sx, sy] = possible[Math.floor(Math.random() * possible.length)];
-                if (grid[sy][sx] !== TILE_PLANT) {
-                  grid[sy][sx] = TILE_PLANT;
-                  newHealth[sy][sx] = 4;
-                }
-              }
-            }
-
-            // Death
-            if (health <= 0) {
-              grid[y][x] = TILE_SOIL;
-              health = 0;
-            }
-
-            newHealth[y][x] = health;
-          }
-        }
-      }
-
-      plantsHealth = newHealth;
-
-      // 2. Critters move
-      const newGrid = grid.map(row => row.slice());
-      const moved = {};
-      for (let y = 0; y < GRID_H; y++) {
-        for (let x = 0; x < GRID_W; x++) {
-          if (grid[y][x] === TILE_CRITTER) {
-            const key = x + ',' + y;
-            if (moved[key]) continue; // already moved this critter
-            const neigh = neighbors(x, y).filter(([nx, ny]) => {
-              const t = grid[ny][nx];
-              return t !== TILE_ROCK && t !== TILE_CRITTER;
-            });
-            if (neigh.length > 0 && Math.random() < 0.8) {
-              const [nx, ny] = neigh[Math.floor(Math.random() * neigh.length)];
-
-              // Chance to plant a seed where it leaves if conditions ok
-              if (grid[y][x] === TILE_CRITTER) {
-                const belowSoilOrWater = neighbors(x, y).some(([bx, by]) => grid[by][bx] === TILE_WATER || grid[by][bx] === TILE_SOIL);
-                if (belowSoilOrWater && Math.random() < 0.2 && newGrid[y][x] !== TILE_PLANT) {
-                  newGrid[y][x] = TILE_PLANT;
-                  plantsHealth[y][x] = 3;
-                } else {
-                  newGrid[y][x] = TILE_EMPTY;
-                }
-              }
-
-              // Move critter to new spot
-              if (newGrid[ny][nx] === TILE_PLANT && Math.random() < 0.6) {
-                // Critter grazes plant
-                newGrid[ny][nx] = TILE_CRITTER;
-              } else {
-                newGrid[ny][nx] = TILE_CRITTER;
-              }
-
-              moved[nx + ',' + ny] = true;
-            }
-          }
-        }
-      }
-      grid = newGrid;
-
-      renderGrid();
-    }
-
-    function resetGame() {
-      initGrid();
-      renderGrid();
-    }
-
-    // Initialize base grid and open game on load
-    initGrid();
-    // Optional: open both windows at start
-    openGame();
-    openAbout();
-  </script>
-</body>
-</html>
+    const desktopWrap = document.getElementById('desktop-wrap');
+    const boot = document.getElementById('boot');
+    const bootFill = document.getElementById('boot-fill');
+    const desktopIcons = document.getElementById('desktop-icons');
+    const tasks = document.getElementById('tasks');
+    
