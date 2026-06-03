@@ -1,0 +1,1307 @@
+<!DOCTYPE html> 
+
+<html lang="en"> 
+
+<head> 
+
+  <meta charset="UTF-8" /> 
+
+  <title>Burger Stacker: Chef Big Bite Deluxe</title> 
+
+  <style> 
+
+    * { 
+
+      margin: 0; 
+
+      padding: 0; 
+
+      box-sizing: border-box; 
+
+    } 
+
+ 
+
+    body { 
+
+      background: #f5e6c8; 
+
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; 
+
+      display: flex; 
+
+      justify-content: center; 
+
+      align-items: center; 
+
+      height: 100vh; 
+
+      color: #3b2a1a; 
+
+    } 
+
+ 
+
+    #wrapper { 
+
+      position: relative; 
+
+    } 
+
+ 
+
+    canvas { 
+
+      background: #ffe9c4; 
+
+      border: 3px solid #c28b4b; 
+
+      border-radius: 12px; 
+
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25); 
+
+    } 
+
+ 
+
+    #ui { 
+
+      position: absolute; 
+
+      top: 8px; 
+
+      width: 100%; 
+
+      text-align: center; 
+
+      color: #4b2b16; 
+
+      font-weight: 600; 
+
+      text-shadow: 0 1px 0 #fff2c4; 
+
+      pointer-events: none; 
+
+    } 
+
+ 
+
+    #title { 
+
+      font-size: 1.3rem; 
+
+      margin-bottom: 2px; 
+
+    } 
+
+ 
+
+    #subtitle { 
+
+      font-size: 0.8rem; 
+
+      opacity: 0.9; 
+
+    } 
+
+ 
+
+    #stats { 
+
+      margin-top: 4px; 
+
+      font-size: 0.8rem; 
+
+    } 
+
+ 
+
+    #highscore { 
+
+      position: absolute; 
+
+      top: 64px; 
+
+      width: 100%; 
+
+      text-align: center; 
+
+      font-size: 0.8rem; 
+
+      color: #5a3a1f; 
+
+      font-weight: 600; 
+
+    } 
+
+ 
+
+    #tip { 
+
+      position: absolute; 
+
+      bottom: 72px; 
+
+      width: 100%; 
+
+      text-align: center; 
+
+      font-size: 0.75rem; 
+
+      color: #6b4a2a; 
+
+      opacity: 0.9; 
+
+    } 
+
+ 
+
+    #receipt { 
+
+      position: absolute; 
+
+      bottom: 10px; 
+
+      left: 50%; 
+
+      transform: translateX(-50%); 
+
+      background: #fffef8; 
+
+      padding: 12px 16px; 
+
+      border-radius: 8px; 
+
+      border: 2px dashed #333; 
+
+      font-family: "Courier New", monospace; 
+
+      font-size: 0.8rem; 
+
+      display: none; 
+
+      color: #333; 
+
+      max-width: 260px; 
+
+      text-align: left; 
+
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25); 
+
+    } 
+
+ 
+
+    #restart { 
+
+      position: absolute; 
+
+      bottom: -50px; 
+
+      left: 50%; 
+
+      transform: translateX(-50%); 
+
+      padding: 6px 14px; 
+
+      border-radius: 999px; 
+
+      border: 1px solid #8b4513; 
+
+      background: #ffcf7a; 
+
+      color: #5a2d0c; 
+
+      font-size: 0.85rem; 
+
+      font-weight: 600; 
+
+      cursor: pointer; 
+
+      transition: transform 0.12s ease, box-shadow 0.12s ease; 
+
+    } 
+
+ 
+
+    #restart:hover { 
+
+      transform: translateX(-50%) translateY(-1px); 
+
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25); 
+
+    } 
+
+  </style> 
+
+</head> 
+
+<body> 
+
+  <div id="wrapper"> 
+
+    <div id="ui"> 
+
+      <div id="title">🍔 Burger Stacker</div> 
+
+      <div id="subtitle">How tall can you stack before Chef Big Bite loses it?</div> 
+
+      <div id="stats"> 
+
+        Misses: <span id="misses">0</span> / 3 · Layers: <span id="layers">1</span> 
+
+      </div> 
+
+    </div> 
+
+ 
+
+    <div id="highscore"> 
+
+      High Score: <span id="hs">0 ft 0 in</span> · Rank: <span id="hr">None</span> 
+
+    </div> 
+
+ 
+
+    <div id="tip"> 
+
+      Tip: Perfect drops keep the tower straight. Sloppy drops make it wobble. 
+
+    </div> 
+
+ 
+
+    <canvas id="game" width="320" height="520"></canvas> 
+
+    <button id="restart">Restart</button> 
+
+    <div id="receipt"></div> 
+
+  </div> 
+
+ 
+
+  <script> 
+
+    // Canvas and UI references 
+
+    const canvas = document.getElementById("game"); 
+
+    const ctx = canvas.getContext("2d"); 
+
+ 
+
+    const receipt = document.getElementById("receipt"); 
+
+    const missesEl = document.getElementById("misses"); 
+
+    const layersEl = document.getElementById("layers"); 
+
+    const hsEl = document.getElementById("hs"); 
+
+    const hrEl = document.getElementById("hr"); 
+
+ 
+
+    // Ingredient definitions 
+
+    const INGREDIENTS = [ 
+
+      { name: "Patty",   color: "#5a2d0c", height: 18, mass: 3 }, 
+
+      { name: "Cheese",  color: "#ffcc33", height: 12, mass: 1 }, 
+
+      { name: "Lettuce", color: "#4caf50", height: 14, mass: 1 }, 
+
+      { name: "Tomato",  color: "#e53935", height: 14, mass: 1.5 }, 
+
+      { name: "Onion",   color: "#d1c4e9", height: 12, mass: 1 }, 
+
+      { name: "Ketchup", color: "#c62828", height: 10, mass: 0.5 }, 
+
+      { name: "Mustard", color: "#fdd835", height: 10, mass: 0.5 } 
+
+    ]; 
+
+ 
+
+    const MAX_MISSES = 3; 
+
+    const PIXELS_PER_INCH = 5; 
+
+    const BASE_SPEED = 2.2; 
+
+    const SPEED_INC = 0.08; 
+
+ 
+
+    // Tilt / wobble physics 
+
+    let tiltAngle = 0; 
+
+    let tiltVel = 0; 
+
+    const TILT_STIFF = 0.08; 
+
+    const TILT_DAMP = 0.12; 
+
+    const TILT_IMPULSE = 0.4; 
+
+    const TILT_MAX = 0.6; 
+
+    const TILT_WARN = 0.35; 
+
+    let wobbleWarned = false; 
+
+ 
+
+    // Game state 
+
+    let stack = []; 
+
+    let current = null; 
+
+    let direction = 1; 
+
+    let speed = BASE_SPEED; 
+
+    let misses = 0; 
+
+    let gameOver = false; 
+
+ 
+
+    // Chef sprite sheet (128x128 frames, 4 columns x 2 rows) 
+
+    // File: chef_big_bite_sprite.png 
+
+    const chefSprite = new Image(); 
+
+    chefSprite.src = "chef_big_bite_sprite.png"; 
+
+ 
+
+    // Map named poses to frame indices 
+
+    const CHEF_FRAMES = { 
+
+      neutral:      0, 
+
+      angry:        1, 
+
+      happy:        2, 
+
+      disappointed: 3, 
+
+      pointing:     4, 
+
+      holding:      5, 
+
+      eating:       6 
+
+    }; 
+
+ 
+
+    let chefVisible = false; 
+
+    let chefX = -200; 
+
+    const chefTargetX = 90; 
+
+    let chefDialogue = ""; 
+
+    let chefFrame = "neutral"; 
+
+ 
+
+    // Sound effects (separate files in same folder) 
+
+    const sounds = { 
+
+      drop:     new Audio("drop.wav"), 
+
+      splat:    new Audio("splat.wav"), 
+
+      wobble:   new Audio("wobble.wav"), 
+
+      collapse: new Audio("collapse.wav"), 
+
+      cheer:    new Audio("cheer.wav") 
+
+    }; 
+
+ 
+
+    // Voice lines 
+
+    const VOICE = { 
+
+      perfect: [ 
+
+        "Perfect! That’s how you stack.", 
+
+        "Spot on. That’s chef-level precision.", 
+
+        "Beautiful alignment. I’m impressed." 
+
+      ], 
+
+      good: [ 
+
+        "Good drop. Keep that up.", 
+
+        "Nice. You’re getting the hang of it.", 
+
+        "Solid placement. Not bad at all." 
+
+      ], 
+
+      bad: [ 
+
+        "That’s risky. Watch your alignment.", 
+
+        "Careful! You’re pushing it.", 
+
+        "That drop was sloppy. Focus." 
+
+      ], 
+
+      miss: [ 
+
+        "You missed! Eyes on the bun.", 
+
+        "That’s a complete miss. Come on.", 
+
+        "You can’t serve that. Try again." 
+
+      ], 
+
+      wobble: [ 
+
+        "That tower is wobbling!", 
+
+        "It’s leaning! Fix that stack.", 
+
+        "One more bad drop and it’s over." 
+
+      ], 
+
+      collapse: [ 
+
+        "It collapsed. Disaster.", 
+
+        "That’s a burger tragedy.", 
+
+        "Total collapse. Start over." 
+
+      ], 
+
+      finalLow: [ 
+
+        "We’ve got work to do.", 
+
+        "That’s not restaurant-ready yet.", 
+
+        "You’re still in training." 
+
+      ], 
+
+      finalMid: [ 
+
+        "Not bad. You’re improving.", 
+
+        "Respectable stack.", 
+
+        "You’re getting closer to pro level." 
+
+      ], 
+
+      finalHigh: [ 
+
+        "Now that’s a serious burger.", 
+
+        "Impressive height. I’d serve that.", 
+
+        "You’re cooking with skill now." 
+
+      ], 
+
+      finalGod: [ 
+
+        "That’s legendary. Master of the buniverse.", 
+
+        "I’d put that on the menu today.", 
+
+        "You’ve gone beyond my expectations." 
+
+      ] 
+
+    }; 
+
+ 
+
+    // Utility 
+
+    function randomFrom(arr) { 
+
+      return arr[Math.floor(Math.random() * arr.length)]; 
+
+    } 
+
+ 
+
+    function playSound(type) { 
+
+      if (type === "perfect" || type === "good") { 
+
+        sounds.drop.play(); 
+
+      } else if (type === "bad" || type === "miss") { 
+
+        sounds.splat.play(); 
+
+      } else if (type === "wobble") { 
+
+        sounds.wobble.play(); 
+
+      } else if (type === "collapse") { 
+
+        sounds.collapse.play(); 
+
+      } else if (type.startsWith("final")) { 
+
+        sounds.cheer.play(); 
+
+      } 
+
+    } 
+
+ 
+
+    function setChefLine(type) { 
+
+      if (!VOICE[type]) return; 
+
+      chefDialogue = randomFrom(VOICE[type]); 
+
+      chefVisible = true; 
+
+ 
+
+      // Choose sprite frame based on reaction type 
+
+      if (type === "perfect") { 
+
+        chefFrame = "happy"; 
+
+      } else if (type === "good") { 
+
+        chefFrame = "neutral"; 
+
+      } else if (type === "bad") { 
+
+        chefFrame = "disappointed"; 
+
+      } else if (type === "miss") { 
+
+        chefFrame = "angry"; 
+
+      } else if (type === "wobble") { 
+
+        chefFrame = "pointing"; 
+
+      } else if (type === "collapse") { 
+
+        chefFrame = "angry"; 
+
+      } else if (type.startsWith("final")) { 
+
+        chefFrame = "holding"; 
+
+      } 
+
+ 
+
+      playSound(type); 
+
+    } 
+
+ 
+
+    // High score (localStorage) 
+
+    function loadHighScore() { 
+
+      const hs = localStorage.getItem("burger_high_inches"); 
+
+      const hr = localStorage.getItem("burger_high_rank"); 
+
+ 
+
+      if (hs) { 
+
+        const inches = parseInt(hs, 10); 
+
+        const feet = Math.floor(inches / 12); 
+
+        const leftover = inches % 12; 
+
+        hsEl.textContent = `${feet} ft ${leftover} in`; 
+
+        hrEl.textContent = hr || "Unknown"; 
+
+      } 
+
+    } 
+
+ 
+
+    function saveHighScore(totalInches, rankLabel) { 
+
+      const prev = localStorage.getItem("burger_high_inches"); 
+
+      if (!prev || totalInches > parseInt(prev, 10)) { 
+
+        localStorage.setItem("burger_high_inches", String(totalInches)); 
+
+        localStorage.setItem("burger_high_rank", rankLabel); 
+
+ 
+
+        const feet = Math.floor(totalInches / 12); 
+
+        const leftover = totalInches % 12; 
+
+        hsEl.textContent = `${feet} ft ${leftover} in`; 
+
+        hrEl.textContent = rankLabel; 
+
+      } 
+
+    } 
+
+ 
+
+    // Game initialization 
+
+    function init() { 
+
+      stack = []; 
+
+      direction = 1; 
+
+      speed = BASE_SPEED; 
+
+      misses = 0; 
+
+      gameOver = false; 
+
+ 
+
+      chefVisible = false; 
+
+      chefX = -200; 
+
+      chefDialogue = ""; 
+
+      chefFrame = "neutral"; 
+
+ 
+
+      tiltAngle = 0; 
+
+      tiltVel = 0; 
+
+      wobbleWarned = false; 
+
+ 
+
+      receipt.style.display = "none"; 
+
+      missesEl.textContent = "0"; 
+
+ 
+
+      // Bottom bun 
+
+      stack.push({ 
+
+        x: 80, 
+
+        width: 160, 
+
+        y: canvas.height - 40, 
+
+        height: 40, 
+
+        color: "#d9a066", 
+
+        name: "Bottom Bun", 
+
+        mass: 4 
+
+      }); 
+
+ 
+
+      layersEl.textContent = stack.length; 
+
+      newIngredient(); 
+
+      loadHighScore(); 
+
+    } 
+
+ 
+
+    function newIngredient() { 
+
+      const ing = INGREDIENTS[Math.floor(Math.random() * INGREDIENTS.length)]; 
+
+      const last = stack[stack.length - 1]; 
+
+ 
+
+      current = { 
+
+        x: 0, 
+
+        width: last.width, 
+
+        y: last.y - ing.height, 
+
+        height: ing.height, 
+
+        color: ing.color, 
+
+        name: ing.name, 
+
+        mass: ing.mass 
+
+      }; 
+
+    } 
+
+ 
+
+    function dropIngredient() { 
+
+      if (gameOver) return; 
+
+ 
+
+      const last = stack[stack.length - 1]; 
+
+ 
+
+      const overlapStart = Math.max(current.x, last.x); 
+
+      const overlapEnd = Math.min(current.x + current.width, last.x + last.width); 
+
+      const overlap = overlapEnd - overlapStart; 
+
+ 
+
+      // Miss 
+
+      if (overlap <= 0) { 
+
+        misses++; 
+
+        missesEl.textContent = misses; 
+
+        setChefLine("miss"); 
+
+ 
+
+        if (misses >= MAX_MISSES) { 
+
+          endGame("misses"); 
+
+        } 
+
+        return; 
+
+      } 
+
+ 
+
+      // Alignment quality 
+
+      const centerLast = last.x + last.width / 2; 
+
+      const centerCur = current.x + current.width / 2; 
+
+      const offset = centerCur - centerLast; 
+
+      const normOffset = Math.abs(offset) / last.width; 
+
+ 
+
+      if (normOffset < 0.05) { 
+
+        setChefLine("perfect"); 
+
+      } else if (normOffset < 0.2) { 
+
+        setChefLine("good"); 
+
+      } else { 
+
+        setChefLine("bad"); 
+
+      } 
+
+ 
+
+      // Apply tilt impulse 
+
+      tiltVel += (offset / last.width) * TILT_IMPULSE; 
+
+ 
+
+      // Trim to overlap 
+
+      current.width = overlap; 
+
+      current.x = overlapStart; 
+
+ 
+
+      stack.push(current); 
+
+      layersEl.textContent = stack.length; 
+
+ 
+
+      speed += SPEED_INC; 
+
+      newIngredient(); 
+
+    } 
+
+ 
+
+    function endGame(reason) { 
+
+      if (gameOver) return; 
+
+      gameOver = true; 
+
+ 
+
+      // Add top bun 
+
+      const last = stack[stack.length - 1]; 
+
+      const topBun = { 
+
+        x: last.x, 
+
+        width: last.width, 
+
+        y: last.y - 30, 
+
+        height: 30, 
+
+        color: "#d9a066", 
+
+        name: "Top Bun", 
+
+        mass: 3 
+
+      }; 
+
+      stack.push(topBun); 
+
+      layersEl.textContent = stack.length; 
+
+ 
+
+      chefVisible = true; 
+
+ 
+
+      // Height and rank 
+
+      const totalHeight = stack.reduce((sum, b) => sum + b.height, 0); 
+
+      const totalInches = Math.round(totalHeight / PIXELS_PER_INCH); 
+
+      const feet = Math.floor(totalInches / 12); 
+
+      const leftover = totalInches % 12; 
+
+      const ingredientCount = stack.length - 2; 
+
+ 
+
+      let rankType; 
+
+      if (feet >= 5) { 
+
+        rankType = "finalGod"; 
+
+      } else if (feet >= 3) { 
+
+        rankType = "finalHigh"; 
+
+      } else if (feet >= 2) { 
+
+        rankType = "finalMid"; 
+
+      } else { 
+
+        rankType = "finalLow"; 
+
+      } 
+
+ 
+
+      if (reason === "collapse") { 
+
+        setChefLine("collapse"); 
+
+      } else { 
+
+        setChefLine(rankType); 
+
+      } 
+
+ 
+
+      let rankLabel = 
+
+        rankType === "finalGod" ? "Master of the Buniverse" : 
+
+        rankType === "finalHigh" ? "Stack Samurai" : 
+
+        rankType === "finalMid" ? "Burger Prodigy" : 
+
+        "Burger Beginner"; 
+
+ 
+
+      saveHighScore(totalInches, rankLabel); 
+
+ 
+
+      setTimeout(() => { 
+
+        receipt.style.display = "block"; 
+
+        const reasonText = reason === "collapse" ? "Reason: Collapse<br>" : ""; 
+
+        receipt.innerHTML = 
+
+          "🍔 BURGER HEIGHT RECEIPT 🍔<br>" + 
+
+          "-----------------------------<br>" + 
+
+          `Height: ${feet} ft ${leftover} in<br>` + 
+
+          `Ingredients: ${ingredientCount}<br>` + 
+
+          `Misses: ${misses} / ${MAX_MISSES}<br>` + 
+
+          reasonText + 
+
+          "-----------------------------<br>" + 
+
+          `Rank: ${rankLabel}`; 
+
+      }, 800); 
+
+    } 
+
+ 
+
+    // Tilt / wobble update 
+
+    function updateTilt() { 
+
+      tiltVel += -TILT_STIFF * tiltAngle; 
+
+      tiltVel *= (1 - TILT_DAMP); 
+
+      tiltAngle += tiltVel; 
+
+ 
+
+      if (!gameOver && Math.abs(tiltAngle) > TILT_MAX) { 
+
+        endGame("collapse"); 
+
+      } 
+
+ 
+
+      if (!wobbleWarned && Math.abs(tiltAngle) > TILT_WARN && !gameOver) { 
+
+        wobbleWarned = true; 
+
+        setChefLine("wobble"); 
+
+      } 
+
+    } 
+
+ 
+
+    function tiltOffsetForBlock(b) { 
+
+      const centerY = b.y + b.height / 2; 
+
+      const fromBase = canvas.height - centerY; 
+
+      return tiltAngle * fromBase * 0.15; 
+
+    } 
+
+ 
+
+    // Drawing blocks 
+
+    function drawBlock(b) { 
+
+      const offsetX = tiltOffsetForBlock(b); 
+
+      ctx.fillStyle = b.color; 
+
+      ctx.fillRect(b.x + offsetX, b.y, b.width, b.height); 
+
+    } 
+
+ 
+
+    // Drawing chef with sprite sheet 
+
+    function drawChef() { 
+
+      if (!chefVisible) return; 
+
+ 
+
+      if (chefX < chefTargetX) { 
+
+        chefX += 4; 
+
+      } 
+
+ 
+
+      const frameIndex = CHEF_FRAMES[chefFrame] ?? 0; 
+
+      const cols = 4; 
+
+      const sx = (frameIndex % cols) * 128; 
+
+      const sy = Math.floor(frameIndex / cols) * 128; 
+
+      const sw = 128; 
+
+      const sh = 128; 
+
+ 
+
+      const dx = chefX; 
+
+      const dy = 110; 
+
+      const dw = 120; 
+
+      const dh = 120; 
+
+ 
+
+      if (chefSprite.complete) { 
+
+        ctx.drawImage(chefSprite, sx, sy, sw, sh, dx, dy, dw, dh); 
+
+      } else { 
+
+        // Fallback simple rectangle if sprite not loaded yet 
+
+        ctx.fillStyle = "#fff"; 
+
+        ctx.fillRect(chefX, 110, 120, 150); 
+
+      } 
+
+ 
+
+      drawChefDialogue(); 
+
+    } 
+
+ 
+
+    function drawChefDialogue() { 
+
+      if (!chefDialogue) return; 
+
+ 
+
+      const x = chefX + 130; 
+
+      const y = 60; 
+
+      const w = 170; 
+
+      const h = 70; 
+
+ 
+
+      ctx.fillStyle = "#fff"; 
+
+      ctx.fillRect(x, y, w, h); 
+
+      ctx.strokeStyle = "#000"; 
+
+      ctx.strokeRect(x, y, w, h); 
+
+ 
+
+      ctx.fillStyle = "#000"; 
+
+      ctx.font = "13px Arial"; 
+
+ 
+
+      const words = chefDialogue.split(" "); 
+
+      let line = ""; 
+
+      let lineY = y + 24; 
+
+ 
+
+      for (let i = 0; i < words.length; i++) { 
+
+        const test = line + words[i] + " "; 
+
+        if (ctx.measureText(test).width > w - 16) { 
+
+          ctx.fillText(line, x + 8, lineY); 
+
+          line = words[i] + " "; 
+
+          lineY += 16; 
+
+        } else { 
+
+          line = test; 
+
+        } 
+
+      } 
+
+      ctx.fillText(line, x + 8, lineY); 
+
+    } 
+
+ 
+
+    // Main loop 
+
+    function update() { 
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height); 
+
+ 
+
+      if (!gameOver) { 
+
+        current.x += speed * direction; 
+
+        if (current.x <= 0 || current.x + current.width >= canvas.width) { 
+
+          direction *= -1; 
+
+        } 
+
+        updateTilt(); 
+
+      } 
+
+ 
+
+      // Draw stack 
+
+      stack.forEach(drawBlock); 
+
+ 
+
+      // Draw current ingredient 
+
+      if (!gameOver) { 
+
+        drawBlock(current); 
+
+      } 
+
+ 
+
+      // Draw chef 
+
+      drawChef(); 
+
+ 
+
+      requestAnimationFrame(update); 
+
+    } 
+
+ 
+
+    // Input handling 
+
+    function handleDrop() { 
+
+      if (gameOver) return; 
+
+      dropIngredient(); 
+
+    } 
+
+ 
+
+    document.addEventListener("keydown", (e) => { 
+
+      if (e.code === "Space" || e.code === "Enter") { 
+
+        e.preventDefault(); 
+
+        handleDrop(); 
+
+      } 
+
+    }); 
+
+ 
+
+    canvas.addEventListener("click", handleDrop); 
+
+ 
+
+    document.getElementById("restart").addEventListener("click", () => { 
+
+      init(); 
+
+    }); 
+
+ 
+
+    // Start game 
+
+    init(); 
+
+    update(); 
+
+  </script> 
+
+</body> 
+
+</html> 
