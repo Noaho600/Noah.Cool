@@ -490,8 +490,8 @@
   </div>
   <div class="net-worth-wrap">
     <div class="nw-label">Net Worth</div>
-    <div class="nw-amount" id="netWorthDisplay">$839,000,000,000</div>
-    <div class="nw-remaining" id="remainingDisplay">$839B remaining</div>
+    <div class="nw-amount" id="netWorthDisplay">$1,000,000,000,000</div>
+    <div class="nw-remaining" id="remainingDisplay">$1T remaining</div>
   </div>
 </div>
 
@@ -499,7 +499,7 @@
 <div class="spend-bar-wrap">
   <div class="spend-bar-label">
     <span id="spentLabel">$0 spent (0.00%)</span>
-    <span id="remainLabel">$839,000,000,000 remaining</span>
+    <span id="remainLabel">$1,000,000,000,000 remaining</span>
   </div>
   <div class="spend-bar-track">
     <div class="spend-bar-fill" id="spendBarFill"></div>
@@ -567,12 +567,14 @@
 
 <script>
 // ── ELON'S NET WORTH ──
-const NET_WORTH = 839_000_000_000; // $839 Billion (as of Q1 2026)
+const NET_WORTH = 1_300_000_000_000; // $1.3 Trillion (as of Q2 2026), Highest ID (45)
 
 // ── PRODUCTS ──
 const PRODUCTS = [
   // SPACE
   { id:42,  cat:'space',       name:'ISS',             emoji:'🛰️', price:150_000_000_000,   stars:4.9, reviews:290,  badge:'prime',  prime:true,  desc:'Experiment in Space' },
+  { id:44,  cat:'space',       name:'Antimatter',             emoji:'⚛️', price:62_000_000_000_000,   stars:4.3, reviews:290,  badge:'prime',  prime:true,  desc:'a scientific substance composed of antiparticles that annihilate upon contact with matter' },
+  { id:45,  cat:'space',       name:'Earth',             emoji:'🌎', price:5_000_000_000_000_000,   stars:3.6, reviews:290,  badge:'prime',  prime:true,  desc:'Become the Supreme Ruler of Earth' },
   { id:1,  cat:'space',       name:'Falcon 9 Rocket Launch',             emoji:'🚀', price:62_000_000,   stars:4.8, reviews:2847,  badge:'prime',  prime:true,  desc:'One-way trip to orbit. Reusable.' },
   { id:2,  cat:'space',       name:'SpaceX Starship (Full Stack)',        emoji:'🛸', price:3_000_000_000, stars:4.9, reviews:412,   badge:'new',    prime:false, desc:'The biggest rocket ever built.' },
   { id:3,  cat:'space',       name:'Satellite Constellation (12 units)',  emoji:'🛰️',price:1_200_000_000, stars:4.7, reviews:891,   badge:'deal',   prime:true,  desc:'Your own Starlink-style network.' },
