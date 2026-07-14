@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Where Does Your Day Go? • Noah.Cool</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Inter,Arial,sans-serif;
+}
+
+body{
+
+background:linear-gradient(#7ec8ff,#dff5ff);
+
+min-height:100vh;
+
+color:#222;
+
+}
+
+header{
+
+background:white;
+
+padding:18px 30px;
+
+box-shadow:0 5px 20px rgba(0,0,0,.08);
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+}
+
+header h1{
+
+font-size:24px;
+
+}
+
+main{
+
+max-width:1200px;
+
+margin:40px auto;
+
+display:grid;
+
+grid-template-columns:2fr 1fr;
+
+gap:25px;
+
+padding:20px;
+
+}
+
+.card{
+
+background:white;
+
+border-radius:22px;
+
+padding:25px;
+
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+input,select{
+
+width:100%;
+
+padding:12px;
+
+margin-top:8px;
+
+margin-bottom:15px;
+
+border-radius:12px;
+
+border:1px solid #ddd;
+
+}
+
+button{
+
+background:#0078ff;
+
+color:white;
+
+border:none;
+
+padding:14px;
+
+border-radius:14px;
+
+cursor:pointer;
+
+width:100%;
+
+font-size:16px;
+
+}
+
+button:hover{
+
+background:#0066dd;
+
+}
+
+.activity{
+
+display:flex;
+
+justify-content:space-between;
+
+padding:14px;
+
+border-radius:12px;
+
+background:#f5f7fb;
+
+margin-top:10px;
+
+}
+
+.timeline{
+
+display:flex;
+
+height:60px;
+
+border-radius:14px;
+
+overflow:hidden;
+
+margin-top:20px;
+
+background:#eee;
+
+}
+
+.segment{
+
+height:100%;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+font-size:13px;
+
+color:white;
+
+font-weight:bold;
+
+}
+
+</style>
+
+</head>
+<body>
+
+<header>
+
+<h1>🌅 Where Does Your Day Go?</h1>
+
+<div id="remaining">24 Hours Remaining</div>
+
+</header>
+
+<main>
+
+<div class="card">
+
+<h2>Add Activity</h2>
+
+<select id="type">
+
+<option>😴 Sleep</option>
+<option>🏫 School</option>
+<option>🎮 Gaming</option>
+<option>📱 Phone</option>
+<option>🍔 Eating</option>
+<option>🚗 Travel</option>
+<option>📚 Homework</option>
+<option>🏃 Exercise</option>
+<option>🎵 Music</option>
+<option>➕ Custom</option>
+
+</select>
+
+<input
+id="hours"
+type="number"
+min="0"
+max="24"
+placeholder="Hours">
+
+<button onclick="addActivity()">
+
+Add Activity
+
+</button>
+
+<div class="timeline" id="timeline">
+
+</div>
+
+<h2 style="margin-top:25px;">Today's Schedule</h2>
+
+<div id="activities"></div>
+
+</div>
+
+<div class="card">
+
+<h2>Statistics</h2>
+
+<h3 id="used">Hours Used: 0</h3>
+
+<h3 id="left">Hours Left: 24</h3>
+
+<h3 id="percent">0%</h3>
+
+<br>
+
+<div id="fact">
+
+Start adding activities!
+
+</div>
+
+</div>
+
+</main>
+
+<script>
+
+let activities=[];
+
+const colors=[
+"#4CAF50",
+"#2196F3",
+"#FF9800",
+"#9C27B0",
+"#F44336",
+"#009688",
+"#795548",
+"#FFC107",
+"#3F51B5",
+"#607D8B"
+];
+
+function addActivity(){
+
+let type=document.getElementById("type").value;
+
+let hours=Number(document.getElementById("hours").value);
+
+if(hours<=0)return;
+
+let total=activities.reduce((a,b)=>a+b.hours,0);
+
+if(total+hours>24){
+
+alert("You only have 24 hours!");
+
+return;
+
+}
+
+activities.push({
+
+type,
+
+hours,
+
+color:colors[Math.floor(Math.random()*colors.length)]
+
+});
+
+draw();
+
+}
+
+function draw(){
+
+const list=document.getElementById("activities");
+
+const timeline=document.getElementById("timeline");
+
+list.innerHTML="";
+
+timeline.innerHTML="";
+
+let used=0;
+
+activities.forEach((a,i)=>{
+
+used+=a.hours;
+
+list.innerHTML+=`
+
+<div class="activity">
+
+<div>${a.type}</div>
+
+<div>${a.hours} hrs</div>
+
+</div>
+
+`;
+
+let seg=document.createElement("div");
+
+seg.className="segment";
+
+seg.style.width=(a.hours/24*100)+"%";
+
+seg.style.background=a.color;
+
+seg.textContent=a.hours+"h";
+
+timeline.appendChild(seg);
+
+});
+
+document.getElementById("used").textContent="Hours Used: "+used;
+
+document.getElementById("left").textContent="Hours Left: "+(24-used);
+
+document.getElementById("remaining").textContent=(24-used)+" Hours Remaining";
+
+document.getElementById("percent").textContent=Math.round(used/24*100)+"% of your day";
+
+let fact="";
+
+if(used>=8) fact="You've planned a busy day!";
+if(used>=16) fact="Almost your entire day is scheduled.";
+if(used==24) fact="Every hour of your day has a job.";
+
+document.getElementById("fact").textContent=fact;
+
+}
+
+</script>
+
+</body>
+</html>
