@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Endless Scroll — Noah.cool</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/src/style.css" />
+    <style>
+      body {
+        background: #0c1445;
+        color: #e2e8f0;
+      }
+      .site {
+        max-width: 640px;
+      }
+      .page-back,
+      .page-subtitle {
+        color: #94a3b8;
+      }
+      .page-back:hover {
+        color: #e2e8f0;
+      }
+      .depth-track {
+        position: fixed;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        writing-mode: vertical-rl;
+        font-size: 0.75rem;
+        color: #64748b;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .scroll-item {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 32px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeUp 0.5s ease forwards;
+      }
+      @keyframes fadeUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .scroll-emoji {
+        font-size: 2.5rem;
+        flex-shrink: 0;
+        width: 56px;
+        text-align: center;
+      }
+      .scroll-info h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .scroll-info p {
+        font-size: 0.85rem;
+        color: #94a3b8;
+      }
+      .scroll-depth {
+        font-size: 0.75rem;
+        color: #475569;
+        font-weight: 600;
+        margin-top: 4px;
+      }
+      .scroll-end {
+        text-align: center;
+        padding: 80px 0;
+        color: #64748b;
+        font-size: 0.9rem;
+      }
+      .scroll-end span {
+        display: block;
+        font-size: 2rem;
+        margin-bottom: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="site">
+      <a class="page-back" href="/">← Back to Noah.cool</a>
+      <h1 class="page-title">🌊 Endless Scroll</h1>
+      <p class="page-subtitle">Keep going. The depths have secrets.</p>
+
+      <div class="depth-track" id="depth-track">0 m</div>
+      <div id="scroll-content"></div>
+    </div>
+
+    <script type="module" src="/games/endless-scroll/index.html?html-proxy&index=0.js"></script>
+  </body>
+</html>
