@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Life Checklist • Noah.Cool</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+box-sizing:border-box;
+font-family:Inter,sans-serif;
+margin:0;
+padding:0;
+}
+
+body{
+background:#f5f7fb;
+color:#222;
+padding:40px;
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+}
+
+header{
+background:white;
+padding:30px;
+border-radius:24px;
+box-shadow:0 10px 30px rgba(0,0,0,.08);
+margin-bottom:25px;
+}
+
+h1{
+font-size:40px;
+margin-bottom:10px;
+}
+
+.progress{
+height:18px;
+background:#e6eaf2;
+border-radius:999px;
+overflow:hidden;
+margin:15px 0;
+}
+
+.fill{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#3b82f6,#60a5fa);
+transition:.5s;
+}
+
+.stats{
+display:flex;
+gap:20px;
+color:#666;
+font-size:15px;
+}
+
+.category{
+
+background:white;
+
+border-radius:20px;
+
+padding:20px;
+
+margin-bottom:20px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.06);
+
+}
+
+.category h2{
+
+margin-bottom:15px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+}
+
+.item{
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
+
+padding:12px;
+
+border-radius:12px;
+
+transition:.2s;
+
+cursor:pointer;
+
+}
+
+.item:hover{
+
+background:#f2f5fa;
+
+}
+
+.item input{
+
+width:20px;
+
+height:20px;
+
+cursor:pointer;
+
+}
+
+.percent{
+
+font-size:14px;
+
+color:#3b82f6;
+
+font-weight:bold;
+
+}
+
+.smallbar{
+
+height:10px;
+
+background:#edf1f7;
+
+border-radius:999px;
+
+overflow:hidden;
+
+margin-top:12px;
+
+}
+
+.smallfill{
+
+height:100%;
+
+background:#3b82f6;
+
+width:0%;
+
+transition:.4s;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+
+<h1>✅ Life Checklist</h1>
+
+<p>Track your life's milestones.</p>
+
+<div class="progress">
+<div class="fill" id="overallFill"></div>
+</div>
+
+<div class="stats">
+
+<div><b id="completed">0</b> Completed</div>
+
+<div><b id="remaining">0</b> Remaining</div>
+
+<div><b id="percent">0%</b></div>
+
+</div>
+
+</header>
+
+<div id="categories"></div>
+
+</div>
+
+<script>
+
+const checklist={
+
+"👶 Childhood":[
+
+"Ride a bike",
+
+"Lose a tooth",
+
+"Fly on an airplane",
+
+"Go camping",
+
+"Have a sleepover"
+
+],
+
+"🏫 School":[
+
+"Graduate elementary school",
+
+"Join a club",
+
+"Get an A",
+
+"Finish middle school",
+
+"Finish high school"
+
+],
+
+"🌎 Travel":[
+
+"Go on a cruise",
+
+"Visit another country",
+
+"See snow",
+
+"Stay in a hotel",
+
+"Visit a national park"
+
+],
+
+"🍔 Food":[
+
+"Eat sushi",
+
+"Try boba",
+
+"Eat at a buffet",
+
+"Make homemade pizza",
+
+"Try a new fruit"
+
+]
+
+};
+
+const container=document.getElementById("categories");
+
+let saved=JSON.parse(localStorage.getItem("lifeChecklist"))||{};
+
+function render(){
+
+container.innerHTML="";
+
+let total=0;
+
+let complete=0;
+
+for(let category in checklist){
+
+const card=document.createElement("div");
+
+card.className="category";
+
+let html=`<h2>${category} <span class="percent" id="p-${category}"></span></h2>`;
+
+checklist[category].forEach(item=>{
+
+const id=category+"-"+item;
+
+const checked=saved[id]?"checked":"";
+
+if(saved[id]) complete++;
+
+total++;
+
+html+=`
+
+<label class="item">
+
+<input type="checkbox"
+
+${checked}
+
+onchange="toggle('${id}')">
+
+${item}
+
+</label>
+
+`;
+
+});
+
+html+=`
+
+<div class="smallbar">
+
+<div class="smallfill" id="bar-${category}"></div>
+
+</div>
+
+`;
+
+card.innerHTML=html;
+
+container.appendChild(card);
+
+updateCategory(category);
+
+}
+
+document.getElementById("completed").textContent=complete;
+
+document.getElementById("remaining").textContent=total-complete;
+
+const percent=Math.round((complete/total)*100);
+
+document.getElementById("percent").textContent=percent+"%";
+
+document.getElementById("overallFill").style.width=percent+"%";
+
+}
+
+function updateCategory(category){
+
+const items=checklist[category];
+
+let done=0;
+
+items.forEach(i=>{
+
+if(saved[category+"-"+i]) done++;
+
+});
+
+const p=Math.round(done/items.length*100);
+
+document.getElementById("p-"+category).textContent=p+"%";
+
+document.getElementById("bar-"+category).style.width=p+"%";
+
+}
+
+function toggle(id){
+
+saved[id]=!saved[id];
+
+localStorage.setItem("lifeChecklist",JSON.stringify(saved));
+
+render();
+
+}
+
+render();
+
+</script>
+
+</body>
+</html>
